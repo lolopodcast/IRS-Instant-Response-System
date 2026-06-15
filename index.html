@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>課堂問答 ClassQ&A</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+<style>
+  :root { --green:#004030; --gold:#D8C3A5; --lightgreen:#e8f0ed; }
+  body { font-family: 'Segoe UI', sans-serif; background:#f5f5f0; margin:0; }
+  .btn-primary { background:var(--green); color:#fff; border:none; border-radius:6px; padding:8px 18px; cursor:pointer; font-size:14px; transition:opacity .2s; }
+  .btn-primary:hover { opacity:.85; }
+  .btn-ghost { background:transparent; border:1.5px solid var(--green); color:var(--green); border-radius:6px; padding:6px 14px; cursor:pointer; font-size:13px; }
+  .btn-ghost:hover { background:var(--lightgreen); }
+  .btn-danger { background:#b91c1c; color:#fff; border:none; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:12px; }
+  .badge-anon { background:#6b7280; color:#fff; font-size:11px; border-radius:999px; padding:1px 8px; }
+  .badge-named { background:#004030; color:#fff; font-size:11px; border-radius:999px; padding:1px 8px; }
+  .room-tab { cursor:pointer; padding:8px 12px; border-radius:8px; font-size:14px; transition:background .15s; }
+  .room-tab.active { background:var(--green); color:#fff; }
+  .room-tab:not(.active):hover { background:var(--lightgreen); }
+  .card { background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); padding:16px; margin-bottom:12px; }
+  .like-btn { display:inline-flex; align-items:center; gap:5px; background:#f3f4f6; border:none; border-radius:999px; padding:4px 12px; cursor:pointer; font-size:13px; transition:background .15s; }
+  .like-btn:hover, .like-btn.liked { background:#D8C3A5; }
+  .mic-btn { background:#004030; color:#fff; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .mic-btn.recording { background:#b91c1c; animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+  textarea { width:100%; border:1.5px solid #d1d5db; border-radius:8px; padding:10px; font-size:14px; resize:vertical; box-sizing:border-box; }
+  textarea:focus { outline:none; border-color:var(--green); }
+  .divider { border:none; border-top:1px solid #e5e7eb; margin:10px 0; }
+  .reply-thread { border-left:3px solid var(--gold); padding-left:12px; margin-top:10px; }
+  input[type=text] { border:1.5px solid #d1d5db; border-radius:8px; padding:8px 12px; font-size:14px; width:100%; box-sizing:border-box; }
+  input[type=text]:focus { outline:none; border-color:var(--green); }
+  .sidebar { width:220px; min-width:180px; background:#fff; border-right:1px solid #e5e7eb; height:100vh; overflow-y:auto; display:flex; flex-direction:column; }
+  .main { flex:1; overflow-y:auto; height:100vh; }
+  .top-bar { background:var(--green); color:#fff; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+  select { border:1.5px solid #d1d5db; border-radius:6px; padding:5px 10px; font-size:13px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+const STORAGE_KEY = 'classqa_rooms';
+const HOST_KEY = 'classqa_hosts';
+
+function uid() { return Math.random().toString(36).slice(2,10); }
+function ts() { return Date.now(); }
+
+function loadRooms() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+}
+function saveRooms(r) { localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
+function loadHosts() {
+  try { return JSON.parse(localStorage.getItem(HOST_KEY) || '{}'); } catch { return {}; }
+}
+function saveHosts(h) { localStorage.setItem(HOST_KEY, JSON.stringify(h)); }
+
+// Voice input hook
+function useVoice(onResult) {
+  const [recording, setRecording] = useState(false);
+  const [lang, setLang] = useState('zh-TW');
+  const recRef = useRef(null);
+
+  const toggle = useCallback(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('此瀏覽器不支援語音輸入 / Speech not supported'); return; }
+    if (recording) { recRef.current?.stop(); return; }
+    const r = new SR();
+    r.lang = lang; r.interimResults = false; r.maxAlternatives = 1;
+    r.onresult = e => onResult(e.results[0][0].transcript);
+    r.onend = () => setRecording(false);
+    r.onerror = () => setRecording(false);
+    recRef.current = r;
+    r.start(); setRecording(true);
+  }, [recording, lang, onResult]);
+
+  return { recording, toggle, lang, setLang };
+}
+
+// Single voice input row
+function VoiceTextarea({ value, onChange, placeholder, rows=3 }) {
+  const [vLang, setVLang] = useState('zh-TW');
+  const [rec, setRec] = useState(false);
+  const recRef = useRef(null);
+
+  const toggleMic = () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('此瀏覽器不支援語音輸入'); return; }
+    if (rec) { recRef.current?.stop(); return; }
+    const r = new SR();
+    r.lang = vLang; r.interimResults = false;
+    r.onresult = e => onChange(value + e.results[0][0].transcript);
+    r.onend = () => setRec(false);
+    r.onerror = () => setRec(false);
+    recRef.current = r; r.start(); setRec(true);
+  };
+
+  return (
+    <div>
+      <div style={{display:'flex',gap:6,marginBottom:4,alignItems:'center'}}>
+        <select value={vLang} onChange={e=>setVLang(e.target.value)} style={{fontSize:12,padding:'3px 6px'}}>
+          <option value="zh-TW">中文</option>
+          <option value="en-US">English</option>
+        </select>
+        <button className={`mic-btn${rec?' recording':''}`} onClick={toggleMic} title={rec?'停止 Stop':'語音輸入 Voice'}>
+          {rec ? '⏹' : '🎤'}
+        </button>
+        {rec && <span style={{fontSize:12,color:'#b91c1c'}}>錄音中 Recording…</span>}
+      </div>
+      <textarea rows={rows} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} />
+    </div>
+  );
+}
+
+// Reply component
+function ReplyItem({ reply, onLike, onDelete, isHost, depth=0 }) {
+  const [showReply, setShowReply] = useState(false);
+  const [replyText, setReplyText] = useState('');
+
+  const submit = () => {
+    if (!replyText.trim()) return;
+    onLike('add_reply', reply.id, replyText);
+    setReplyText(''); setShowReply(false);
+  };
+
+  return (
+    <div style={{marginTop:8}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div>
+          <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author || '匿名 Anon'}</span>
+          <span style={{fontSize:13}}>{reply.text}</span>
+        </div>
+        <div style={{display:'flex',gap:4,flexShrink:0}}>
+          {isHost && <button className="btn-danger" onClick={()=>onDelete(reply.id)}>✕</button>}
+        </div>
+      </div>
+      <div style={{display:'flex',gap:8,marginTop:4,alignItems:'center'}}>
+        <button className={`like-btn${reply.liked?' liked':''}`} onClick={()=>onLike('like_reply',reply.id)}>
+          👍 {reply.likes||0}
+        </button>
+        {depth < 1 && <button className="btn-ghost" style={{fontSize:12,padding:'2px 8px'}} onClick={()=>setShowReply(v=>!v)}>
+          回覆 Reply
+        </button>}
+      </div>
+      {showReply && (
+        <div style={{marginTop:6}}>
+          <VoiceTextarea value={replyText} onChange={setReplyText} placeholder="輸入回覆 / Type reply…" rows={2} />
+          <div style={{display:'flex',gap:6,marginTop:4}}>
+            <button className="btn-primary" style={{fontSize:12,padding:'4px 12px'}} onClick={submit}>送出 Submit</button>
+            <button className="btn-ghost" style={{fontSize:12}} onClick={()=>setShowReply(false)}>取消 Cancel</button>
+          </div>
+        </div>
+      )}
+      {reply.replies?.length > 0 && (
+        <div className="reply-thread">
+          {[...reply.replies].sort((a,b)=>(b.likes||0)-(a.likes||0)).map(r2 =>
+            <ReplyItem key={r2.id} reply={r2} onLike={onLike} onDelete={onDelete} isHost={isHost} depth={depth+1} />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Question card
+function QuestionCard({ q, isHost, anonymous, onUpdate, onDelete }) {
+  const [showAns, setShowAns] = useState(false);
+  const [ansText, setAnsText] = useState('');
+  const [nameInput, setNameInput] = useState('');
+
+  const like = () => onUpdate({ ...q, likes:(q.likes||0)+1, liked:true });
+  const deleteQ = () => onDelete(q.id);
+
+  const submitAnswer = () => {
+    if (!ansText.trim()) return;
+    const ans = { id:uid(), text:ansText, author: anonymous?'匿名 Anon':(nameInput||'使用者 User'), likes:0, liked:false, replies:[], createdAt:ts() };
+    onUpdate({ ...q, answers:[...(q.answers||[]), ans] });
+    setAnsText(''); setNameInput(''); setShowAns(false);
+  };
+
+  const handleReplyAction = (action, targetId, text) => {
+    if (action === 'like_reply') {
+      const updated = likeInAnswers(q.answers, targetId);
+      onUpdate({ ...q, answers: updated });
+    } else if (action === 'add_reply') {
+      const updated = addReplyInAnswers(q.answers, targetId, text, anonymous);
+      onUpdate({ ...q, answers: updated });
+    }
+  };
+  const handleDeleteReply = (targetId) => {
+    const updated = deleteInAnswers(q.answers, targetId);
+    onUpdate({ ...q, answers: updated });
+  };
+
+  const sortedAnswers = [...(q.answers||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
+
+  return (
+    <div className="card">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+        <div style={{flex:1}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+            <span className={anonymous?'badge-anon':'badge-named'}>{anonymous?'匿名 Anon':'具名 Named'}</span>
+            {!anonymous && <span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
+            <span style={{fontSize:11,color:'#9ca3af'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
+          </div>
+          <p style={{margin:0,fontSize:15,fontWeight:500}}>{q.text}</p>
+        </div>
+        {isHost && <button className="btn-danger" onClick={deleteQ}>✕</button>}
+      </div>
+      <div style={{display:'flex',gap:8,marginTop:8,alignItems:'center'}}>
+        <button className={`like-btn${q.liked?' liked':''}`} onClick={like}>👍 {q.likes||0}</button>
+        <button className="btn-ghost" style={{fontSize:12}} onClick={()=>setShowAns(v=>!v)}>
+          💬 回答 Answer ({(q.answers||[]).length})
+        </button>
+      </div>
+
+      {sortedAnswers.length > 0 && (
+        <div className="reply-thread" style={{marginTop:10}}>
+          {sortedAnswers.map(ans =>
+            <ReplyItem key={ans.id} reply={ans} onLike={handleReplyAction} onDelete={handleDeleteReply} isHost={isHost} />
+          )}
+        </div>
+      )}
+
+      {showAns && (
+        <div style={{marginTop:10,padding:10,background:'#f9fafb',borderRadius:8}}>
+          {!anonymous && (
+            <input type="text" value={nameInput} onChange={e=>setNameInput(e.target.value)}
+              placeholder="你的名字 / Your name" style={{marginBottom:6}} />
+          )}
+          <VoiceTextarea value={ansText} onChange={setAnsText} placeholder="輸入回答 / Type answer…" rows={2} />
+          <div style={{display:'flex',gap:6,marginTop:6}}>
+            <button className="btn-primary" style={{fontSize:12,padding:'4px 12px'}} onClick={submitAnswer}>送出 Submit</button>
+            <button className="btn-ghost" style={{fontSize:12}} onClick={()=>setShowAns(false)}>取消 Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// helpers for nested ops
+function likeInAnswers(answers, id) {
+  return (answers||[]).map(a => {
+    if (a.id === id) return {...a, likes:(a.likes||0)+1, liked:true};
+    return {...a, replies: likeInAnswers(a.replies, id)};
+  });
+}
+function addReplyInAnswers(answers, parentId, text, anonymous) {
+  return (answers||[]).map(a => {
+    if (a.id === parentId) {
+      const rep = {id:uid(), text, author:anonymous?'匿名 Anon':'使用者 User', likes:0, liked:false, replies:[], createdAt:ts()};
+      return {...a, replies:[...(a.replies||[]), rep]};
+    }
+    return {...a, replies: addReplyInAnswers(a.replies, parentId, text, anonymous)};
+  });
+}
+function deleteInAnswers(answers, id) {
+  return (answers||[]).filter(a=>a.id!==id).map(a=>({...a, replies:deleteInAnswers(a.replies,id)}));
+}
+
+// Create Room Modal
+function CreateRoomModal({ onClose, onCreate }) {
+  const [name, setName] = useState('');
+  const [anon, setAnon] = useState(false);
+  const submit = () => {
+    if (!name.trim()) return;
+    onCreate(name.trim(), anon);
+    onClose();
+  };
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:100}}>
+      <div style={{background:'#fff',borderRadius:12,padding:28,width:360,maxWidth:'90vw'}}>
+        <h2 style={{margin:'0 0 16px',color:'var(--green)',fontSize:18}}>建立問答室 / Create Room</h2>
+        <label style={{fontSize:13,color:'#374151'}}>問答室名稱 Room Name</label>
+        <input type="text" value={name} onChange={e=>setName(e.target.value)}
+          placeholder="例：第三週Q&A / Week 3 Q&A" style={{margin:'6px 0 14px'}}
+          onKeyDown={e=>e.key==='Enter'&&submit()} autoFocus />
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:18}}>
+          <input type="checkbox" id="anon" checked={anon} onChange={e=>setAnon(e.target.checked)} />
+          <label htmlFor="anon" style={{fontSize:14}}>匿名模式 Anonymous mode</label>
+        </div>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <button className="btn-ghost" onClick={onClose}>取消 Cancel</button>
+          <button className="btn-primary" onClick={submit}>建立 Create</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Join Room Modal
+function JoinRoomModal({ onClose, onJoin }) {
+  const [code, setCode] = useState('');
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:100}}>
+      <div style={{background:'#fff',borderRadius:12,padding:28,width:340,maxWidth:'90vw'}}>
+        <h2 style={{margin:'0 0 16px',color:'var(--green)',fontSize:18}}>加入問答室 / Join Room</h2>
+        <label style={{fontSize:13,color:'#374151'}}>輸入 Room Code</label>
+        <input type="text" value={code} onChange={e=>setCode(e.target.value.trim())}
+          placeholder="8碼代碼 / 8-char code" style={{margin:'6px 0 14px'}}
+          onKeyDown={e=>e.key==='Enter'&&onJoin(code)} autoFocus />
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <button className="btn-ghost" onClick={onClose}>取消 Cancel</button>
+          <button className="btn-primary" onClick={()=>onJoin(code)}>加入 Join</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main App
+function App() {
+  const [rooms, setRooms] = useState(loadRooms);
+  const [hosts, setHosts] = useState(loadHosts);
+  const [activeId, setActiveId] = useState(null);
+  const [modal, setModal] = useState(null); // 'create' | 'join'
+  const [newQ, setNewQ] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [sideOpen, setSideOpen] = useState(true);
+
+  useEffect(() => { saveRooms(rooms); }, [rooms]);
+  useEffect(() => { saveHosts(hosts); }, [hosts]);
+
+  const activeRoom = rooms[activeId] || null;
+  const isHost = activeId && hosts[activeId];
+
+  const createRoom = (name, anonymous) => {
+    const id = uid();
+    const token = uid();
+    const room = { id, name, anonymous, questions:[], createdAt:ts() };
+    setRooms(r => ({...r, [id]:room}));
+    setHosts(h => ({...h, [id]:token}));
+    setActiveId(id);
+  };
+
+  const joinRoom = (code) => {
+    if (rooms[code]) { setActiveId(code); setModal(null); }
+    else alert('找不到此 Room Code / Room not found');
+  };
+
+  const leaveRoom = (id) => {
+    setRooms(r => { const n={...r}; delete n[id]; return n; });
+    setHosts(h => { const n={...h}; delete n[id]; return n; });
+    if (activeId === id) setActiveId(null);
+  };
+
+  const postQuestion = () => {
+    if (!newQ.trim() || !activeRoom) return;
+    const q = {
+      id: uid(), text: newQ.trim(),
+      author: activeRoom.anonymous ? '匿名 Anon' : (authorName || '使用者 User'),
+      likes:0, liked:false, answers:[], createdAt:ts()
+    };
+    setRooms(r => ({...r, [activeId]: {...activeRoom, questions:[...(activeRoom.questions||[]), q]}}));
+    setNewQ(''); setAuthorName('');
+  };
+
+  const updateQuestion = (q) => {
+    setRooms(r => ({...r, [activeId]: {...activeRoom, questions: activeRoom.questions.map(x=>x.id===q.id?q:x)}}));
+  };
+
+  const deleteQuestion = (qid) => {
+    setRooms(r => ({...r, [activeId]: {...activeRoom, questions: activeRoom.questions.filter(x=>x.id!==qid)}}));
+  };
+
+  const sortedQ = activeRoom ? [...(activeRoom.questions||[])].sort((a,b)=>(b.likes||0)-(a.likes||0)) : [];
+
+  return (
+    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
+      {/* Sidebar */}
+      {sideOpen && (
+        <div className="sidebar">
+          <div style={{padding:'14px 12px 8px',borderBottom:'1px solid #e5e7eb'}}>
+            <div style={{fontWeight:700,color:'var(--green)',fontSize:16,marginBottom:8}}>ClassQ&A</div>
+            <div style={{display:'flex',gap:6,flexDirection:'column'}}>
+              <button className="btn-primary" style={{width:'100%',fontSize:13}} onClick={()=>setModal('create')}>＋ 建立 Create</button>
+              <button className="btn-ghost" style={{width:'100%',fontSize:13}} onClick={()=>setModal('join')}>🔗 加入 Join</button>
+            </div>
+          </div>
+          <div style={{padding:'10px 8px',flex:1}}>
+            <div style={{fontSize:11,color:'#9ca3af',marginBottom:6,paddingLeft:4}}>問答室 ROOMS</div>
+            {Object.values(rooms).length === 0 && (
+              <div style={{fontSize:13,color:'#9ca3af',padding:'8px 4px'}}>尚無問答室 No rooms yet</div>
+            )}
+            {Object.values(rooms).map(rm => (
+              <div key={rm.id} className={`room-tab${activeId===rm.id?' active':''}`} onClick={()=>setActiveId(rm.id)}>
+                <div style={{fontWeight:500,fontSize:13}}>{rm.name}</div>
+                <div style={{fontSize:11,opacity:.7}}>{hosts[rm.id]?'👑 Host':''}  {rm.anonymous?'🕵️ 匿名':'👤 具名'}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Main */}
+      <div className="main" style={{display:'flex',flexDirection:'column'}}>
+        <div className="top-bar">
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <button onClick={()=>setSideOpen(v=>!v)} style={{background:'none',border:'none',color:'#fff',fontSize:18,cursor:'pointer'}}>☰</button>
+            <span style={{fontWeight:700,fontSize:17}}>
+              {activeRoom ? activeRoom.name : 'ClassQ&A 課堂問答'}
+            </span>
+            {activeRoom && (
+              <span style={{fontSize:11,background:'rgba(255,255,255,.2)',borderRadius:999,padding:'2px 8px'}}>
+                Code: {activeRoom.id}
+              </span>
+            )}
+          </div>
+          {activeRoom && isHost && (
+            <button className="btn-danger" style={{fontSize:12}} onClick={()=>leaveRoom(activeId)}>刪除Room Delete</button>
+          )}
+        </div>
+
+        {!activeRoom ? (
+          <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,color:'#6b7280'}}>
+            <div style={{fontSize:48}}>💬</div>
+            <div style={{fontSize:18,fontWeight:600,color:'var(--green)'}}>ClassQ&A 課堂即時問答</div>
+            <div style={{fontSize:14,textAlign:'center',maxWidth:300}}>建立或加入一個問答室開始提問<br/>Create or join a room to get started</div>
+            <div style={{display:'flex',gap:10}}>
+              <button className="btn-primary" onClick={()=>setModal('create')}>＋ 建立 Create Room</button>
+              <button className="btn-ghost" onClick={()=>setModal('join')}>🔗 加入 Join Room</button>
+            </div>
+          </div>
+        ) : (
+          <div style={{flex:1,overflow:'auto',padding:20,maxWidth:720,width:'100%',margin:'0 auto'}}>
+            {/* Post question */}
+            <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
+              <div style={{fontWeight:600,color:'var(--green)',marginBottom:8,fontSize:14}}>
+                ✏️ 提問 Ask a Question
+              </div>
+              {!activeRoom.anonymous && (
+                <input type="text" value={authorName} onChange={e=>setAuthorName(e.target.value)}
+                  placeholder="你的名字 Your name（選填 optional）" style={{marginBottom:8}} />
+              )}
+              <VoiceTextarea value={newQ} onChange={setNewQ} placeholder="輸入問題 / Speak or type your question…" rows={3} />
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:8}}>
+                <span style={{fontSize:12,color:'#9ca3af'}}>
+                  {activeRoom.anonymous ? '🕵️ 匿名模式 Anonymous' : '👤 具名模式 Named'}
+                </span>
+                <button className="btn-primary" onClick={postQuestion}>送出提問 Submit</button>
+              </div>
+            </div>
+
+            {/* Questions */}
+            {sortedQ.length === 0 ? (
+              <div style={{textAlign:'center',color:'#9ca3af',padding:'40px 0',fontSize:15}}>
+                尚無提問，快來第一個提問！<br/>No questions yet — be the first!
+              </div>
+            ) : (
+              <>
+                <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
+                  {sortedQ.length} 則提問（依讚數排序） / {sortedQ.length} question(s) sorted by likes
+                </div>
+                {sortedQ.map(q =>
+                  <QuestionCard key={q.id} q={q} isHost={!!isHost}
+                    anonymous={activeRoom.anonymous}
+                    onUpdate={updateQuestion} onDelete={deleteQuestion} />
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {modal === 'create' && <CreateRoomModal onClose={()=>setModal(null)} onCreate={createRoom} />}
+      {modal === 'join' && <JoinRoomModal onClose={()=>setModal(null)} onJoin={joinRoom} />}
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
