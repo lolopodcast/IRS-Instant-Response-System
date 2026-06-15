@@ -3,162 +3,166 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>課堂問答 ClassQ&A</title>
+<title>ClassQ&A 課堂問答</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  :root { --green:#004030; --gold:#D8C3A5; --lightgreen:#e8f0ed; }
-  body { font-family: 'Segoe UI', sans-serif; background:#f5f5f0; margin:0; }
-  .btn-primary { background:var(--green); color:#fff; border:none; border-radius:6px; padding:8px 18px; cursor:pointer; font-size:14px; transition:opacity .2s; }
-  .btn-primary:hover { opacity:.85; }
-  .btn-ghost { background:transparent; border:1.5px solid var(--green); color:var(--green); border-radius:6px; padding:6px 14px; cursor:pointer; font-size:13px; }
-  .btn-ghost:hover { background:var(--lightgreen); }
-  .btn-danger { background:#b91c1c; color:#fff; border:none; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:12px; }
-  .badge-anon { background:#6b7280; color:#fff; font-size:11px; border-radius:999px; padding:1px 8px; }
-  .badge-named { background:#004030; color:#fff; font-size:11px; border-radius:999px; padding:1px 8px; }
-  .room-tab { cursor:pointer; padding:8px 12px; border-radius:8px; font-size:14px; transition:background .15s; }
-  .room-tab.active { background:var(--green); color:#fff; }
-  .room-tab:not(.active):hover { background:var(--lightgreen); }
-  .card { background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); padding:16px; margin-bottom:12px; }
-  .like-btn { display:inline-flex; align-items:center; gap:5px; background:#f3f4f6; border:none; border-radius:999px; padding:4px 12px; cursor:pointer; font-size:13px; transition:background .15s; }
-  .like-btn:hover, .like-btn.liked { background:#D8C3A5; }
-  .mic-btn { background:#004030; color:#fff; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-  .mic-btn.recording { background:#b91c1c; animation:pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
-  textarea { width:100%; border:1.5px solid #d1d5db; border-radius:8px; padding:10px; font-size:14px; resize:vertical; box-sizing:border-box; }
-  textarea:focus { outline:none; border-color:var(--green); }
-  .divider { border:none; border-top:1px solid #e5e7eb; margin:10px 0; }
-  .reply-thread { border-left:3px solid var(--gold); padding-left:12px; margin-top:10px; }
-  input[type=text] { border:1.5px solid #d1d5db; border-radius:8px; padding:8px 12px; font-size:14px; width:100%; box-sizing:border-box; }
-  input[type=text]:focus { outline:none; border-color:var(--green); }
-  .sidebar { width:220px; min-width:180px; background:#fff; border-right:1px solid #e5e7eb; height:100vh; overflow-y:auto; display:flex; flex-direction:column; }
-  .main { flex:1; overflow-y:auto; height:100vh; }
-  .top-bar { background:var(--green); color:#fff; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
-  select { border:1.5px solid #d1d5db; border-radius:6px; padding:5px 10px; font-size:13px; }
+*{box-sizing:border-box}
+:root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed}
+body{font-family:'Segoe UI',sans-serif;background:#f5f5f0;margin:0}
+.btn{border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;transition:opacity .2s,background .15s;white-space:nowrap}
+.btn-p{background:var(--green);color:#fff}.btn-p:hover{opacity:.85}
+.btn-g{background:transparent;border:1.5px solid var(--green);color:var(--green)}.btn-g:hover{background:var(--lg)}
+.btn-d{background:#b91c1c;color:#fff}.btn-d:hover{opacity:.85}
+.btn-ic{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 10px;cursor:pointer;font-size:12px;white-space:nowrap}
+.btn-ic:hover{background:rgba(255,255,255,.28)}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
+.like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;transition:background .15s}
+.like-btn:hover,.like-btn.liked{background:var(--gold)}
+.mic-btn{background:var(--green);color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.mic-btn.rec{background:#b91c1c;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:14px;font-family:inherit}
+textarea{resize:vertical}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
+.badge{font-size:11px;border-radius:999px;padding:1px 8px;color:#fff}
+.ba{background:#6b7280}.bn{background:var(--green)}
+.room-tab{cursor:pointer;padding:8px 10px;border-radius:8px;font-size:13px;transition:background .15s;word-break:break-all}
+.room-tab.act{background:var(--green);color:#fff}
+.room-tab:not(.act):hover{background:var(--lg)}
+.reply-thread{border-left:3px solid var(--gold);padding-left:10px;margin-top:8px}
+/* sidebar */
+.sidebar{width:210px;min-width:0;background:#fff;border-right:1px solid #e5e7eb;height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+.sidebar.closed{width:0;overflow:hidden}
+.main-col{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden}
+/* topbar */
+.topbar{background:var(--green);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:52px}
+.topbar-title{font-weight:700;font-size:15px;flex-shrink:0}
+.topbar-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1}
+/* overlay */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal h2{margin:0 0 16px;color:var(--green);font-size:17px}
+/* timer */
+.timer-chip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.timer-chip.warn{background:#b91c1c}
+/* content area */
+.content-area{flex:1;overflow-y:auto;padding:16px}
+.content-inner{max-width:700px;margin:0 auto}
+/* qr canvas wrapper */
+#qr-render{display:flex;justify-content:center}
+/* RWD */
+@media(max-width:600px){
+  .sidebar{position:fixed;top:0;left:0;height:100vh;z-index:150;width:230px}
+  .sidebar.closed{width:0}
+  .topbar-meta .btn-ic span{display:none}
+}
+label.row{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;margin-bottom:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;color:#374151;margin-bottom:4px}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useRef, useCallback } = React;
+const {useState,useEffect,useRef,useCallback} = React;
+const SK='classqa_r2', HK='classqa_h2';
+const uid=()=>Math.random().toString(36).slice(2,10);
+const ts=()=>Date.now();
+const load=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return{}}};
+const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-const STORAGE_KEY = 'classqa_rooms';
-const HOST_KEY = 'classqa_hosts';
-
-function uid() { return Math.random().toString(36).slice(2,10); }
-function ts() { return Date.now(); }
-
-function loadRooms() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
-}
-function saveRooms(r) { localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
-function loadHosts() {
-  try { return JSON.parse(localStorage.getItem(HOST_KEY) || '{}'); } catch { return {}; }
-}
-function saveHosts(h) { localStorage.setItem(HOST_KEY, JSON.stringify(h)); }
-
-// Voice input hook
-function useVoice(onResult) {
-  const [recording, setRecording] = useState(false);
-  const [lang, setLang] = useState('zh-TW');
-  const recRef = useRef(null);
-
-  const toggle = useCallback(() => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('此瀏覽器不支援語音輸入 / Speech not supported'); return; }
-    if (recording) { recRef.current?.stop(); return; }
-    const r = new SR();
-    r.lang = lang; r.interimResults = false; r.maxAlternatives = 1;
-    r.onresult = e => onResult(e.results[0][0].transcript);
-    r.onend = () => setRecording(false);
-    r.onerror = () => setRecording(false);
-    recRef.current = r;
-    r.start(); setRecording(true);
-  }, [recording, lang, onResult]);
-
-  return { recording, toggle, lang, setLang };
+// ── QR code generator via qrcodejs ──
+function QRCanvas({url,size=200}){
+  const ref=useRef(null);
+  useEffect(()=>{
+    if(!ref.current)return;
+    ref.current.innerHTML='';
+    new QRCode(ref.current,{text:url,width:size,height:size,correctLevel:QRCode.CorrectLevel.M});
+  },[url,size]);
+  return <div ref={ref} id="qr-render"/>;
 }
 
-// Single voice input row
-function VoiceTextarea({ value, onChange, placeholder, rows=3 }) {
-  const [vLang, setVLang] = useState('zh-TW');
-  const [rec, setRec] = useState(false);
-  const recRef = useRef(null);
-
-  const toggleMic = () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('此瀏覽器不支援語音輸入'); return; }
-    if (rec) { recRef.current?.stop(); return; }
-    const r = new SR();
-    r.lang = vLang; r.interimResults = false;
-    r.onresult = e => onChange(value + e.results[0][0].transcript);
-    r.onend = () => setRec(false);
-    r.onerror = () => setRec(false);
-    recRef.current = r; r.start(); setRec(true);
+// ── Voice textarea ──
+function VoiceTxt({value,onChange,placeholder,rows=3}){
+  const [lang,setLang]=useState('zh-TW');
+  const [rec,setRec]=useState(false);
+  const rr=useRef(null);
+  const mic=()=>{
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('此瀏覽器不支援語音輸入');return}
+    if(rec){rr.current?.stop();return}
+    const r=new SR();r.lang=lang;r.interimResults=false;
+    r.onresult=e=>onChange(value+e.results[0][0].transcript);
+    r.onend=()=>setRec(false);r.onerror=()=>setRec(false);
+    rr.current=r;r.start();setRec(true);
   };
-
-  return (
+  return(
     <div>
-      <div style={{display:'flex',gap:6,marginBottom:4,alignItems:'center'}}>
-        <select value={vLang} onChange={e=>setVLang(e.target.value)} style={{fontSize:12,padding:'3px 6px'}}>
-          <option value="zh-TW">中文</option>
-          <option value="en-US">English</option>
+      <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5}}>
+        <select value={lang} onChange={e=>setLang(e.target.value)} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
+          <option value="zh-TW">中文</option><option value="en-US">English</option>
         </select>
-        <button className={`mic-btn${rec?' recording':''}`} onClick={toggleMic} title={rec?'停止 Stop':'語音輸入 Voice'}>
-          {rec ? '⏹' : '🎤'}
-        </button>
-        {rec && <span style={{fontSize:12,color:'#b91c1c'}}>錄音中 Recording…</span>}
+        <button className={`mic-btn${rec?' rec':''}`} onClick={mic} title="語音輸入">{rec?'⏹':'🎤'}</button>
+        {rec&&<span style={{fontSize:12,color:'#b91c1c'}}>錄音中…</span>}
       </div>
-      <textarea rows={rows} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} />
+      <textarea rows={rows} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{width:'100%'}}/>
     </div>
   );
 }
 
-// Reply component
-function ReplyItem({ reply, onLike, onDelete, isHost, depth=0 }) {
-  const [showReply, setShowReply] = useState(false);
-  const [replyText, setReplyText] = useState('');
+// ── Helpers ──
+function likeIn(arr,id){
+  return(arr||[]).map(a=>{
+    if(a.id===id)return{...a,likes:(a.likes||0)+1,liked:true};
+    return{...a,replies:likeIn(a.replies,id)};
+  });
+}
+function addReplyIn(arr,pid,text,anon){
+  return(arr||[]).map(a=>{
+    if(a.id===pid){
+      const r={id:uid(),text,author:anon?'匿名':'使用者',likes:0,liked:false,replies:[],createdAt:ts()};
+      return{...a,replies:[...(a.replies||[]),r]};
+    }
+    return{...a,replies:addReplyIn(a.replies,pid,text,anon)};
+  });
+}
+function delIn(arr,id){
+  return(arr||[]).filter(a=>a.id!==id).map(a=>({...a,replies:delIn(a.replies,id)}));
+}
 
-  const submit = () => {
-    if (!replyText.trim()) return;
-    onLike('add_reply', reply.id, replyText);
-    setReplyText(''); setShowReply(false);
-  };
-
-  return (
+// ── Reply item ──
+function ReplyItem({reply,onAct,isHost,depth=0}){
+  const [show,setShow]=useState(false);
+  const [txt,setTxt]=useState('');
+  return(
     <div style={{marginTop:8}}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <div>
-          <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author || '匿名 Anon'}</span>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+        <div style={{flex:1}}>
+          <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author}</span>
           <span style={{fontSize:13}}>{reply.text}</span>
         </div>
-        <div style={{display:'flex',gap:4,flexShrink:0}}>
-          {isHost && <button className="btn-danger" onClick={()=>onDelete(reply.id)}>✕</button>}
-        </div>
+        {isHost&&<button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={()=>onAct('del',reply.id)}>✕</button>}
       </div>
-      <div style={{display:'flex',gap:8,marginTop:4,alignItems:'center'}}>
-        <button className={`like-btn${reply.liked?' liked':''}`} onClick={()=>onLike('like_reply',reply.id)}>
-          👍 {reply.likes||0}
-        </button>
-        {depth < 1 && <button className="btn-ghost" style={{fontSize:12,padding:'2px 8px'}} onClick={()=>setShowReply(v=>!v)}>
-          回覆 Reply
-        </button>}
+      <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
+        <button className={`like-btn${reply.liked?' liked':''}`} onClick={()=>onAct('like',reply.id)}>👍 {reply.likes||0}</button>
+        {depth<1&&<button className="btn btn-g" style={{padding:'2px 8px',fontSize:12}} onClick={()=>setShow(v=>!v)}>回覆 Reply</button>}
       </div>
-      {showReply && (
+      {show&&(
         <div style={{marginTop:6}}>
-          <VoiceTextarea value={replyText} onChange={setReplyText} placeholder="輸入回覆 / Type reply…" rows={2} />
-          <div style={{display:'flex',gap:6,marginTop:4}}>
-            <button className="btn-primary" style={{fontSize:12,padding:'4px 12px'}} onClick={submit}>送出 Submit</button>
-            <button className="btn-ghost" style={{fontSize:12}} onClick={()=>setShowReply(false)}>取消 Cancel</button>
+          <VoiceTxt value={txt} onChange={setTxt} placeholder="輸入回覆 / Reply…" rows={2}/>
+          <div style={{display:'flex',gap:6,marginTop:5}}>
+            <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={()=>{onAct('add_reply',reply.id,txt);setTxt('');setShow(false)}}>送出 Submit</button>
+            <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShow(false)}>取消</button>
           </div>
         </div>
       )}
-      {reply.replies?.length > 0 && (
+      {(reply.replies||[]).length>0&&(
         <div className="reply-thread">
-          {[...reply.replies].sort((a,b)=>(b.likes||0)-(a.likes||0)).map(r2 =>
-            <ReplyItem key={r2.id} reply={r2} onLike={onLike} onDelete={onDelete} isHost={isHost} depth={depth+1} />
+          {[...(reply.replies||[])].sort((a,b)=>(b.likes||0)-(a.likes||0)).map(r2=>
+            <ReplyItem key={r2.id} reply={r2} onAct={onAct} isHost={isHost} depth={depth+1}/>
           )}
         </div>
       )}
@@ -166,76 +170,56 @@ function ReplyItem({ reply, onLike, onDelete, isHost, depth=0 }) {
   );
 }
 
-// Question card
-function QuestionCard({ q, isHost, anonymous, onUpdate, onDelete }) {
-  const [showAns, setShowAns] = useState(false);
-  const [ansText, setAnsText] = useState('');
-  const [nameInput, setNameInput] = useState('');
+// ── Question card ──
+function QCard({q,isHost,anon,onUpdate,onDelete}){
+  const [showA,setShowA]=useState(false);
+  const [atxt,setAtxt]=useState('');
+  const [aname,setAname]=useState('');
 
-  const like = () => onUpdate({ ...q, likes:(q.likes||0)+1, liked:true });
-  const deleteQ = () => onDelete(q.id);
-
-  const submitAnswer = () => {
-    if (!ansText.trim()) return;
-    const ans = { id:uid(), text:ansText, author: anonymous?'匿名 Anon':(nameInput||'使用者 User'), likes:0, liked:false, replies:[], createdAt:ts() };
-    onUpdate({ ...q, answers:[...(q.answers||[]), ans] });
-    setAnsText(''); setNameInput(''); setShowAns(false);
+  const act=(type,id,txt)=>{
+    if(type==='like')onUpdate({...q,answers:likeIn(q.answers,id)});
+    else if(type==='add_reply')onUpdate({...q,answers:addReplyIn(q.answers,id,txt,anon)});
+    else if(type==='del')onUpdate({...q,answers:delIn(q.answers,id)});
   };
-
-  const handleReplyAction = (action, targetId, text) => {
-    if (action === 'like_reply') {
-      const updated = likeInAnswers(q.answers, targetId);
-      onUpdate({ ...q, answers: updated });
-    } else if (action === 'add_reply') {
-      const updated = addReplyInAnswers(q.answers, targetId, text, anonymous);
-      onUpdate({ ...q, answers: updated });
-    }
+  const submitA=()=>{
+    if(!atxt.trim())return;
+    const a={id:uid(),text:atxt,author:anon?'匿名':(aname||'使用者'),likes:0,liked:false,replies:[],createdAt:ts()};
+    onUpdate({...q,answers:[...(q.answers||[]),a]});
+    setAtxt('');setAname('');setShowA(false);
   };
-  const handleDeleteReply = (targetId) => {
-    const updated = deleteInAnswers(q.answers, targetId);
-    onUpdate({ ...q, answers: updated });
-  };
+  const sorted=[...(q.answers||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
 
-  const sortedAnswers = [...(q.answers||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
-
-  return (
+  return(
     <div className="card">
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
         <div style={{flex:1}}>
-          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
-            <span className={anonymous?'badge-anon':'badge-named'}>{anonymous?'匿名 Anon':'具名 Named'}</span>
-            {!anonymous && <span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
+          <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
+            <span className={`badge ${anon?'ba':'bn'}`}>{anon?'匿名 Anon':'具名 Named'}</span>
+            {!anon&&<span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
             <span style={{fontSize:11,color:'#9ca3af'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
           </div>
           <p style={{margin:0,fontSize:15,fontWeight:500}}>{q.text}</p>
         </div>
-        {isHost && <button className="btn-danger" onClick={deleteQ}>✕</button>}
+        {isHost&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={()=>onDelete(q.id)}>✕</button>}
       </div>
-      <div style={{display:'flex',gap:8,marginTop:8,alignItems:'center'}}>
-        <button className={`like-btn${q.liked?' liked':''}`} onClick={like}>👍 {q.likes||0}</button>
-        <button className="btn-ghost" style={{fontSize:12}} onClick={()=>setShowAns(v=>!v)}>
+      <div style={{display:'flex',gap:8,marginTop:8,alignItems:'center',flexWrap:'wrap'}}>
+        <button className={`like-btn${q.liked?' liked':''}`} onClick={()=>onUpdate({...q,likes:(q.likes||0)+1,liked:true})}>👍 {q.likes||0}</button>
+        <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShowA(v=>!v)}>
           💬 回答 Answer ({(q.answers||[]).length})
         </button>
       </div>
-
-      {sortedAnswers.length > 0 && (
+      {sorted.length>0&&(
         <div className="reply-thread" style={{marginTop:10}}>
-          {sortedAnswers.map(ans =>
-            <ReplyItem key={ans.id} reply={ans} onLike={handleReplyAction} onDelete={handleDeleteReply} isHost={isHost} />
-          )}
+          {sorted.map(a=><ReplyItem key={a.id} reply={a} onAct={act} isHost={isHost}/>)}
         </div>
       )}
-
-      {showAns && (
+      {showA&&(
         <div style={{marginTop:10,padding:10,background:'#f9fafb',borderRadius:8}}>
-          {!anonymous && (
-            <input type="text" value={nameInput} onChange={e=>setNameInput(e.target.value)}
-              placeholder="你的名字 / Your name" style={{marginBottom:6}} />
-          )}
-          <VoiceTextarea value={ansText} onChange={setAnsText} placeholder="輸入回答 / Type answer…" rows={2} />
+          {!anon&&<input type="text" value={aname} onChange={e=>setAname(e.target.value)} placeholder="你的名字 Your name" style={{marginBottom:7}}/>}
+          <VoiceTxt value={atxt} onChange={setAtxt} placeholder="輸入回答 / Type answer…" rows={2}/>
           <div style={{display:'flex',gap:6,marginTop:6}}>
-            <button className="btn-primary" style={{fontSize:12,padding:'4px 12px'}} onClick={submitAnswer}>送出 Submit</button>
-            <button className="btn-ghost" style={{fontSize:12}} onClick={()=>setShowAns(false)}>取消 Cancel</button>
+            <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={submitA}>送出 Submit</button>
+            <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShowA(false)}>取消</button>
           </div>
         </div>
       )}
@@ -243,237 +227,334 @@ function QuestionCard({ q, isHost, anonymous, onUpdate, onDelete }) {
   );
 }
 
-// helpers for nested ops
-function likeInAnswers(answers, id) {
-  return (answers||[]).map(a => {
-    if (a.id === id) return {...a, likes:(a.likes||0)+1, liked:true};
-    return {...a, replies: likeInAnswers(a.replies, id)};
-  });
-}
-function addReplyInAnswers(answers, parentId, text, anonymous) {
-  return (answers||[]).map(a => {
-    if (a.id === parentId) {
-      const rep = {id:uid(), text, author:anonymous?'匿名 Anon':'使用者 User', likes:0, liked:false, replies:[], createdAt:ts()};
-      return {...a, replies:[...(a.replies||[]), rep]};
-    }
-    return {...a, replies: addReplyInAnswers(a.replies, parentId, text, anonymous)};
-  });
-}
-function deleteInAnswers(answers, id) {
-  return (answers||[]).filter(a=>a.id!==id).map(a=>({...a, replies:deleteInAnswers(a.replies,id)}));
+// ── Timer display ──
+function Timer({expiresAt}){
+  const [left,setLeft]=useState(null);
+  useEffect(()=>{
+    if(!expiresAt)return;
+    const tick=()=>{
+      const s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));
+      setLeft(s);
+    };
+    tick();
+    const iv=setInterval(tick,1000);
+    return()=>clearInterval(iv);
+  },[expiresAt]);
+  if(left===null)return null;
+  const h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
+  const warn=left<60;
+  const fmt=n=>String(n).padStart(2,'0');
+  return(
+    <span className={`timer-chip${warn?' warn':''}`}>
+      ⏱ {h>0?`${fmt(h)}:`:''}{ fmt(m)}:{fmt(s)} {left===0?'已結束 Closed':'剩餘 left'}
+    </span>
+  );
 }
 
-// Create Room Modal
-function CreateRoomModal({ onClose, onCreate }) {
-  const [name, setName] = useState('');
-  const [anon, setAnon] = useState(false);
-  const submit = () => {
-    if (!name.trim()) return;
-    onCreate(name.trim(), anon);
+// ── Create Modal ──
+function CreateModal({onClose,onCreate}){
+  const [name,setName]=useState('');
+  const [anon,setAnon]=useState(false);
+  const [timed,setTimed]=useState(false);
+  const [hrs,setHrs]=useState(0);
+  const [mins,setMins]=useState(30);
+  const submit=()=>{
+    if(!name.trim())return;
+    const expiresAt=timed?Date.now()+(hrs*3600+mins*60)*1000:null;
+    onCreate(name.trim(),anon,expiresAt);
     onClose();
   };
-  return (
-    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:100}}>
-      <div style={{background:'#fff',borderRadius:12,padding:28,width:360,maxWidth:'90vw'}}>
-        <h2 style={{margin:'0 0 16px',color:'var(--green)',fontSize:18}}>建立問答室 / Create Room</h2>
-        <label style={{fontSize:13,color:'#374151'}}>問答室名稱 Room Name</label>
-        <input type="text" value={name} onChange={e=>setName(e.target.value)}
-          placeholder="例：第三週Q&A / Week 3 Q&A" style={{margin:'6px 0 14px'}}
-          onKeyDown={e=>e.key==='Enter'&&submit()} autoFocus />
-        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:18}}>
-          <input type="checkbox" id="anon" checked={anon} onChange={e=>setAnon(e.target.checked)} />
-          <label htmlFor="anon" style={{fontSize:14}}>匿名模式 Anonymous mode</label>
+  return(
+    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="modal">
+        <h2>建立問答室 / Create Room</h2>
+        <div className="field"><label>問答室名稱 Room Name</label>
+          <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="例：Week 3 Q&A" onKeyDown={e=>e.key==='Enter'&&submit()} autoFocus/>
         </div>
-        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
-          <button className="btn-ghost" onClick={onClose}>取消 Cancel</button>
-          <button className="btn-primary" onClick={submit}>建立 Create</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Join Room Modal
-function JoinRoomModal({ onClose, onJoin }) {
-  const [code, setCode] = useState('');
-  return (
-    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:100}}>
-      <div style={{background:'#fff',borderRadius:12,padding:28,width:340,maxWidth:'90vw'}}>
-        <h2 style={{margin:'0 0 16px',color:'var(--green)',fontSize:18}}>加入問答室 / Join Room</h2>
-        <label style={{fontSize:13,color:'#374151'}}>輸入 Room Code</label>
-        <input type="text" value={code} onChange={e=>setCode(e.target.value.trim())}
-          placeholder="8碼代碼 / 8-char code" style={{margin:'6px 0 14px'}}
-          onKeyDown={e=>e.key==='Enter'&&onJoin(code)} autoFocus />
-        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
-          <button className="btn-ghost" onClick={onClose}>取消 Cancel</button>
-          <button className="btn-primary" onClick={()=>onJoin(code)}>加入 Join</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Main App
-function App() {
-  const [rooms, setRooms] = useState(loadRooms);
-  const [hosts, setHosts] = useState(loadHosts);
-  const [activeId, setActiveId] = useState(null);
-  const [modal, setModal] = useState(null); // 'create' | 'join'
-  const [newQ, setNewQ] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [sideOpen, setSideOpen] = useState(true);
-
-  useEffect(() => { saveRooms(rooms); }, [rooms]);
-  useEffect(() => { saveHosts(hosts); }, [hosts]);
-
-  const activeRoom = rooms[activeId] || null;
-  const isHost = activeId && hosts[activeId];
-
-  const createRoom = (name, anonymous) => {
-    const id = uid();
-    const token = uid();
-    const room = { id, name, anonymous, questions:[], createdAt:ts() };
-    setRooms(r => ({...r, [id]:room}));
-    setHosts(h => ({...h, [id]:token}));
-    setActiveId(id);
-  };
-
-  const joinRoom = (code) => {
-    if (rooms[code]) { setActiveId(code); setModal(null); }
-    else alert('找不到此 Room Code / Room not found');
-  };
-
-  const leaveRoom = (id) => {
-    setRooms(r => { const n={...r}; delete n[id]; return n; });
-    setHosts(h => { const n={...h}; delete n[id]; return n; });
-    if (activeId === id) setActiveId(null);
-  };
-
-  const postQuestion = () => {
-    if (!newQ.trim() || !activeRoom) return;
-    const q = {
-      id: uid(), text: newQ.trim(),
-      author: activeRoom.anonymous ? '匿名 Anon' : (authorName || '使用者 User'),
-      likes:0, liked:false, answers:[], createdAt:ts()
-    };
-    setRooms(r => ({...r, [activeId]: {...activeRoom, questions:[...(activeRoom.questions||[]), q]}}));
-    setNewQ(''); setAuthorName('');
-  };
-
-  const updateQuestion = (q) => {
-    setRooms(r => ({...r, [activeId]: {...activeRoom, questions: activeRoom.questions.map(x=>x.id===q.id?q:x)}}));
-  };
-
-  const deleteQuestion = (qid) => {
-    setRooms(r => ({...r, [activeId]: {...activeRoom, questions: activeRoom.questions.filter(x=>x.id!==qid)}}));
-  };
-
-  const sortedQ = activeRoom ? [...(activeRoom.questions||[])].sort((a,b)=>(b.likes||0)-(a.likes||0)) : [];
-
-  return (
-    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
-      {/* Sidebar */}
-      {sideOpen && (
-        <div className="sidebar">
-          <div style={{padding:'14px 12px 8px',borderBottom:'1px solid #e5e7eb'}}>
-            <div style={{fontWeight:700,color:'var(--green)',fontSize:16,marginBottom:8}}>ClassQ&A</div>
-            <div style={{display:'flex',gap:6,flexDirection:'column'}}>
-              <button className="btn-primary" style={{width:'100%',fontSize:13}} onClick={()=>setModal('create')}>＋ 建立 Create</button>
-              <button className="btn-ghost" style={{width:'100%',fontSize:13}} onClick={()=>setModal('join')}>🔗 加入 Join</button>
+        <label className="row"><input type="checkbox" checked={anon} onChange={e=>setAnon(e.target.checked)}/> 匿名模式 Anonymous mode</label>
+        <label className="row"><input type="checkbox" checked={timed} onChange={e=>setTimed(e.target.checked)}/> 限時開放 Set timer</label>
+        {timed&&(
+          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
+            <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+              <input type="number" value={hrs} min={0} max={23} onChange={e=>setHrs(+e.target.value)} style={{width:60}}/>
+              <span style={{fontSize:13}}>時 hr</span>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+              <input type="number" value={mins} min={0} max={59} onChange={e=>setMins(+e.target.value)} style={{width:60}}/>
+              <span style={{fontSize:13}}>分 min</span>
             </div>
           </div>
-          <div style={{padding:'10px 8px',flex:1}}>
-            <div style={{fontSize:11,color:'#9ca3af',marginBottom:6,paddingLeft:4}}>問答室 ROOMS</div>
-            {Object.values(rooms).length === 0 && (
-              <div style={{fontSize:13,color:'#9ca3af',padding:'8px 4px'}}>尚無問答室 No rooms yet</div>
-            )}
-            {Object.values(rooms).map(rm => (
-              <div key={rm.id} className={`room-tab${activeId===rm.id?' active':''}`} onClick={()=>setActiveId(rm.id)}>
-                <div style={{fontWeight:500,fontSize:13}}>{rm.name}</div>
-                <div style={{fontSize:11,opacity:.7}}>{hosts[rm.id]?'👑 Host':''}  {rm.anonymous?'🕵️ 匿名':'👤 具名'}</div>
-              </div>
-            ))}
+        )}
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:4}}>
+          <button className="btn btn-g" onClick={onClose}>取消 Cancel</button>
+          <button className="btn btn-p" onClick={submit}>建立 Create</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Join Modal ──
+function JoinModal({onClose,onJoin}){
+  const [code,setCode]=useState('');
+  return(
+    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="modal">
+        <h2>加入問答室 / Join Room</h2>
+        <div className="field"><label>Room Code（8碼）</label>
+          <input type="text" value={code} onChange={e=>setCode(e.target.value.trim())} placeholder="貼上代碼 Paste code" onKeyDown={e=>e.key==='Enter'&&onJoin(code)} autoFocus/>
+        </div>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <button className="btn btn-g" onClick={onClose}>取消</button>
+          <button className="btn btn-p" onClick={()=>onJoin(code)}>加入 Join</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── QR Modal ──
+function QRModal({url,onClose}){
+  const dlRef=useRef(null);
+  const download=()=>{
+    const canvas=document.querySelector('#qr-render canvas');
+    if(!canvas)return;
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png');
+    a.download='classqa-qr.png';
+    a.click();
+  };
+  return(
+    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="modal" style={{textAlign:'center'}}>
+        <h2>QR Code</h2>
+        <p style={{fontSize:12,color:'#6b7280',wordBreak:'break-all',marginBottom:12}}>{url}</p>
+        <QRCanvas url={url} size={220}/>
+        <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:16,flexWrap:'wrap'}}>
+          <button className="btn btn-p" onClick={download}>⬇️ 下載 Download PNG</button>
+          <button className="btn btn-g" onClick={onClose}>關閉 Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Code Modal ──
+function CodeModal({code,onClose}){
+  const [copied,setCopied]=useState(false);
+  const copy=()=>{
+    navigator.clipboard?.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1500)});
+  };
+  return(
+    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="modal" style={{textAlign:'center'}}>
+        <h2>Room Code</h2>
+        <div style={{fontSize:48,fontWeight:900,letterSpacing:6,color:'var(--green)',margin:'16px 0',fontVariantNumeric:'tabular-nums'}}>{code}</div>
+        <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+          <button className="btn btn-p" onClick={copy}>{copied?'✅ 已複製':'📋 複製 Copy'}</button>
+          <button className="btn btn-g" onClick={onClose}>關閉 Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main App ──
+function App(){
+  const [rooms,setRooms]=useState(()=>load(SK));
+  const [hosts,setHosts]=useState(()=>load(HK));
+  const [activeId,setActiveId]=useState(null);
+  const [modal,setModal]=useState(null); // 'create'|'join'|'qr'|'code'
+  const [newQ,setNewQ]=useState('');
+  const [author,setAuthor]=useState('');
+  const [sideOpen,setSideOpen]=useState(true);
+  const [codeVis,setCodeVis]=useState(true);
+  const [qrVis,setQrVis]=useState(false);
+
+  useEffect(()=>save(SK,rooms),[rooms]);
+  useEffect(()=>save(HK,hosts),[hosts]);
+
+  // auto-join via URL param
+  useEffect(()=>{
+    const p=new URLSearchParams(window.location.search).get('room');
+    if(p&&rooms[p])setActiveId(p);
+  },[]);
+
+  const rm=rooms[activeId]||null;
+  const isHost=!!(activeId&&hosts[activeId]);
+  const isClosed=rm?.expiresAt&&Date.now()>rm.expiresAt;
+
+  const pageUrl=rm?`${window.location.href.split('?')[0]}?room=${activeId}`:'';
+
+  const createRoom=(name,anon,expiresAt)=>{
+    const id=uid();
+    setRooms(r=>({...r,[id]:{id,name,anonymous:anon,expiresAt,questions:[],createdAt:ts()}}));
+    setHosts(h=>({...h,[id]:uid()}));
+    setActiveId(id);
+  };
+  const joinRoom=code=>{
+    if(rooms[code]){setActiveId(code);setModal(null);}
+    else alert('找不到此 Room / Room not found');
+  };
+  const leaveRoom=id=>{
+    if(!confirm('確定要刪除此問答室？'))return;
+    setRooms(r=>{const n={...r};delete n[id];return n});
+    setHosts(h=>{const n={...h};delete n[id];return n});
+    if(activeId===id)setActiveId(null);
+  };
+  const postQ=()=>{
+    if(!newQ.trim()||!rm||isClosed)return;
+    const q={id:uid(),text:newQ.trim(),author:rm.anonymous?'匿名':(author||'使用者'),likes:0,liked:false,answers:[],createdAt:ts()};
+    setRooms(r=>({...r,[activeId]:{...rm,questions:[...(rm.questions||[]),q]}}));
+    setNewQ('');setAuthor('');
+  };
+  const updQ=q=>setRooms(r=>({...r,[activeId]:{...rm,questions:(rm.questions||[]).map(x=>x.id===q.id?q:x)}}));
+  const delQ=id=>setRooms(r=>({...r,[activeId]:{...rm,questions:(rm.questions||[]).filter(x=>x.id!==id)}}));
+
+  const sorted=[...(rm?.questions||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
+
+  const [copied,setCopied]=useState(false);
+  const copyCode=()=>{
+    if(!activeId)return;
+    navigator.clipboard?.writeText(activeId).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1500)});
+  };
+
+  return(
+    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
+      {/* ── Sidebar ── */}
+      <div className={`sidebar${sideOpen?'':' closed'}`}>
+        <div style={{padding:'14px 10px 8px',borderBottom:'1px solid #e5e7eb',whiteSpace:'nowrap'}}>
+          <div style={{fontWeight:800,color:'var(--green)',fontSize:16,marginBottom:10}}>ClassQ&A</div>
+          <div style={{display:'flex',flexDirection:'column',gap:6}}>
+            <button className="btn btn-p" onClick={()=>setModal('create')} style={{width:'100%'}}>＋ 建立 Create</button>
+            <button className="btn btn-g" onClick={()=>setModal('join')} style={{width:'100%'}}>🔗 加入 Join</button>
           </div>
         </div>
-      )}
+        <div style={{padding:'8px 6px',flex:1,overflowY:'auto'}}>
+          <div style={{fontSize:11,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1}}>ROOMS</div>
+          {Object.keys(rooms).length===0&&<div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>尚無問答室</div>}
+          {Object.values(rooms).map(r=>(
+            <div key={r.id} className={`room-tab${activeId===r.id?' act':''}`} onClick={()=>setActiveId(r.id)}>
+              <div style={{fontWeight:600}}>{r.name}</div>
+              <div style={{fontSize:11,opacity:.75,marginTop:2}}>
+                {hosts[r.id]?'👑 ':''}{r.anonymous?'🕵️ 匿名':'👤 具名'}{r.expiresAt?' ⏱':''}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-      {/* Main */}
-      <div className="main" style={{display:'flex',flexDirection:'column'}}>
-        <div className="top-bar">
-          <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <button onClick={()=>setSideOpen(v=>!v)} style={{background:'none',border:'none',color:'#fff',fontSize:18,cursor:'pointer'}}>☰</button>
-            <span style={{fontWeight:700,fontSize:17}}>
-              {activeRoom ? activeRoom.name : 'ClassQ&A 課堂問答'}
-            </span>
-            {activeRoom && (
-              <span style={{fontSize:11,background:'rgba(255,255,255,.2)',borderRadius:999,padding:'2px 8px'}}>
-                Code: {activeRoom.id}
-              </span>
-            )}
-          </div>
-          {activeRoom && isHost && (
-            <button className="btn-danger" style={{fontSize:12}} onClick={()=>leaveRoom(activeId)}>刪除Room Delete</button>
+      {/* ── Main ── */}
+      <div className="main-col">
+        {/* Topbar */}
+        <div className="topbar">
+          <button onClick={()=>setSideOpen(v=>!v)} style={{background:'none',border:'none',color:'#fff',fontSize:20,cursor:'pointer',padding:'0 4px',flexShrink:0}}>☰</button>
+          <span className="topbar-title">{rm?rm.name:'ClassQ&A'}</span>
+
+          {rm&&(
+            <div className="topbar-meta">
+              {/* Timer */}
+              {rm.expiresAt&&<Timer expiresAt={rm.expiresAt}/>}
+
+              {/* Room Code chip */}
+              {codeVis&&(
+                <span style={{background:'rgba(255,255,255,.18)',borderRadius:6,padding:'3px 9px',fontSize:13,fontWeight:700,letterSpacing:2,fontVariantNumeric:'tabular-nums'}}>
+                  {activeId}
+                </span>
+              )}
+
+              {/* Code buttons */}
+              <button className="btn-ic" onClick={()=>setCodeVis(v=>!v)} title="隱藏/顯示 Code">
+                {codeVis?'🙈':'👁️'} <span>Code</span>
+              </button>
+              <button className="btn-ic" onClick={()=>setModal('code')} title="放大 Code">🔍</button>
+              <button className="btn-ic" onClick={copyCode} title="複製 Code">
+                {copied?'✅':'📋'} <span>複製</span>
+              </button>
+
+              {/* QR buttons */}
+              <button className="btn-ic" onClick={()=>setQrVis(v=>!v)} title="隱藏/顯示 QR">
+                {qrVis?'🙈':'📷'} <span>QR</span>
+              </button>
+              <button className="btn-ic" onClick={()=>setModal('qr')} title="放大/下載 QR">🔍</button>
+
+              {/* Delete room */}
+              {isHost&&<button className="btn btn-d" style={{fontSize:12,marginLeft:'auto'}} onClick={()=>leaveRoom(activeId)}>🗑 刪除</button>}
+            </div>
           )}
         </div>
 
-        {!activeRoom ? (
-          <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,color:'#6b7280'}}>
-            <div style={{fontSize:48}}>💬</div>
-            <div style={{fontSize:18,fontWeight:600,color:'var(--green)'}}>ClassQ&A 課堂即時問答</div>
-            <div style={{fontSize:14,textAlign:'center',maxWidth:300}}>建立或加入一個問答室開始提問<br/>Create or join a room to get started</div>
-            <div style={{display:'flex',gap:10}}>
-              <button className="btn-primary" onClick={()=>setModal('create')}>＋ 建立 Create Room</button>
-              <button className="btn-ghost" onClick={()=>setModal('join')}>🔗 加入 Join Room</button>
-            </div>
-          </div>
-        ) : (
-          <div style={{flex:1,overflow:'auto',padding:20,maxWidth:720,width:'100%',margin:'0 auto'}}>
-            {/* Post question */}
-            <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
-              <div style={{fontWeight:600,color:'var(--green)',marginBottom:8,fontSize:14}}>
-                ✏️ 提問 Ask a Question
-              </div>
-              {!activeRoom.anonymous && (
-                <input type="text" value={authorName} onChange={e=>setAuthorName(e.target.value)}
-                  placeholder="你的名字 Your name（選填 optional）" style={{marginBottom:8}} />
-              )}
-              <VoiceTextarea value={newQ} onChange={setNewQ} placeholder="輸入問題 / Speak or type your question…" rows={3} />
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:8}}>
-                <span style={{fontSize:12,color:'#9ca3af'}}>
-                  {activeRoom.anonymous ? '🕵️ 匿名模式 Anonymous' : '👤 具名模式 Named'}
-                </span>
-                <button className="btn-primary" onClick={postQuestion}>送出提問 Submit</button>
-              </div>
-            </div>
-
-            {/* Questions */}
-            {sortedQ.length === 0 ? (
-              <div style={{textAlign:'center',color:'#9ca3af',padding:'40px 0',fontSize:15}}>
-                尚無提問，快來第一個提問！<br/>No questions yet — be the first!
-              </div>
-            ) : (
-              <>
-                <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
-                  {sortedQ.length} 則提問（依讚數排序） / {sortedQ.length} question(s) sorted by likes
-                </div>
-                {sortedQ.map(q =>
-                  <QuestionCard key={q.id} q={q} isHost={!!isHost}
-                    anonymous={activeRoom.anonymous}
-                    onUpdate={updateQuestion} onDelete={deleteQuestion} />
-                )}
-              </>
-            )}
+        {/* Inline QR strip */}
+        {rm&&qrVis&&(
+          <div style={{background:'#fff',borderBottom:'1px solid #e5e7eb',padding:'10px',display:'flex',justifyContent:'center'}}>
+            <QRCanvas url={pageUrl} size={120}/>
           </div>
         )}
+
+        {/* Content */}
+        <div className="content-area">
+          {!rm?(
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:14,color:'#6b7280',textAlign:'center',padding:20}}>
+              <div style={{fontSize:52}}>💬</div>
+              <div style={{fontSize:20,fontWeight:700,color:'var(--green)'}}>ClassQ&A 課堂即時問答</div>
+              <div style={{fontSize:14,maxWidth:300}}>建立或加入一個問答室開始提問<br/>Create or join a room to get started</div>
+              <div style={{display:'flex',gap:10,flexWrap:'wrap',justifyContent:'center'}}>
+                <button className="btn btn-p" onClick={()=>setModal('create')}>＋ 建立 Create Room</button>
+                <button className="btn btn-g" onClick={()=>setModal('join')}>🔗 加入 Join Room</button>
+              </div>
+            </div>
+          ):(
+            <div className="content-inner">
+              {/* Post question */}
+              {isClosed?(
+                <div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
+                  ⏱ 此問答室已結束 / This room is closed
+                </div>
+              ):(
+                <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
+                  <div style={{fontWeight:600,color:'var(--green)',marginBottom:8,fontSize:14}}>✏️ 提問 Ask a Question</div>
+                  {!rm.anonymous&&(
+                    <input type="text" value={author} onChange={e=>setAuthor(e.target.value)}
+                      placeholder="你的名字 Your name（選填）" style={{marginBottom:8}}/>
+                  )}
+                  <VoiceTxt value={newQ} onChange={setNewQ} placeholder="輸入問題 / Speak or type your question…" rows={3}/>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:8,flexWrap:'wrap',gap:8}}>
+                    <span style={{fontSize:12,color:'#9ca3af'}}>{rm.anonymous?'🕵️ 匿名模式':'👤 具名模式'}</span>
+                    <button className="btn btn-p" onClick={postQ}>送出提問 Submit</button>
+                  </div>
+                </div>
+              )}
+
+              {/* Questions */}
+              {sorted.length===0?(
+                <div style={{textAlign:'center',color:'#9ca3af',padding:'40px 0',fontSize:15}}>
+                  尚無提問，快來第一個提問！<br/>No questions yet — be the first!
+                </div>
+              ):(
+                <>
+                  <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
+                    {sorted.length} 則提問（依讚數排序）/ sorted by likes
+                  </div>
+                  {sorted.map(q=>(
+                    <QCard key={q.id} q={q} isHost={isHost} anon={rm.anonymous} onUpdate={updQ} onDelete={delQ}/>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {modal === 'create' && <CreateRoomModal onClose={()=>setModal(null)} onCreate={createRoom} />}
-      {modal === 'join' && <JoinRoomModal onClose={()=>setModal(null)} onJoin={joinRoom} />}
+      {/* Modals */}
+      {modal==='create'&&<CreateModal onClose={()=>setModal(null)} onCreate={createRoom}/>}
+      {modal==='join'&&<JoinModal onClose={()=>setModal(null)} onJoin={joinRoom}/>}
+      {modal==='qr'&&<QRModal url={pageUrl} onClose={()=>setModal(null)}/>}
+      {modal==='code'&&<CodeModal code={activeId||''} onClose={()=>setModal(null)}/>}
     </div>
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App/>,document.getElementById('root'));
 </script>
 </body>
 </html>
