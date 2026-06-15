@@ -628,6 +628,28 @@ function App(){
   const createRoom=(name,anon,expiresAt)=>{const id=uid();setRooms(r=>({...r,[id]:{id,name,anonymous:anon,expiresAt,questions:[],createdAt:ts()}}));setHosts(h=>({...h,[id]:uid()}));setActiveId(id)};
   const joinRoom=code=>{if(rooms[code]){setActiveId(code);setModal(null)}else alert('Room not found / 找不到此 Room')};
   const deleteRoom=id=>{setRooms(r=>{const n={...r};delete n[id];return n});setHosts(h=>{const n={...h};delete n[id];return n});if(activeId===id)setActiveId(null)};
+  const exportCSV=rm=>{
+    const pad=n=>String(n).padStart(2,'0');
+    const now=new Date();
+    const dt=`${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const fname=`${rm.name}-${rm.id}-${dt}.csv`;
+    const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
+    const rows=[['Type 類型','Author 作者','Content 內容','Likes 讚數','Time 時間','Parent 上層ID','ID']];
+    (rm.questions||[]).forEach(q=>{
+      rows.push(['Question 提問',esc(q.author),esc(q.text),q.likes||0,new Date(q.createdAt).toLocaleString(),'',q.id]);
+      (q.answers||[]).forEach(a=>{
+        rows.push(['Answer 回答',esc(a.author),esc(a.text),a.likes||0,new Date(a.createdAt).toLocaleString(),q.id,a.id]);
+        (a.replies||[]).forEach(r=>{
+          rows.push(['Reply 回覆',esc(r.author),esc(r.text),r.likes||0,new Date(r.createdAt).toLocaleString(),a.id,r.id]);
+        });
+      });
+    });
+    const csv='\uFEFF'+rows.map(r=>r.join(',')).join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=fname;a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
   const extendRoom=mins=>{if(!rm)return;const newExp=Math.max(Date.now(),rm.expiresAt||Date.now())+(mins*60*1000);setRooms(r=>({...r,[activeId]:{...rm,expiresAt:newExp}}))};
   const postQ=()=>{
     if(!newQ.trim()||!rm||isClosed)return;
@@ -686,7 +708,10 @@ function App(){
               <button className="ic" onClick={()=>setModal('qr')} title="QR Code">
                 <IconQR/>
               </button>
-              {isHost&&<button className="btn btn-d" style={{fontSize:12,padding:'4px 9px'}} onClick={()=>setConfRoom(true)}>Del</button>}
+              {isHost&&<>
+                <button className="btn btn-g" style={{fontSize:12,padding:'4px 9px'}} onClick={()=>exportCSV(rm)}>CSV</button>
+                <button className="btn btn-d" style={{fontSize:12,padding:'4px 9px'}} onClick={()=>setConfRoom(true)}>Del</button>
+              </>}
             </div>
           )}
         </div>
