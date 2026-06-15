@@ -8,96 +8,153 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <style>
-*{box-sizing:border-box}
-:root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed}
-body{font-family:'Segoe UI',sans-serif;background:#f5f5f0;margin:0}
-.btn{border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;transition:opacity .2s,background .15s;white-space:nowrap}
-.btn-p{background:var(--green);color:#fff}.btn-p:hover{opacity:.85}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+textarea,input{-webkit-user-select:text;user-select:text}
+:root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed;--fs:14px;--fss:13px;--fsxs:11px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;font-size:var(--fs)}
+/* buttons */
+.btn{border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:opacity .18s,background .15s;white-space:nowrap}
+.btn-p{background:var(--green);color:#fff}.btn-p:hover{opacity:.82}
 .btn-g{background:transparent;border:1.5px solid var(--green);color:var(--green)}.btn-g:hover{background:var(--lg)}
-.btn-d{background:#b91c1c;color:#fff}.btn-d:hover{opacity:.85}
-.btn-ic{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 10px;cursor:pointer;font-size:12px}
-.btn-ic:hover{background:rgba(255,255,255,.28)}
-.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
-.like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;transition:background .15s}
-.like-btn:hover,.like-btn.liked{background:var(--gold)}
-.mic-btn{background:var(--green);color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.mic-btn.rec{background:#b91c1c;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:14px;font-family:inherit}
-textarea{resize:vertical}
-textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
-.badge{font-size:11px;border-radius:999px;padding:1px 8px;color:#fff}
-.ba{background:#6b7280}.bn{background:var(--green)}
-.room-tab{cursor:pointer;padding:8px 10px;border-radius:8px;font-size:13px;transition:background .15s;word-break:break-all}
-.room-tab.act{background:var(--green);color:#fff}
-.room-tab:not(.act):hover{background:var(--lg)}
-.reply-thread{border-left:3px solid var(--gold);padding-left:10px;margin-top:8px}
-.sidebar{width:210px;min-width:0;background:#fff;border-right:1px solid #e5e7eb;height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:width .15s}
+.btn-d{background:#b91c1c;color:#fff}.btn-d:hover{opacity:.82}
+/* topbar icon buttons */
+.ic{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:var(--fss);font-family:inherit;line-height:1.4;display:inline-flex;align-items:center;gap:4px}
+.ic:hover{background:rgba(255,255,255,.27)}
+/* layout */
+.sidebar{width:214px;background:#fff;border-right:1px solid #e5e7eb;height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:width .15s}
 .sidebar.closed{width:0;overflow:hidden}
 .main-col{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden}
-.topbar{background:var(--green);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:52px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
-.modal{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
-.modal h2{margin:0 0 14px;color:var(--green);font-size:17px}
-.timer-chip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.timer-chip.warn{background:#b91c1c}
+.topbar{background:var(--green);color:#fff;padding:9px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-height:50px}
 .content-area{flex:1;overflow-y:auto;padding:16px}
 .content-inner{max-width:700px;margin:0 auto}
-label.row{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;margin-bottom:12px}
+/* cards */
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
+/* like */
+.like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s}
+.like-btn:hover,.like-btn.liked{background:var(--gold)}
+/* mic */
+.mic-btn{background:var(--green);color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.mic-btn.rec{background:#b91c1c;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+/* inputs */
+textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit}
+textarea{resize:vertical}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
+/* badges */
+.badge{font-size:var(--fsxs);border-radius:999px;padding:1px 9px;color:#fff;font-weight:500}
+.ba{background:#6b7280}.bn{background:var(--green)}
+/* room tabs */
+.rtab{cursor:pointer;padding:8px 10px;border-radius:8px;font-size:var(--fss);transition:background .13s;word-break:break-all}
+.rtab.act{background:var(--green);color:#fff}
+.rtab:not(.act):hover{background:var(--lg)}
+/* reply thread */
+.rthread{border-left:3px solid var(--gold);padding-left:10px;margin-top:9px}
+/* overlays */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.44);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal h2{margin:0 0 14px;color:var(--green);font-size:16px;font-weight:700}
+/* confirm */
+.cbox{background:#fff;border-radius:10px;padding:22px;width:100%;max-width:310px;text-align:center}
+.cbox p{margin:0 0 16px;font-size:var(--fs);color:#374151;line-height:1.5}
+/* timer */
+.tchip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.tchip.warn{background:#b91c1c}
+/* code pill */
+.cpill{display:inline-flex;align-items:center;background:rgba(255,255,255,.17);border-radius:7px;overflow:hidden}
+.cpill-side{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff;cursor:pointer;font-size:15px;flex-shrink:0}
+.cpill-side:hover{background:rgba(255,255,255,.16)}
+.cpill-mid{padding:0 9px;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;line-height:30px;white-space:nowrap;min-width:82px;text-align:center;color:#fff}
+.cpill-mid:hover{background:rgba(255,255,255,.13)}
+.cpill-mid.cp{background:rgba(255,255,255,.32)}
+.cpill-div{width:1px;height:20px;background:rgba(255,255,255,.25);flex-shrink:0}
+/* qr pin strip */
+.qrstrip{background:#fff;border-bottom:1px solid #e5e7eb;display:flex;justify-content:center;align-items:flex-start;padding:8px;gap:5px}
+/* form helpers */
+label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:pointer;margin-bottom:11px}
 .field{margin-bottom:12px}
-.field label{display:block;font-size:13px;color:#374151;margin-bottom:4px}
-.code-pill{display:flex;align-items:center;background:rgba(255,255,255,.18);border-radius:7px;overflow:hidden;user-select:none}
-.code-pill-hide{width:32px;display:flex;align-items:center;justify-content:center;height:32px;cursor:pointer;border:none;background:transparent;color:#fff;font-size:13px;flex-shrink:0}
-.code-pill-hide:hover{background:rgba(255,255,255,.15)}
-.code-pill-text{padding:0 10px;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;line-height:32px;white-space:nowrap;transition:background .15s;min-width:90px;text-align:center}
-.code-pill-text:hover{background:rgba(255,255,255,.15)}
-.code-pill-text.copying{background:rgba(255,255,255,.35)}
-.code-pill-zoom{width:32px;display:flex;align-items:center;justify-content:center;height:32px;cursor:pointer;border:none;background:transparent;color:#fff;font-size:14px;flex-shrink:0;border-left:1px solid rgba(255,255,255,.2)}
-.code-pill-zoom:hover{background:rgba(255,255,255,.15)}
-.qr-strip{background:#fff;border-bottom:1px solid #e5e7eb;display:flex;justify-content:center;align-items:flex-start;padding:8px;gap:6px}
-canvas{display:block}
-/* confirm dialog */
-.confirm-box{background:#fff;border-radius:10px;padding:20px;width:100%;max-width:320px;text-align:center}
-.confirm-box p{margin:0 0 16px;font-size:14px;color:#374151}
+.field label{display:block;font-size:var(--fss);color:#374151;margin-bottom:4px;font-weight:500}
+.err{font-size:var(--fsxs);color:#b91c1c;margin-top:3px}
 /* sidebar footer */
-.sidebar-footer{padding:10px 12px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;line-height:1.5}
-.sidebar-footer a{color:#9ca3af;text-decoration:none}
-.sidebar-footer a:hover{color:var(--green);text-decoration:underline}
+.sfooter{padding:10px 12px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;line-height:1.6}
+.sfooter a{color:#9ca3af;text-decoration:none}
+.sfooter a:hover{color:var(--green);text-decoration:underline}
+/* svg icons inline */
+.svg-ic{display:inline-block;vertical-align:middle}
 @media(max-width:600px){
-  .sidebar{position:fixed;top:0;left:0;height:100vh;z-index:150;width:230px}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;z-index:150}
   .sidebar.closed{width:0}
-  .topbar{gap:6px}
+  .topbar{gap:5px}
+  .cpill-mid{min-width:66px;font-size:12px}
 }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const {useState,useEffect,useRef} = React;
-const SK='classqa_r4',HK='classqa_h4';
+const {useState,useEffect,useRef}=React;
+const SK='cqa5r',HK='cqa5h';
 const uid=()=>Math.random().toString(36).slice(2,10);
 const ts=()=>Date.now();
 const load=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return{}}};
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-/* ── QR encoder (pure JS, Reed-Solomon) ── */
+/* ── defence ── */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U'))e.preventDefault();
+});
+
+/* ── SVG icon components ── */
+const IconMinus=()=>(
+  <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/></svg>
+);
+const IconPlus=()=>(
+  <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/><rect x="5.5" y="2" width="2" height="9" rx="1" fill="currentColor"/></svg>
+);
+const IconSearch=()=>(
+  <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.8"/>
+    <line x1="9.2" y1="9.2" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
+const IconQR=()=>(
+  <svg className="svg-ic" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+    <rect x="1" y="1" width="5" height="5"/><rect x="2" y="2" width="3" height="3" fill="#fff"/>
+    <rect x="10" y="1" width="5" height="5"/><rect x="11" y="2" width="3" height="3" fill="#fff"/>
+    <rect x="1" y="10" width="5" height="5"/><rect x="2" y="11" width="3" height="3" fill="#fff"/>
+    <rect x="8" y="8" width="2" height="2"/><rect x="11" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+    <rect x="8" y="11" width="2" height="2"/><rect x="11" y="11" width="2" height="2"/>
+    <rect x="8" y="14" width="2" height="2"/><rect x="11" y="14" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/>
+  </svg>
+);
+const IconClock=()=>(
+  <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none">
+    <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
+    <line x1="6.5" y1="3.5" x2="6.5" y2="6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="6.5" y1="6.5" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+const IconThumb=()=>(
+  <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M5 12H10.5C11.05 12 11.5 11.6 11.65 11.07L12.9 6.57C13.1 5.85 12.55 5.15 11.8 5.15H8.5V2.5C8.5 1.95 8.05 1.5 7.5 1.5H7.3L4.8 7.1C4.65 7.4 4.35 7.6 4 7.6V12M1.5 7.6H4V12H1.5V7.6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+  </svg>
+);
+
+/* ── QR encoder ── */
 const QRGen=(()=>{
   const EXP=new Uint8Array(512),LOG=new Uint8Array(256);
-  (()=>{let x=1;for(let i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x=x<128?x<<1:(x<<1)^285&255}for(let i=255;i<512;i++)EXP[i]=EXP[i-255]})();
+  (()=>{let x=1;for(let i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x=x<128?x<<1:(x<<1)^285&0xff}for(let i=255;i<512;i++)EXP[i]=EXP[i-255]})();
   const mul=(a,b)=>a&&b?EXP[LOG[a]+LOG[b]]:0;
-  const poly=ec=>{let p=[1];for(let i=0;i<ec;i++){const t=[0,0];for(let j=0;j<p.length;j++){t[j]^=mul(p[j],1);t[j+1]^=mul(p[j],EXP[i])}p=t}return p};
-  const ecBytes=(data,n)=>{const g=poly(n);let r=[...data];r.push(...new Array(n).fill(0));for(let i=0;i<data.length;i++){const c=r.shift();r.push(0);if(c)for(let j=0;j<g.length;j++)r[j]^=mul(c,g[j])}return r.slice(-n)};
+  const poly=ec=>{let p=[1];for(let i=0;i<ec;i++){const t=new Array(p.length+1).fill(0);for(let j=0;j<p.length;j++){t[j]^=mul(p[j],1);t[j+1]^=mul(p[j],EXP[i])}p=t}return p};
+  const ecBytes=(data,n)=>{const g=poly(n);let r=[...data,...new Array(n).fill(0)];for(let i=0;i<data.length;i++){const c=r.shift();r.push(0);if(c)for(let j=0;j<g.length;j++)r[j]^=mul(c,g[j])}return r.slice(-n)};
   const CAP=[0,16,28,44,64,86,108,124,154,182,216];
   const EC_CW=[0,10,16,26,36,48,64,72,88,110,130];
   const EC_BL=[[],[1],[1],[1],[2],[2],[4],[4],[4],[5],[5]];
   const ALIGN=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,28,46],[6,32,50]];
   function encode(text){
-    const bytes=new TextEncoder().encode(text);
-    const n=bytes.length;
-    let ver=1;for(;ver<=10&&CAP[ver]<n;ver++);
-    if(ver>10)ver=10;
-    const ecN=EC_CW[ver],blocks=EC_BL[ver];
-    const totalData=CAP[ver];
+    const bytes=new TextEncoder().encode(text),n=bytes.length;
+    let ver=1;for(;ver<=10&&CAP[ver]<n;ver++);if(ver>10)ver=10;
+    const ecN=EC_CW[ver],bCount=EC_BL[ver][0]||1,totalData=CAP[ver];
     const dataBits=[];
     dataBits.push(0,1,0,0);
     for(let i=7;i>=0;i--)dataBits.push((n>>i)&1);
@@ -108,10 +165,8 @@ const QRGen=(()=>{
     while(dataBits.length<totalData*8){for(let i=7;i>=0;i--)dataBits.push((pad[pi]>>i)&1);pi^=1}
     const dataBytes=[];
     for(let i=0;i<dataBits.length;i+=8){let v=0;for(let j=0;j<8;j++)v=(v<<1)|dataBits[i+j];dataBytes.push(v)}
-    const bLen=dataBytes.length,bCount=blocks[0]||1;
-    const shortLen=Math.floor(bLen/bCount),longCount=bLen%bCount;
-    const dBlocks=[],eBlocks=[];
-    let idx=0;
+    const bLen=dataBytes.length,shortLen=Math.floor(bLen/bCount),longCount=bLen%bCount;
+    const dBlocks=[],eBlocks=[];let idx=0;
     for(let i=0;i<bCount;i++){const len=i<bCount-longCount?shortLen:shortLen+1;const blk=dataBytes.slice(idx,idx+len);idx+=len;dBlocks.push(blk);eBlocks.push(ecBytes(blk,ecN))}
     const interleaved=[];
     const maxD=Math.max(...dBlocks.map(b=>b.length));
@@ -123,22 +178,20 @@ const QRGen=(()=>{
     const set=(r,c,v,res=false)=>{if(r>=0&&r<size&&c>=0&&c<size){M[r][c]=v;if(res)R[r][c]=1}};
     const finder=(tr,tc)=>{for(let r=-1;r<=7;r++)for(let c=-1;c<=7;c++){const v=r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4)?1:0;set(tr+r,tc+c,v,true)}};
     finder(0,0);finder(0,size-7);finder(size-7,0);
-    for(let i=8;i<size-8;i++){set(6,i,i%2===0?1:0,true);set(i,6,i%2===0?1:0,true)}
+    for(let i=8;i<size-8;i++){set(6,i,i%2?0:1,true);set(i,6,i%2?0:1,true)}
     set(size-8,8,1,true);
     const ap=ALIGN[ver];
-    for(const ar of ap)for(const ac of ap){if(R[ar][ac])continue;for(let r=-2;r<=2;r++)for(let c=-2;c<=2;c++){const v=Math.abs(r)===2||Math.abs(c)===2?1:r===0&&c===0?1:0;set(ar+r,ac+c,v,true)}}
-    const fmtPos=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
-    for(const[r,c]of fmtPos)R[r][c]=1;
-    for(let i=0;i<7;i++){R[size-1-i][8]=1;R[8][size-1-i]=1}
-    const bits=[];
-    for(const b of interleaved)for(let i=7;i>=0;i--)bits.push((b>>i)&1);
-    let bi=0;let up=true;
+    for(const ar of ap)for(const ac of ap){if(R[ar][ac])continue;for(let r=-2;r<=2;r++)for(let c=-2;c<=2;c++){set(ar+r,ac+c,Math.abs(r)===2||Math.abs(c)===2?1:r===0&&c===0?1:0,true)}}
+    const fPos=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+    const fPos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+    for(const[r,c]of fPos)R[r][c]=1;for(const[r,c]of fPos2)R[r][c]=1;
+    const bits=[];for(const b of interleaved)for(let i=7;i>=0;i--)bits.push((b>>i)&1);
+    let bi=0;
     for(let col=size-1;col>=0;col-=2){if(col===6)col--;
-      for(let row=0;row<size;row++){const r=up?size-1-row:row;
-        for(let dc=0;dc<=1;dc++){const c=col-dc;if(!R[r][c]){const mask=(r+c)%2===0;const bit=bi<bits.length?bits[bi++]:0;M[r][c]=bit^(mask?1:0)}}}}
+      for(let row=0;row<size;row++){const r=(col%4<2)?size-1-row:row;
+        for(let dc=0;dc<=1;dc++){const c=col-dc;if(!R[r][c]){const mask=(r+c)%2===0;M[r][c]=(bi<bits.length?bits[bi++]:0)^(mask?1:0)}}}}
     const FMT=[1,0,1,1,0,1,1,1,1,0,0,0,1,0,0];
-    const fp2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
-    for(let i=0;i<15;i++){set(...fmtPos[i],FMT[i]);set(...fp2[i],FMT[i])}
+    for(let i=0;i<15;i++){set(...fPos[i],FMT[i]);set(...fPos2[i],FMT[i])}
     return{matrix:M,size};
   }
   return{encode};
@@ -149,27 +202,26 @@ function QRCanvas({url,size=160}){
   useEffect(()=>{
     if(!ref.current||!url)return;
     try{
-      const {matrix,size:n}=QRGen.encode(url);
+      const{matrix,size:n}=QRGen.encode(url);
       const cvs=ref.current;cvs.width=size;cvs.height=size;
-      const ctx=cvs.getContext('2d');
-      const cell=size/n;
+      const ctx=cvs.getContext('2d'),cell=size/n;
       ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
       ctx.fillStyle='#000';
       for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(matrix[r][c]===1)ctx.fillRect(c*cell,r*cell,cell,cell);
     }catch(e){console.warn('QR',e)}
   },[url,size]);
-  return <canvas ref={ref} style={{imageRendering:'pixelated'}}/>;
+  return <canvas ref={ref} style={{imageRendering:'pixelated',display:'block'}}/>;
 }
 
-/* ── Confirm dialog ── */
+/* ── Confirm ── */
 function Confirm({msg,onOk,onCancel}){
   return(
     <div className="overlay" onClick={e=>e.target===e.currentTarget&&onCancel()}>
-      <div className="confirm-box">
+      <div className="cbox">
         <p>{msg}</p>
         <div style={{display:'flex',gap:8,justifyContent:'center'}}>
-          <button className="btn btn-d" onClick={onOk}>確認刪除 Delete</button>
-          <button className="btn btn-g" onClick={onCancel}>取消 Cancel</button>
+          <button className="btn btn-d" onClick={onOk}>Delete 確認刪除</button>
+          <button className="btn btn-g" onClick={onCancel}>Cancel 取消</button>
         </div>
       </div>
     </div>
@@ -183,7 +235,7 @@ function VoiceTxt({value,onChange,placeholder,rows=3}){
   const rr=useRef(null);
   const mic=()=>{
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){alert('此瀏覽器不支援語音輸入');return}
+    if(!SR){alert('Speech not supported / 不支援語音輸入');return}
     if(rec){rr.current?.stop();return}
     const r=new SR();r.lang=lang;r.interimResults=false;
     r.onresult=e=>onChange(value+e.results[0][0].transcript);
@@ -196,7 +248,9 @@ function VoiceTxt({value,onChange,placeholder,rows=3}){
         <select value={lang} onChange={e=>setLang(e.target.value)} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
           <option value="zh-TW">中文</option><option value="en-US">English</option>
         </select>
-        <button className={`mic-btn${rec?' rec':''}`} onClick={mic}>{rec?'■':'mic'}</button>
+        <button className={`mic-btn${rec?' rec':''}`} onClick={mic} title="Voice input 語音輸入">
+          {rec?'■':'♪'}
+        </button>
         {rec&&<span style={{fontSize:12,color:'#b91c1c'}}>Recording…</span>}
       </div>
       <textarea rows={rows} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{width:'100%'}}/>
@@ -205,20 +259,20 @@ function VoiceTxt({value,onChange,placeholder,rows=3}){
 }
 
 /* ── helpers ── */
-function likeIn(arr,id){return(arr||[]).map(a=>{if(a.id===id)return{...a,likes:(a.likes||0)+1,liked:true};return{...a,replies:likeIn(a.replies,id)}})}
-function addReplyIn(arr,pid,text,auth){return(arr||[]).map(a=>{if(a.id===pid){const r={id:uid(),text,author:auth,likes:0,liked:false,replies:[],createdAt:ts()};return{...a,replies:[...(a.replies||[]),r]}}return{...a,replies:addReplyIn(a.replies,pid,text,auth)}})}
-function delIn(arr,id){return(arr||[]).filter(a=>a.id!==id).map(a=>({...a,replies:delIn(a.replies,id)}))}
+const likeIn=(arr,id)=>(arr||[]).map(a=>a.id===id?{...a,likes:(a.likes||0)+1,liked:true}:{...a,replies:likeIn(a.replies,id)});
+const addReplyIn=(arr,pid,text,auth)=>(arr||[]).map(a=>a.id===pid?{...a,replies:[...(a.replies||[]),{id:uid(),text,author:auth,likes:0,liked:false,replies:[],createdAt:ts()}]}:{...a,replies:addReplyIn(a.replies,pid,text,auth)});
+const delIn=(arr,id)=>(arr||[]).filter(a=>a.id!==id).map(a=>({...a,replies:delIn(a.replies,id)}));
 
 /* ── beep ── */
 function beep3(){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    [0,0.35,0.7].forEach(t=>{
+    [0,.35,.7].forEach(t=>{
       const o=ctx.createOscillator(),g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o.frequency.value=880;g.gain.setValueAtTime(.5,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.25);
-      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.3);
+      o.connect(g);g.connect(ctx.destination);o.frequency.value=880;
+      g.gain.setValueAtTime(.5,ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3);
     });
   }catch(e){}
 }
@@ -230,33 +284,44 @@ function Timer({expiresAt,onExpire}){
   useEffect(()=>{
     if(!expiresAt)return;
     fired.current=false;
-    const tick=()=>{const s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));setLeft(s);if(s===0&&!fired.current){fired.current=true;beep3();onExpire&&onExpire()}};
+    const tick=()=>{
+      const s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));
+      setLeft(s);
+      if(s===0&&!fired.current){fired.current=true;beep3();onExpire&&onExpire()}
+    };
     tick();const iv=setInterval(tick,1000);return()=>clearInterval(iv);
   },[expiresAt]);
   if(left===null)return null;
   const h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
   const fmt=n=>String(n).padStart(2,'0');
-  return <span className={`timer-chip${left<60?' warn':''}`}>{h>0?`${fmt(h)}:`:''}{ fmt(m)}:{fmt(s)}{left===0?' Closed':''}</span>;
+  return(
+    <span className={`tchip${left<60?' warn':''}`}>
+      <IconClock/>{h>0?`${fmt(h)}:`:''}{ fmt(m)}:{fmt(s)}{left===0?' Closed':''}
+    </span>
+  );
 }
 
-/* ── Reply item ── */
+/* ── Reply ── */
 function ReplyItem({reply,onAct,isHost,depth=0}){
   const [show,setShow]=useState(false);
   const [txt,setTxt]=useState('');
-  const [confirm,setConfirm]=useState(false);
+  const [conf,setConf]=useState(false);
+  const sorted=[...(reply.replies||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
   return(
     <div style={{marginTop:8}}>
-      {confirm&&<Confirm msg={`刪除此回覆？\nDelete this reply?`} onOk={()=>{onAct('del',reply.id);setConfirm(false)}} onCancel={()=>setConfirm(false)}/>}
+      {conf&&<Confirm msg="Delete this reply?\n刪除此回覆？" onOk={()=>{onAct('del',reply.id);setConf(false)}} onCancel={()=>setConf(false)}/>}
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
         <div style={{flex:1}}>
           <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author}</span>
           <span style={{fontSize:13}}>{reply.text}</span>
         </div>
-        {isHost&&<button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={()=>setConfirm(true)}>Del</button>}
+        {isHost&&<button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={()=>setConf(true)}>Del</button>}
       </div>
       <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-        <button className={`like-btn${reply.liked?' liked':''}`} onClick={()=>onAct('like',reply.id)}>+1 {reply.likes||0}</button>
-        {depth<1&&<button className="btn btn-g" style={{padding:'2px 8px',fontSize:12}} onClick={()=>setShow(v=>!v)}>Reply 回覆</button>}
+        <button className={`like-btn${reply.liked?' liked':''}`} onClick={()=>onAct('like',reply.id)}>
+          <IconThumb/> {reply.likes||0}
+        </button>
+        {depth<1&&<button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={()=>setShow(v=>!v)}>Reply 回覆</button>}
       </div>
       {show&&(
         <div style={{marginTop:6}}>
@@ -267,31 +332,29 @@ function ReplyItem({reply,onAct,isHost,depth=0}){
           </div>
         </div>
       )}
-      {(reply.replies||[]).length>0&&(
-        <div className="reply-thread">
-          {[...(reply.replies||[])].sort((a,b)=>(b.likes||0)-(a.likes||0)).map(r2=>
-            <ReplyItem key={r2.id} reply={r2} onAct={onAct} isHost={isHost} depth={depth+1}/>
-          )}
+      {sorted.length>0&&(
+        <div className="rthread">
+          {sorted.map(r2=><ReplyItem key={r2.id} reply={r2} onAct={onAct} isHost={isHost} depth={depth+1}/>)}
         </div>
       )}
     </div>
   );
 }
 
-/* ── Question card ── */
+/* ── QCard ── */
 function QCard({q,isHost,anon,onUpdate,onDelete}){
   const [showA,setShowA]=useState(false);
   const [atxt,setAtxt]=useState('');
   const [aname,setAname]=useState('');
-  const [confirmQ,setConfirmQ]=useState(false);
+  const [confQ,setConfQ]=useState(false);
   const act=(type,id,txt)=>{
     if(type==='like')onUpdate({...q,answers:likeIn(q.answers,id)});
-    else if(type==='add_reply')onUpdate({...q,answers:addReplyIn(q.answers,id,txt,anon?'Anon 匿名':(aname||'User'))});
+    else if(type==='add_reply')onUpdate({...q,answers:addReplyIn(q.answers,id,txt,anon?'Anon 匿名':aname)});
     else if(type==='del')onUpdate({...q,answers:delIn(q.answers,id)});
   };
   const submitA=()=>{
     if(!atxt.trim())return;
-    if(!anon&&!aname.trim()){alert('請填寫名字 / Name is required');return}
+    if(!anon&&!aname.trim()){alert('Name required / 請填寫名字');return}
     const a={id:uid(),text:atxt,author:anon?'Anon 匿名':aname.trim(),likes:0,liked:false,replies:[],createdAt:ts()};
     onUpdate({...q,answers:[...(q.answers||[]),a]});
     setAtxt('');setAname('');setShowA(false);
@@ -299,7 +362,7 @@ function QCard({q,isHost,anon,onUpdate,onDelete}){
   const sorted=[...(q.answers||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
   return(
     <div className="card">
-      {confirmQ&&<Confirm msg="刪除此問題？\nDelete this question?" onOk={()=>{onDelete(q.id);setConfirmQ(false)}} onCancel={()=>setConfirmQ(false)}/>}
+      {confQ&&<Confirm msg="Delete this question?\n刪除此問題？" onOk={()=>{onDelete(q.id);setConfQ(false)}} onCancel={()=>setConfQ(false)}/>}
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
         <div style={{flex:1}}>
           <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
@@ -307,18 +370,20 @@ function QCard({q,isHost,anon,onUpdate,onDelete}){
             {!anon&&<span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
             <span style={{fontSize:11,color:'#9ca3af'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
           </div>
-          <p style={{margin:0,fontSize:15,fontWeight:500}}>{q.text}</p>
+          <p style={{margin:0,fontSize:15,fontWeight:600,lineHeight:1.5}}>{q.text}</p>
         </div>
-        {isHost&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={()=>setConfirmQ(true)}>Del</button>}
+        {isHost&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={()=>setConfQ(true)}>Del</button>}
       </div>
-      <div style={{display:'flex',gap:8,marginTop:8,alignItems:'center',flexWrap:'wrap'}}>
-        <button className={`like-btn${q.liked?' liked':''}`} onClick={()=>onUpdate({...q,likes:(q.likes||0)+1,liked:true})}>+1 {q.likes||0}</button>
+      <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
+        <button className={`like-btn${q.liked?' liked':''}`} onClick={()=>onUpdate({...q,likes:(q.likes||0)+1,liked:true})}>
+          <IconThumb/> {q.likes||0}
+        </button>
         <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShowA(v=>!v)}>
           Reply 回答 ({(q.answers||[]).length})
         </button>
       </div>
       {sorted.length>0&&(
-        <div className="reply-thread" style={{marginTop:10}}>
+        <div className="rthread" style={{marginTop:10}}>
           {sorted.map(a=><ReplyItem key={a.id} reply={a} onAct={act} isHost={isHost}/>)}
         </div>
       )}
@@ -327,8 +392,9 @@ function QCard({q,isHost,anon,onUpdate,onDelete}){
           {!anon&&(
             <div style={{marginBottom:7}}>
               <input type="text" value={aname} onChange={e=>setAname(e.target.value)}
-                placeholder="Your name 你的名字 *" style={{borderColor:aname.trim()?'#d1d5db':'#f87171'}}/>
-              {!aname.trim()&&<span style={{fontSize:11,color:'#b91c1c'}}>Required 必填</span>}
+                placeholder="Your name 你的名字 *"
+                style={{borderColor:aname.trim()?'#d1d5db':'#f87171'}}/>
+              {!aname.trim()&&<div className="err">Required 必填</div>}
             </div>
           )}
           <VoiceTxt value={atxt} onChange={setAtxt} placeholder="Type answer… / 輸入回答…" rows={2}/>
@@ -345,37 +411,40 @@ function QCard({q,isHost,anon,onUpdate,onDelete}){
 /* ── Code Pill ── */
 function CodePill({code,onZoom}){
   const [vis,setVis]=useState(true);
-  const [copying,setCopying]=useState(false);
-  const [copied,setCopied]=useState(false);
+  const [cp,setCp]=useState(false);
+  const [done,setDone]=useState(false);
   const tmr=useRef(null);
-  const startPress=()=>{tmr.current=setTimeout(()=>{navigator.clipboard?.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1500)})},1000);setCopying(true)};
-  const endPress=()=>{clearTimeout(tmr.current);setCopying(false)};
+  const start=()=>{tmr.current=setTimeout(()=>{navigator.clipboard?.writeText(code).then(()=>{setDone(true);setTimeout(()=>setDone(false),1400)})},1000);setCp(true)};
+  const end=()=>{clearTimeout(tmr.current);setCp(false)};
   return(
-    <div className="code-pill">
-      <button className="code-pill-hide" onClick={()=>setVis(v=>!v)} title={vis?'Hide':'Show'}>
-        {vis?'–':'+'}
+    <div className="cpill">
+      <button className="cpill-side" onClick={()=>setVis(v=>!v)} title={vis?'Hide Code':'Show Code'}>
+        {vis?<IconMinus/>:<IconPlus/>}
       </button>
-      <div className={`code-pill-text${copying?' copying':''}`}
-        onMouseDown={startPress} onMouseUp={endPress} onMouseLeave={endPress}
-        onTouchStart={startPress} onTouchEnd={endPress}
+      <div className={`cpill-mid${cp?' cp':''}`}
+        onMouseDown={start} onMouseUp={end} onMouseLeave={end}
+        onTouchStart={start} onTouchEnd={end}
         title="Hold 1s to copy / 長按1秒複製">
-        {vis?(copied?'Copied!':code):'···'}
+        {vis?(done?'Copied!':code):'···'}
       </div>
-      <button className="code-pill-zoom" onClick={onZoom} title="Zoom">[ ]</button>
+      <div className="cpill-div"/>
+      <button className="cpill-side" onClick={onZoom} title="Zoom Code">
+        <IconSearch/>
+      </button>
     </div>
   );
 }
 
-/* ── Extend Modal ── */
+/* ── Modals ── */
 function ExtendModal({onExtend,onClose}){
   const [mins,setMins]=useState(1);
   return(
     <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{maxWidth:320,textAlign:'center'}}>
+      <div className="modal" style={{maxWidth:310,textAlign:'center'}}>
         <h2>Time's up! 時間到</h2>
-        <p style={{color:'#374151',fontSize:14,marginBottom:14}}>Extend the session? 要延長嗎？</p>
+        <p style={{color:'#374151',fontSize:14,margin:'0 0 14px'}}>Extend the session? 要延長嗎？</p>
         <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center',marginBottom:18}}>
-          <input type="number" value={mins} min={1} max={60} onChange={e=>setMins(+e.target.value)} style={{width:70,textAlign:'center',fontSize:18}}/>
+          <input type="number" value={mins} min={1} max={60} onChange={e=>setMins(+e.target.value)} style={{width:66,textAlign:'center',fontSize:18}}/>
           <span style={{fontSize:14}}>min 分</span>
         </div>
         <div style={{display:'flex',gap:8,justifyContent:'center'}}>
@@ -387,20 +456,19 @@ function ExtendModal({onExtend,onClose}){
   );
 }
 
-/* ── QR Modal ── */
 function QRModal({url,onPin,onClose}){
   const [copied,setCopied]=useState(false);
-  const copy=()=>navigator.clipboard?.writeText(url).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1500)});
+  const copy=()=>navigator.clipboard?.writeText(url).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1400)});
   return(
     <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{textAlign:'center',maxWidth:340}}>
+      <div className="modal" style={{textAlign:'center',maxWidth:320}}>
         <h2>QR Code</h2>
-        <div style={{display:'flex',justifyContent:'center',margin:'10px 0 14px'}}>
-          <QRCanvas url={url} size={240}/>
+        <div style={{display:'flex',justifyContent:'center',margin:'10px 0 12px'}}>
+          <QRCanvas url={url} size={230}/>
         </div>
         <p style={{fontSize:11,color:'#6b7280',wordBreak:'break-all',margin:'0 0 14px'}}>{url}</p>
         <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-          <button className="btn btn-p" onClick={()=>{onPin();onClose()}}>Pin 固定置頁首</button>
+          <button className="btn btn-p" onClick={()=>{onPin();onClose()}}>Pin 固定頁首</button>
           <button className="btn btn-g" onClick={copy}>{copied?'Copied!':'Copy Link 複製'}</button>
           <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
         </div>
@@ -409,15 +477,14 @@ function QRModal({url,onPin,onClose}){
   );
 }
 
-/* ── Code Modal ── */
 function CodeModal({code,onClose}){
   const [copied,setCopied]=useState(false);
-  const copy=()=>navigator.clipboard?.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1500)});
+  const copy=()=>navigator.clipboard?.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1400)});
   return(
     <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{textAlign:'center',maxWidth:340}}>
+      <div className="modal" style={{textAlign:'center',maxWidth:320}}>
         <h2>Room Code</h2>
-        <div style={{fontSize:48,fontWeight:900,letterSpacing:8,color:'var(--green)',margin:'16px 0',fontVariantNumeric:'tabular-nums'}}>{code}</div>
+        <div style={{fontSize:46,fontWeight:900,letterSpacing:8,color:'var(--green)',margin:'14px 0',fontVariantNumeric:'tabular-nums'}}>{code}</div>
         <div style={{display:'flex',gap:8,justifyContent:'center'}}>
           <button className="btn btn-p" onClick={copy}>{copied?'Copied!':'Copy 複製'}</button>
           <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
@@ -427,7 +494,6 @@ function CodeModal({code,onClose}){
   );
 }
 
-/* ── Create Modal ── */
 function CreateModal({onClose,onCreate}){
   const [name,setName]=useState('');
   const [anon,setAnon]=useState(false);
@@ -447,20 +513,20 @@ function CreateModal({onClose,onCreate}){
           <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Week 3 Q&A" onKeyDown={e=>e.key==='Enter'&&submit()} autoFocus/>
         </div>
         <label className="row"><input type="checkbox" checked={anon} onChange={e=>setAnon(e.target.checked)}/> Anonymous 匿名模式</label>
-        <label className="row"><input type="checkbox" checked={timed} onChange={e=>setTimed(e.target.checked)}/> Set Timer 限時開放</label>
+        <label className="row"><input type="checkbox" checked={timed} onChange={e=>setTimed(e.target.checked)}/><IconClock/> Set Timer 限時開放</label>
         {timed&&(
           <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
             <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-              <input type="number" value={hrs} min={0} max={23} onChange={e=>setHrs(+e.target.value)} style={{width:60}}/>
+              <input type="number" value={hrs} min={0} max={23} onChange={e=>setHrs(+e.target.value)} style={{width:58}}/>
               <span style={{fontSize:13}}>hr 時</span>
             </div>
             <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-              <input type="number" value={mins} min={0} max={59} onChange={e=>setMins(+e.target.value)} style={{width:60}}/>
+              <input type="number" value={mins} min={0} max={59} onChange={e=>setMins(+e.target.value)} style={{width:58}}/>
               <span style={{fontSize:13}}>min 分</span>
             </div>
           </div>
         )}
-        <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:4}}>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:6}}>
           <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
           <button className="btn btn-p" onClick={submit}>Create 建立</button>
         </div>
@@ -469,15 +535,14 @@ function CreateModal({onClose,onCreate}){
   );
 }
 
-/* ── Join Modal ── */
 function JoinModal({onClose,onJoin}){
   const [code,setCode]=useState('');
   return(
     <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="modal">
         <h2>Join Room 加入問答室</h2>
-        <div className="field"><label>Room Code（8 chars）</label>
-          <input type="text" value={code} onChange={e=>setCode(e.target.value.trim())} placeholder="Paste code here" onKeyDown={e=>e.key==='Enter'&&onJoin(code)} autoFocus/>
+        <div className="field"><label>Room Code</label>
+          <input type="text" value={code} onChange={e=>setCode(e.target.value.trim())} placeholder="Paste 8-char code" onKeyDown={e=>e.key==='Enter'&&onJoin(code)} autoFocus/>
         </div>
         <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
           <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
@@ -499,7 +564,7 @@ function App(){
   const [sideOpen,setSideOpen]=useState(true);
   const [qrPinned,setQrPinned]=useState(false);
   const [showExtend,setShowExtend]=useState(false);
-  const [confirmRoom,setConfirmRoom]=useState(false);
+  const [confRoom,setConfRoom]=useState(false);
 
   useEffect(()=>save(SK,rooms),[rooms]);
   useEffect(()=>save(HK,hosts),[hosts]);
@@ -507,7 +572,7 @@ function App(){
 
   const rm=rooms[activeId]||null;
   const isHost=!!(activeId&&hosts[activeId]);
-  const isClosed=rm?.expiresAt&&Date.now()>rm.expiresAt;
+  const isClosed=!!(rm?.expiresAt&&Date.now()>rm.expiresAt);
   const pageUrl=rm?`${window.location.href.split('?')[0]}?room=${activeId}`:'';
 
   const createRoom=(name,anon,expiresAt)=>{const id=uid();setRooms(r=>({...r,[id]:{id,name,anonymous:anon,expiresAt,questions:[],createdAt:ts()}}));setHosts(h=>({...h,[id]:uid()}));setActiveId(id)};
@@ -516,7 +581,7 @@ function App(){
   const extendRoom=mins=>{if(!rm)return;const newExp=Math.max(Date.now(),rm.expiresAt||Date.now())+(mins*60*1000);setRooms(r=>({...r,[activeId]:{...rm,expiresAt:newExp}}))};
   const postQ=()=>{
     if(!newQ.trim()||!rm||isClosed)return;
-    if(!rm.anonymous&&!qAuthor.trim()){alert('Name is required / 請填寫名字');return}
+    if(!rm.anonymous&&!qAuthor.trim()){alert('Name required / 請填寫名字');return}
     const q={id:uid(),text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,liked:false,answers:[],createdAt:ts()};
     setRooms(r=>({...r,[activeId]:{...rm,questions:[...(rm.questions||[]),q]}}));
     setNewQ('');setQAuthor('');
@@ -527,72 +592,70 @@ function App(){
 
   return(
     <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
-      {confirmRoom&&<Confirm msg={`Delete room "${rm?.name}"?\n刪除問答室「${rm?.name}」？`} onOk={()=>{deleteRoom(activeId);setConfirmRoom(false)}} onCancel={()=>setConfirmRoom(false)}/>}
+      {confRoom&&<Confirm msg={`Delete room "${rm?.name}"?\n刪除問答室「${rm?.name}」？`} onOk={()=>{deleteRoom(activeId);setConfRoom(false)}} onCancel={()=>setConfRoom(false)}/>}
 
       {/* Sidebar */}
       <div className={`sidebar${sideOpen?'':' closed'}`}>
-        <div style={{padding:'14px 10px 8px',borderBottom:'1px solid #e5e7eb'}}>
-          <div style={{fontWeight:800,color:'var(--green)',fontSize:16,marginBottom:10}}>ClassQ&A</div>
+        <div style={{padding:'14px 10px 10px',borderBottom:'1px solid #e5e7eb'}}>
+          <div style={{fontWeight:800,color:'var(--green)',fontSize:16,marginBottom:10,letterSpacing:.5}}>ClassQ&amp;A</div>
           <div style={{display:'flex',flexDirection:'column',gap:6}}>
             <button className="btn btn-p" onClick={()=>setModal('create')} style={{width:'100%'}}>+ Create 建立</button>
             <button className="btn btn-g" onClick={()=>setModal('join')} style={{width:'100%'}}>Join 加入</button>
           </div>
         </div>
         <div style={{padding:'8px 6px',flex:1,overflowY:'auto'}}>
-          <div style={{fontSize:11,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1}}>ROOMS</div>
+          <div style={{fontSize:10,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1,fontWeight:600}}>ROOMS</div>
           {Object.keys(rooms).length===0&&<div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>No rooms yet</div>}
           {Object.values(rooms).map(r=>(
-            <div key={r.id} className={`room-tab${activeId===r.id?' act':''}`} onClick={()=>setActiveId(r.id)}>
-              <div style={{fontWeight:600}}>{r.name}</div>
-              <div style={{fontSize:11,opacity:.75,marginTop:2}}>
-                {hosts[r.id]?'Host  ':''}{r.anonymous?'Anon':'Named'}{r.expiresAt?'  Timer':''}
+            <div key={r.id} className={`rtab${activeId===r.id?' act':''}`} onClick={()=>setActiveId(r.id)}>
+              <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
+              <div style={{fontSize:11,opacity:.72,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
+                {hosts[r.id]&&<span>Host</span>}
+                <span>{r.anonymous?'Anon':'Named'}</span>
+                {r.expiresAt&&<><IconClock/></>}
               </div>
             </div>
           ))}
         </div>
-        {/* Footer */}
-        <div className="sidebar-footer">
-          Architect:&nbsp;
-          <a href="https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo" target="_blank" rel="noopener noreferrer">
-            Prof. Shihmin Lo
-          </a>
+        <div className="sfooter">
+          Architect: <a href="https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo" target="_blank" rel="noopener noreferrer">Prof. Shihmin Lo</a>
         </div>
       </div>
 
       {/* Main */}
       <div className="main-col">
-        {/* Topbar */}
         <div className="topbar">
-          <button onClick={()=>setSideOpen(v=>!v)} style={{background:'none',border:'none',color:'#fff',fontSize:20,cursor:'pointer',padding:'0 4px',flexShrink:0}}>&#9776;</button>
-          <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'30%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+          <button onClick={()=>setSideOpen(v=>!v)} style={{background:'none',border:'none',color:'#fff',fontSize:19,cursor:'pointer',padding:'0 3px',flexShrink:0,lineHeight:1}}>&#9776;</button>
+          <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'28%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
             {rm?rm.name:'ClassQ&A'}
           </span>
-
           {rm&&(
-            <div style={{display:'flex',alignItems:'center',gap:6,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
+            <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
               {rm.expiresAt&&<Timer expiresAt={rm.expiresAt} onExpire={()=>setShowExtend(true)}/>}
               <CodePill code={activeId} onZoom={()=>setModal('code')}/>
-              <button className="btn-ic" onClick={()=>setModal('qr')} style={{fontSize:12,padding:'5px 9px'}}>QR</button>
-              {isHost&&<button className="btn btn-d" style={{fontSize:12,padding:'4px 10px'}} onClick={()=>setConfirmRoom(true)}>Del</button>}
+              <button className="ic" onClick={()=>setModal('qr')} title="QR Code">
+                <IconQR/>
+              </button>
+              {isHost&&<button className="btn btn-d" style={{fontSize:12,padding:'4px 9px'}} onClick={()=>setConfRoom(true)}>Del</button>}
             </div>
           )}
         </div>
 
-        {/* Pinned QR */}
         {rm&&qrPinned&&(
-          <div className="qr-strip">
-            <QRCanvas url={pageUrl} size={90}/>
-            <button onClick={()=>setQrPinned(false)} style={{background:'none',border:'none',cursor:'pointer',fontSize:16,color:'#6b7280',alignSelf:'flex-start',padding:'2px 4px'}} title="Unpin">&#10005;</button>
+          <div className="qrstrip">
+            <QRCanvas url={pageUrl} size={88}/>
+            <button onClick={()=>setQrPinned(false)} style={{background:'none',border:'none',cursor:'pointer',fontSize:15,color:'#6b7280',padding:'0 2px',lineHeight:1}} title="Unpin">&#10005;</button>
           </div>
         )}
 
-        {/* Content */}
         <div className="content-area">
           {!rm?(
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:14,color:'#6b7280',textAlign:'center',padding:20}}>
-              <div style={{fontSize:36,color:'var(--green)',fontWeight:700}}>ClassQ&amp;A</div>
-              <div style={{fontSize:14,color:'#6b7280',maxWidth:300}}>Create or join a room to get started.<br/>建立或加入問答室開始提問。</div>
-              <div style={{display:'flex',gap:10,flexWrap:'wrap',justifyContent:'center'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
+              <div style={{fontSize:28,fontWeight:800,color:'var(--green)',letterSpacing:.5}}>ClassQ&amp;A</div>
+              <div style={{fontSize:14,color:'#6b7280',maxWidth:300,lineHeight:1.6}}>
+                Create or join a room to start.<br/>建立或加入問答室開始提問。
+              </div>
+              <div style={{display:'flex',gap:10,flexWrap:'wrap',justifyContent:'center',marginTop:4}}>
                 <button className="btn btn-p" onClick={()=>setModal('create')}>+ Create Room 建立</button>
                 <button className="btn btn-g" onClick={()=>setModal('join')}>Join Room 加入</button>
               </div>
@@ -606,25 +669,25 @@ function App(){
                 </div>
               ):(
                 <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
-                  <div style={{fontWeight:600,color:'var(--green)',marginBottom:8,fontSize:14}}>Ask a Question 提問</div>
+                  <div style={{fontWeight:700,color:'var(--green)',marginBottom:9,fontSize:13,letterSpacing:.3}}>Ask a Question 提問</div>
                   {!rm.anonymous&&(
                     <div style={{marginBottom:8}}>
                       <input type="text" value={qAuthor} onChange={e=>setQAuthor(e.target.value)}
-                        placeholder="Your name 你的名字 *" style={{borderColor:qAuthor.trim()?'#d1d5db':'#f87171'}}/>
-                      {!qAuthor.trim()&&<span style={{fontSize:11,color:'#b91c1c'}}>Required 必填</span>}
+                        placeholder="Your name 你的名字 *"
+                        style={{borderColor:qAuthor.trim()?'#d1d5db':'#f87171'}}/>
+                      {!qAuthor.trim()&&<div className="err">Required 必填</div>}
                     </div>
                   )}
                   <VoiceTxt value={newQ} onChange={setNewQ} placeholder="Type or speak your question… / 輸入或語音提問…" rows={3}/>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:8,flexWrap:'wrap',gap:8}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:9,flexWrap:'wrap',gap:8}}>
                     <span style={{fontSize:12,color:'#9ca3af'}}>{rm.anonymous?'Anon 匿名':'Named 具名'}</span>
                     <button className="btn btn-p" onClick={postQ}>Submit 送出</button>
                   </div>
                 </div>
               )}
-
               {sorted.length===0?(
-                <div style={{textAlign:'center',color:'#9ca3af',padding:'36px 0',fontSize:14}}>
-                  No questions yet. Be the first!<br/>尚無提問，快來第一個提問！
+                <div style={{textAlign:'center',color:'#9ca3af',padding:'34px 0',fontSize:14,lineHeight:1.7}}>
+                  No questions yet. Be the first!<br/>尚無提問，歡迎第一個提問！
                 </div>
               ):(
                 <>
