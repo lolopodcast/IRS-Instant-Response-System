@@ -99,9 +99,29 @@ const load=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
 /* ── defence ── */
-document.addEventListener('contextmenu',e=>e.preventDefault());
+function showCopyright(){
+  const ex=document.getElementById('cpr-toast');if(ex)return;
+  const d=document.createElement('div');d.id='cpr-toast';
+  d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px';
+  d.innerHTML=`<div style="background:#fff;border-radius:12px;padding:28px 28px 22px;max-width:360px;width:100%;font-family:Segoe UI,system-ui,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.18)">
+    <div style="font-size:15px;font-weight:700;color:#004030;margin-bottom:10px">© Copyright Notice 版權聲明</div>
+    <div style="font-size:13px;color:#374151;line-height:1.7;margin-bottom:16px">
+      This application is developed and owned by<br>
+      <strong>Prof. Shihmin Lo, National Chi Nan University</strong>.<br>
+      本工具由<strong>國立暨南國際大學 駱世民教授</strong>開發，<br>
+      未經授權不得複製、修改或再散布。<br>
+      Unauthorized reproduction or redistribution is prohibited.
+    </div>
+    <div style="text-align:right">
+      <button onclick="document.getElementById('cpr-toast').remove()" style="background:#004030;color:#fff;border:none;border-radius:6px;padding:7px 18px;font-size:13px;cursor:pointer;font-family:inherit">OK 確認</button>
+    </div>
+  </div>`;
+  document.body.appendChild(d);
+  d.addEventListener('click',e=>{if(e.target===d)d.remove()});
+}
+document.addEventListener('contextmenu',e=>{e.preventDefault();showCopyright()});
 document.addEventListener('keydown',e=>{
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U'))e.preventDefault();
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U')){e.preventDefault();showCopyright()}
 });
 
 /* ── SVG icon components ── */
@@ -228,6 +248,23 @@ function Confirm({msg,onOk,onCancel}){
   );
 }
 
+/* ── Mic SVG icon ── */
+function MicIcon({size=22,active=false}){
+  const c=active?'#fff':'#fff';
+  return(
+    <svg width={size} height={size} viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* capsule body */}
+      <rect x="7" y="1" width="8" height="14" rx="4" fill={c} fillOpacity={active?1:.9}/>
+      {/* stand arc */}
+      <path d="M4 13a7 7 0 0 0 14 0" stroke={c} strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+      {/* stem */}
+      <line x1="11" y1="20" x2="11" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+      {/* base */}
+      <line x1="7" y1="24" x2="15" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 /* ── Voice textarea ── */
 function VoiceTxt({value,onChange,placeholder,rows=3}){
   const [lang,setLang]=useState('zh-TW');
@@ -242,15 +279,28 @@ function VoiceTxt({value,onChange,placeholder,rows=3}){
     r.onend=()=>setRec(false);r.onerror=()=>setRec(false);
     rr.current=r;r.start();setRec(true);
   };
+  const label=lang==='zh-TW'?'中':'EN';
   return(
     <div>
       <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5}}>
+        <button
+          onClick={mic}
+          title={rec?'Stop recording 停止':'Voice input 語音輸入'}
+          style={{
+            display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+            gap:1,background:rec?'#b91c1c':'var(--green)',
+            border:'none',borderRadius:8,padding:'5px 8px',cursor:'pointer',
+            animation:rec?'pulse 1s infinite':'none',minWidth:40,
+          }}
+        >
+          <MicIcon size={20} active={rec}/>
+          <span style={{fontSize:10,color:'#fff',fontWeight:700,lineHeight:1,fontFamily:'inherit',letterSpacing:.5}}>
+            {label}
+          </span>
+        </button>
         <select value={lang} onChange={e=>setLang(e.target.value)} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
           <option value="zh-TW">中文</option><option value="en-US">English</option>
         </select>
-        <button className={`mic-btn${rec?' rec':''}`} onClick={mic} title="Voice input 語音輸入">
-          {rec?'■':'♪'}
-        </button>
         {rec&&<span style={{fontSize:12,color:'#b91c1c'}}>Recording…</span>}
       </div>
       <textarea rows={rows} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{width:'100%'}}/>
