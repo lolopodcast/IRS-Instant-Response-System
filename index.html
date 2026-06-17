@@ -30,6 +30,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;fon
 .card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
 .like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s}
 .like-btn:hover{background:var(--gold)}
+.like-btn.liked{background:var(--gold);opacity:.85}
+.like-btn:disabled{cursor:default}
 textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit}
 textarea{resize:vertical}
 textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
@@ -127,7 +129,16 @@ var ts=function(){return Date.now()};
 var load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
 var save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
 var HK='cqa7h';
+var LK='cqa7liked';
+var JK='cqa7joined';
 var db=window.fbdb;
+
+function getLiked(){try{return JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){return{}}}
+function setLiked(key){
+  var m=getLiked(); m[key]=true;
+  localStorage.setItem(LK,JSON.stringify(m));
+}
+function hasLiked(key){return !!getLiked()[key]}
 
 function fbSet(path,val){return db.ref(path).set(val)}
 function fbUpdate(path,val){return db.ref(path).update(val)}
@@ -281,10 +292,11 @@ var QRGen = (function(){
     var bits=[];
     for(var ib=0;ib<interleaved.length;ib++){var bb=interleaved[ib];for(var ik=7;ik>=0;ik--)bits.push((bb>>ik)&1)}
     var bi=0;
+    var upward=true;
     for(var col=size-1;col>=0;col-=2){
       if(col===6)col--;
-      for(var row=0;row<size;row++){
-        var rr=(Math.floor(col/2)%2===0)?size-1-row:row;
+      for(var rstep=0;rstep<size;rstep++){
+        var rr = upward ? (size-1-rstep) : rstep;
         for(var dc=0;dc<=1;dc++){
           var cc=col-dc;
           if(!R[rr][cc]){
@@ -294,6 +306,7 @@ var QRGen = (function(){
           }
         }
       }
+      upward = !upward;
     }
     var FMT=[1,0,1,1,0,1,1,1,1,0,0,0,1,0,0];
     for(var ff=0;ff<15;ff++){set(fPos[ff][0],fPos[ff][1],FMT[ff],false);set(fPos2[ff][0],fPos2[ff][1],FMT[ff],false)}
@@ -455,7 +468,9 @@ function QCard(props){
       {isHost && <button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
     </div>
     <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
-      <button className="like-btn" onClick={function(){onLikeQ(q)}}>
+      <button className={'like-btn'+(hasLiked('q_'+q.id)?' liked':'')} disabled={hasLiked('q_'+q.id)}
+        style={hasLiked('q_'+q.id)?{cursor:'default',background:'var(--gold)'}:null}
+        onClick={function(){if(hasLiked('q_'+q.id))return;setLiked('q_'+q.id);onLikeQ(q)}}>
         <IconThumb/> {q.likes||0}
       </button>
       <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(!showA)}}>
@@ -474,7 +489,11 @@ function QCard(props){
             {isHost && <AnswerDelBtn onDelete={function(){onDeleteAnswer(q.id,a.id)}}/>}
           </div>
           <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-            <button className="like-btn" onClick={function(){onLikeAnswer(q.id,a.id)}}><IconThumb/> {a.likes||0}</button>
+            <button className={'like-btn'+(hasLiked('a_'+a.id)?' liked':'')} disabled={hasLiked('a_'+a.id)}
+              style={hasLiked('a_'+a.id)?{cursor:'default',background:'var(--gold)'}:null}
+              onClick={function(){if(hasLiked('a_'+a.id))return;setLiked('a_'+a.id);onLikeAnswer(q.id,a.id)}}>
+              <IconThumb/> {a.likes||0}
+            </button>
             <AnswerReplyToggle onSubmit={function(t){onAddReply(q.id,a.id,t,anon?'Anon 匿名':'User')}}/>
           </div>
           {subSorted.length>0 && <div className="rthread">
@@ -488,7 +507,11 @@ function QCard(props){
                   {isHost && <AnswerDelBtn onDelete={function(){onDeleteReply(q.id,a.id,r2.id)}}/>}
                 </div>
                 <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-                  <button className="like-btn" onClick={function(){onLikeReply(q.id,a.id,r2.id)}}><IconThumb/> {r2.likes||0}</button>
+                  <button className={'like-btn'+(hasLiked('r_'+r2.id)?' liked':'')} disabled={hasLiked('r_'+r2.id)}
+                    style={hasLiked('r_'+r2.id)?{cursor:'default',background:'var(--gold)'}:null}
+                    onClick={function(){if(hasLiked('r_'+r2.id))return;setLiked('r_'+r2.id);onLikeReply(q.id,a.id,r2.id)}}>
+                    <IconThumb/> {r2.likes||0}
+                  </button>
                 </div>
               </div>;
             })}
@@ -656,24 +679,36 @@ function CreateModal(props){
 }
 
 function JoinModal(props){
-  var onClose=props.onClose, onJoin=props.onJoin;
+  var onClose=props.onClose, onJoin=props.onJoin, joinedRooms=props.joinedRooms||[];
   var codeState=useState(''); var code=codeState[0], setCode=codeState[1];
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
     <div className="modal">
-      <h2>Join Room 加入問答室</h2>
+      <h2>Join / Switch Room 加入或切換</h2>
       <div className="field"><label>Room Code</label>
         <input type="text" value={code} onChange={function(e){setCode(e.target.value.trim())}} placeholder="Paste 8-char code" onKeyDown={function(e){if(e.key==='Enter')onJoin(code)}} autoFocus/>
       </div>
-      <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginBottom:joinedRooms.length?16:0}}>
         <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
         <button className="btn btn-p" onClick={function(){onJoin(code)}}>Join 加入</button>
       </div>
+      {joinedRooms.length>0 && <div>
+        <div style={{fontSize:11,color:'#9ca3af',marginBottom:6,letterSpacing:1,fontWeight:600}}>RECENTLY JOINED 最近加入過</div>
+        <div style={{display:'flex',flexDirection:'column',gap:6,maxHeight:200,overflowY:'auto'}}>
+          {joinedRooms.map(function(r){
+            return <div key={r.id} className="rtab" style={{border:'1px solid #e5e7eb'}} onClick={function(){onJoin(r.id)}}>
+              <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
+              <div style={{fontSize:11,opacity:.65,marginTop:2}}>{r.anonymous?'Anon':'Named'}</div>
+            </div>;
+          })}
+        </div>
+      </div>}
     </div>
   </div>;
 }
 
 function App(){
   var hostsState=useState(function(){return load(HK)}); var hosts=hostsState[0], setHosts=hostsState[1];
+  var joinedState=useState(function(){return load(JK)}); var joined=joinedState[0], setJoined=joinedState[1];
   var roomListState=useState({}); var roomList=roomListState[0], setRoomList=roomListState[1];
   var activeIdState=useState(null); var activeId=activeIdState[0], setActiveId=activeIdState[1];
   var activeRoomState=useState(null); var activeRoomData=activeRoomState[0], setActiveRoomData=activeRoomState[1];
@@ -687,11 +722,13 @@ function App(){
   var loadingState=useState(false); var loading=loadingState[0], setLoading=loadingState[1];
 
   useEffect(function(){save(HK,hosts)},[hosts]);
+  useEffect(function(){save(JK,joined)},[joined]);
 
   useEffect(function(){
-    var knownIds = Object.keys(hosts);
+    var knownIds = Object.keys(hosts).concat(Object.keys(joined));
     var p = new URLSearchParams(window.location.search).get('room');
     if(p && knownIds.indexOf(p)===-1) knownIds = knownIds.concat([p]);
+    knownIds = knownIds.filter(function(v,i,a){return a.indexOf(v)===i});
     if(knownIds.length===0){ setRoomList({}); return; }
     var unsubs = knownIds.map(function(id){
       var ref = db.ref('rooms/'+id+'/meta');
@@ -708,7 +745,7 @@ function App(){
       return function(){ref.off('value',cb)};
     });
     return function(){unsubs.forEach(function(u){u()})};
-  },[hosts]);
+  },[hosts,joined]);
 
   useEffect(function(){
     var p=new URLSearchParams(window.location.search).get('room');
@@ -750,13 +787,18 @@ function App(){
     code=code.trim();
     if(!code)return;
     db.ref('rooms/'+code+'/meta').once('value').then(function(snap){
-      if(snap.exists()){ setActiveId(code); setModal(null); }
+      if(snap.exists()){
+        setActiveId(code);
+        setModal(null);
+        setJoined(function(j){ if(j[code]) return j; var n=Object.assign({},j); n[code]=true; return n; });
+      }
       else alert('Room not found / 找不到此 Room');
     });
   }
   function deleteRoom(id){
     fbRemove('rooms/'+id);
     setHosts(function(h){var n=Object.assign({},h);delete n[id];return n});
+    setJoined(function(j){var n=Object.assign({},j);delete n[id];return n});
     setRoomList(function(r){var n=Object.assign({},r);delete n[id];return n});
     if(activeId===id)setActiveId(null);
   }
@@ -850,7 +892,7 @@ function App(){
 
       <div className="actionsbar">
         <button className="btn btn-p" onClick={function(){setModal('create')}} style={{fontSize:12}}>+ Create 建立</button>
-        <button className="btn btn-g" onClick={function(){setModal('join')}} style={{fontSize:12}}>Join 加入</button>
+        <button className="btn btn-g" onClick={function(){setModal('join')}} style={{fontSize:12}}>Join/Switch 加入或切換</button>
         {rm && <span style={{fontSize:11,color:'#9ca3af',marginLeft:'auto'}}>Current 目前：{rm.name}</span>}
       </div>
 
@@ -902,7 +944,7 @@ function App(){
     </div>
 
     {modal==='create' && <CreateModal onClose={function(){setModal(null)}} onCreate={createRoom}/>}
-    {modal==='join' && <JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom}/>}
+    {modal==='join' && <JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom} joinedRooms={Object.values(roomList).filter(function(r){return joined[r.id] && r.id!==activeId})}/>}
     {modal==='qr' && <QRModal url={pageUrl} onPin={function(){setQrPinned(true)}} onClose={function(){setModal(null)}}/>}
     {modal==='code' && <CodeModal code={activeId||''} onClose={function(){setModal(null)}}/>}
     {showExtend && <ExtendModal onExtend={extendRoom} onClose={function(){setShowExtend(false)}}/>}
