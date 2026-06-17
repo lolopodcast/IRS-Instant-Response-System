@@ -12,15 +12,12 @@
 textarea,input{-webkit-user-select:text;user-select:text}
 :root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed;--fs:14px;--fss:13px;--fsxs:11px}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;font-size:var(--fs)}
-/* buttons */
 .btn{border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:opacity .18s,background .15s;white-space:nowrap}
 .btn-p{background:var(--green);color:#fff}.btn-p:hover{opacity:.82}
 .btn-g{background:transparent;border:1.5px solid var(--green);color:var(--green)}.btn-g:hover{background:var(--lg)}
 .btn-d{background:#b91c1c;color:#fff}.btn-d:hover{opacity:.82}
-/* topbar icon buttons */
 .ic{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:var(--fss);font-family:inherit;line-height:1.4;display:inline-flex;align-items:center;gap:4px}
 .ic:hover{background:rgba(255,255,255,.27)}
-/* layout */
 .sidebar{position:fixed;top:0;left:0;width:214px;background:#fff;border-right:1px solid #e5e7eb;height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s;z-index:150;transform:translateX(0)}
 .sidebar.closed{transform:translateX(-100%)}
 .sidebar-scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:140}
@@ -28,39 +25,25 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;fon
 .topbar{background:var(--green);color:#fff;padding:9px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-height:50px}
 .content-area{flex:1;overflow-y:auto;padding:16px}
 .content-inner{max-width:700px;margin:0 auto}
-/* cards */
 .card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
-/* like */
 .like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s}
 .like-btn:hover,.like-btn.liked{background:var(--gold)}
-/* mic */
-.mic-btn{background:var(--green);color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit}
-.mic-btn.rec{background:#b91c1c;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
-/* inputs */
 textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit}
 textarea{resize:vertical}
 textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
-/* badges */
 .badge{font-size:var(--fsxs);border-radius:999px;padding:1px 9px;color:#fff;font-weight:500}
 .ba{background:#6b7280}.bn{background:var(--green)}
-/* room tabs */
 .rtab{cursor:pointer;padding:8px 10px;border-radius:8px;font-size:var(--fss);transition:background .13s;word-break:break-all}
 .rtab.act{background:var(--green);color:#fff}
 .rtab:not(.act):hover{background:var(--lg)}
-/* reply thread */
 .rthread{border-left:3px solid var(--gold);padding-left:10px;margin-top:9px}
-/* overlays */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.44);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
 .modal{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
 .modal h2{margin:0 0 14px;color:var(--green);font-size:16px;font-weight:700}
-/* confirm */
 .cbox{background:#fff;border-radius:10px;padding:22px;width:100%;max-width:310px;text-align:center}
-.cbox p{margin:0 0 16px;font-size:var(--fs);color:#374151;line-height:1.5}
-/* timer */
+.cbox p{margin:0 0 16px;font-size:var(--fs);color:#374151;line-height:1.5;white-space:pre-line}
 .tchip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 .tchip.warn{background:#b91c1c}
-/* code pill */
 .cpill{display:inline-flex;align-items:center;background:rgba(255,255,255,.17);border-radius:7px;overflow:hidden}
 .cpill-side{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff;cursor:pointer;font-size:15px;flex-shrink:0}
 .cpill-side:hover{background:rgba(255,255,255,.16)}
@@ -68,27 +51,23 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
 .cpill-mid:hover{background:rgba(255,255,255,.13)}
 .cpill-mid.cp{background:rgba(255,255,255,.32)}
 .cpill-div{width:1px;height:20px;background:rgba(255,255,255,.25);flex-shrink:0}
-/* qr pin strip */
 .qrstrip{background:#fff;border-bottom:1px solid #e5e7eb;display:flex;justify-content:center;align-items:flex-start;padding:8px;gap:5px}
-/* form helpers */
-label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:pointer;margin-bottom:11px}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:var(--fss);color:#374151;margin-bottom:4px;font-weight:500}
-.err{font-size:var(--fsxs);color:#b91c1c;margin-top:3px}
-/* sidebar footer */
-.sfooter{padding:10px 12px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;line-height:1.6}
-.sfooter a{color:#9ca3af;text-decoration:none}
-.sfooter a:hover{color:var(--green);text-decoration:underline}
-/* room actions bar (always-visible create/join) */
 .actionsbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-/* manage dropdown */
 .mgwrap{position:relative}
 .mgmenu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);min-width:150px;overflow:hidden;z-index:50}
 .mgitem{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:#374151}
 .mgitem:hover{background:#f3f4f6}
 .mgitem.danger{color:#b91c1c}
-/* svg icons inline */
+label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:pointer;margin-bottom:11px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:var(--fss);color:#374151;margin-bottom:4px;font-weight:500}
+.err{font-size:var(--fsxs);color:#b91c1c;margin-top:3px}
+.sfooter{padding:10px 12px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;line-height:1.6}
+.sfooter a{color:#9ca3af;text-decoration:none}
+.sfooter a:hover{color:var(--green);text-decoration:underline}
 .svg-ic{display:inline-block;vertical-align:middle}
+.cpr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.cpr-box{background:#fff;border-radius:12px;padding:28px 28px 22px;max-width:360px;width:100%;font-family:'Segoe UI',system-ui,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.18)}
 @media(max-width:600px){
   .topbar{gap:5px}
   .cpill-mid{min-width:66px;font-size:12px}
@@ -97,728 +76,762 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useRef}=React;
-const SK='cqa5r',HK='cqa5h';
-const uid=()=>Math.random().toString(36).slice(2,10);
-const ts=()=>Date.now();
-const load=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return{}}};
-const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-
-/* ── defence ── */
-function showCopyright(){
-  const ex=document.getElementById('cpr-toast');if(ex)return;
-  const d=document.createElement('div');d.id='cpr-toast';
-  d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px';
-  d.innerHTML=`<div style="background:#fff;border-radius:12px;padding:28px 28px 22px;max-width:360px;width:100%;font-family:Segoe UI,system-ui,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.18)">
-    <div style="font-size:15px;font-weight:700;color:#004030;margin-bottom:10px">© Copyright Notice 版權聲明</div>
+<div id="cpr-toast" style="display:none" class="cpr-overlay">
+  <div class="cpr-box">
+    <div style="font-size:15px;font-weight:700;color:#004030;margin-bottom:10px">Copyright Notice 版權聲明</div>
     <div style="font-size:13px;color:#374151;line-height:1.7;margin-bottom:16px">
-      This application is developed and owned by<br>
-      <strong>Prof. Shihmin Lo, National Chi Nan University</strong>.<br>
-      本工具由<strong>國立暨南國際大學 駱世民教授</strong>開發，<br>
-      未經授權不得複製、修改或再散布。<br>
-      Unauthorized reproduction or redistribution is prohibited.
+      This application is developed and owned by Prof. Shihmin Lo, National Chi Nan University.<br><br>
+      本工具由國立暨南國際大學 駱世民教授開發，未經授權不得複製、修改或再散布。
     </div>
     <div style="text-align:right">
-      <button onclick="document.getElementById('cpr-toast').remove()" style="background:#004030;color:#fff;border:none;border-radius:6px;padding:7px 18px;font-size:13px;cursor:pointer;font-family:inherit">OK 確認</button>
+      <button id="cpr-ok-btn" style="background:#004030;color:#fff;border:none;border-radius:6px;padding:7px 18px;font-size:13px;cursor:pointer;font-family:inherit">OK 確認</button>
     </div>
-  </div>`;
-  document.body.appendChild(d);
-  d.addEventListener('click',e=>{if(e.target===d)d.remove()});
-}
-document.addEventListener('contextmenu',e=>{e.preventDefault();showCopyright()});
-document.addEventListener('keydown',e=>{
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U')){e.preventDefault();showCopyright()}
-});
+  </div>
+</div>
+<script>
+(function(){
+  var toast=document.getElementById('cpr-toast');
+  function show(){ toast.style.display='flex'; }
+  function hide(){ toast.style.display='none'; }
+  document.getElementById('cpr-ok-btn').addEventListener('click', hide);
+  toast.addEventListener('click', function(e){ if(e.target===toast) hide(); });
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); show(); });
+  document.addEventListener('keydown', function(e){
+    var blocked = e.key==='F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].indexOf(e.key)>-1) || (e.ctrlKey && e.key==='U');
+    if(blocked){ e.preventDefault(); show(); }
+  });
+})();
+</script>
+<script type="text/babel" data-presets="react">
+const {useState,useEffect,useRef} = React;
+const SK='cqa6r',HK='cqa6h';
+const uid=function(){return Math.random().toString(36).slice(2,10)};
+const ts=function(){return Date.now()};
+const load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
+const save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
 
-/* ── SVG icon components ── */
-const IconMinus=()=>(
-  <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/></svg>
-);
-const IconPlus=()=>(
-  <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/><rect x="5.5" y="2" width="2" height="9" rx="1" fill="currentColor"/></svg>
-);
-const IconSearch=()=>(
-  <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
+/* ---- SVG icons ---- */
+function IconMinus(){
+  return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/></svg>;
+}
+function IconPlus(){
+  return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/><rect x="5.5" y="2" width="2" height="9" rx="1" fill="currentColor"/></svg>;
+}
+function IconSearch(){
+  return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
     <circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.8"/>
     <line x1="9.2" y1="9.2" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>
-);
-const IconQR=()=>(
-  <svg className="svg-ic" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+  </svg>;
+}
+function IconQR(){
+  return <svg className="svg-ic" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
     <rect x="1" y="1" width="5" height="5"/><rect x="2" y="2" width="3" height="3" fill="#fff"/>
     <rect x="10" y="1" width="5" height="5"/><rect x="11" y="2" width="3" height="3" fill="#fff"/>
     <rect x="1" y="10" width="5" height="5"/><rect x="2" y="11" width="3" height="3" fill="#fff"/>
     <rect x="8" y="8" width="2" height="2"/><rect x="11" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
     <rect x="8" y="11" width="2" height="2"/><rect x="11" y="11" width="2" height="2"/>
     <rect x="8" y="14" width="2" height="2"/><rect x="11" y="14" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/>
-  </svg>
-);
-const IconClock=()=>(
-  <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none">
+  </svg>;
+}
+function IconClock(){
+  return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none">
     <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
     <line x1="6.5" y1="3.5" x2="6.5" y2="6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     <line x1="6.5" y1="6.5" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-);
-const IconGear=()=>(
-  <svg className="svg-ic" width="14" height="14" viewBox="0 0 16 16" fill="none">
+  </svg>;
+}
+function IconThumb(){
+  return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M5 12H10.5C11.05 12 11.5 11.6 11.65 11.07L12.9 6.57C13.1 5.85 12.55 5.15 11.8 5.15H8.5V2.5C8.5 1.95 8.05 1.5 7.5 1.5H7.3L4.8 7.1C4.65 7.4 4.35 7.6 4 7.6V12M1.5 7.6H4V12H1.5V7.6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+  </svg>;
+}
+function IconGear(){
+  return <svg className="svg-ic" width="14" height="14" viewBox="0 0 16 16" fill="none">
     <circle cx="8" cy="8" r="2.3" stroke="currentColor" strokeWidth="1.4"/>
     <path d="M8 1.5v1.6M8 12.9v1.6M2.4 8H4M12 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-  </svg>
-);
-  <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
-    <path d="M5 12H10.5C11.05 12 11.5 11.6 11.65 11.07L12.9 6.57C13.1 5.85 12.55 5.15 11.8 5.15H8.5V2.5C8.5 1.95 8.05 1.5 7.5 1.5H7.3L4.8 7.1C4.65 7.4 4.35 7.6 4 7.6V12M1.5 7.6H4V12H1.5V7.6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
-  </svg>
-);
+  </svg>;
+}
+function MicIcon(props){
+  var size = props.size || 22;
+  var c = '#fff';
+  return <svg width={size} height={size} viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="7" y="1" width="8" height="14" rx="4" fill={c}/>
+    <path d="M4 13a7 7 0 0 0 14 0" stroke={c} strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+    <line x1="11" y1="20" x2="11" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+    <line x1="7" y1="24" x2="15" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>;
+}
 
-/* ── QR encoder ── */
-const QRGen=(()=>{
-  const EXP=new Uint8Array(512),LOG=new Uint8Array(256);
-  (()=>{let x=1;for(let i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x=x<128?x<<1:(x<<1)^285&0xff}for(let i=255;i<512;i++)EXP[i]=EXP[i-255]})();
-  const mul=(a,b)=>a&&b?EXP[LOG[a]+LOG[b]]:0;
-  const poly=ec=>{let p=[1];for(let i=0;i<ec;i++){const t=new Array(p.length+1).fill(0);for(let j=0;j<p.length;j++){t[j]^=mul(p[j],1);t[j+1]^=mul(p[j],EXP[i])}p=t}return p};
-  const ecBytes=(data,n)=>{const g=poly(n);let r=[...data,...new Array(n).fill(0)];for(let i=0;i<data.length;i++){const c=r.shift();r.push(0);if(c)for(let j=0;j<g.length;j++)r[j]^=mul(c,g[j])}return r.slice(-n)};
-  const CAP=[0,16,28,44,64,86,108,124,154,182,216];
-  const EC_CW=[0,10,16,26,36,48,64,72,88,110,130];
-  const EC_BL=[[],[1],[1],[1],[2],[2],[4],[4],[4],[5],[5]];
-  const ALIGN=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,28,46],[6,32,50]];
-  function encode(text){
-    const bytes=new TextEncoder().encode(text),n=bytes.length;
-    let ver=1;for(;ver<=10&&CAP[ver]<n;ver++);if(ver>10)ver=10;
-    const ecN=EC_CW[ver],bCount=EC_BL[ver][0]||1,totalData=CAP[ver];
-    const dataBits=[];
-    dataBits.push(0,1,0,0);
-    for(let i=7;i>=0;i--)dataBits.push((n>>i)&1);
-    for(const b of bytes)for(let i=7;i>=0;i--)dataBits.push((b>>i)&1);
-    for(let i=0;i<4&&dataBits.length<totalData*8;i++)dataBits.push(0);
-    while(dataBits.length%8)dataBits.push(0);
-    const pad=[0xEC,0x11];let pi=0;
-    while(dataBits.length<totalData*8){for(let i=7;i>=0;i--)dataBits.push((pad[pi]>>i)&1);pi^=1}
-    const dataBytes=[];
-    for(let i=0;i<dataBits.length;i+=8){let v=0;for(let j=0;j<8;j++)v=(v<<1)|dataBits[i+j];dataBytes.push(v)}
-    const bLen=dataBytes.length,shortLen=Math.floor(bLen/bCount),longCount=bLen%bCount;
-    const dBlocks=[],eBlocks=[];let idx=0;
-    for(let i=0;i<bCount;i++){const len=i<bCount-longCount?shortLen:shortLen+1;const blk=dataBytes.slice(idx,idx+len);idx+=len;dBlocks.push(blk);eBlocks.push(ecBytes(blk,ecN))}
-    const interleaved=[];
-    const maxD=Math.max(...dBlocks.map(b=>b.length));
-    for(let i=0;i<maxD;i++)for(const b of dBlocks)if(i<b.length)interleaved.push(b[i]);
-    for(let i=0;i<ecN;i++)for(const b of eBlocks)interleaved.push(b[i]);
-    const size=ver*4+17;
-    const M=Array.from({length:size},()=>new Int8Array(size).fill(-1));
-    const R=Array.from({length:size},()=>new Uint8Array(size));
-    const set=(r,c,v,res=false)=>{if(r>=0&&r<size&&c>=0&&c<size){M[r][c]=v;if(res)R[r][c]=1}};
-    const finder=(tr,tc)=>{for(let r=-1;r<=7;r++)for(let c=-1;c<=7;c++){const v=r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4)?1:0;set(tr+r,tc+c,v,true)}};
-    finder(0,0);finder(0,size-7);finder(size-7,0);
-    for(let i=8;i<size-8;i++){set(6,i,i%2?0:1,true);set(i,6,i%2?0:1,true)}
-    set(size-8,8,1,true);
-    const ap=ALIGN[ver];
-    for(const ar of ap)for(const ac of ap){if(R[ar][ac])continue;for(let r=-2;r<=2;r++)for(let c=-2;c<=2;c++){set(ar+r,ac+c,Math.abs(r)===2||Math.abs(c)===2?1:r===0&&c===0?1:0,true)}}
-    const fPos=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
-    const fPos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
-    for(const[r,c]of fPos)R[r][c]=1;for(const[r,c]of fPos2)R[r][c]=1;
-    const bits=[];for(const b of interleaved)for(let i=7;i>=0;i--)bits.push((b>>i)&1);
-    let bi=0;
-    for(let col=size-1;col>=0;col-=2){if(col===6)col--;
-      for(let row=0;row<size;row++){const r=(col%4<2)?size-1-row:row;
-        for(let dc=0;dc<=1;dc++){const c=col-dc;if(!R[r][c]){const mask=(r+c)%2===0;M[r][c]=(bi<bits.length?bits[bi++]:0)^(mask?1:0)}}}}
-    const FMT=[1,0,1,1,0,1,1,1,1,0,0,0,1,0,0];
-    for(let i=0;i<15;i++){set(...fPos[i],FMT[i]);set(...fPos2[i],FMT[i])}
-    return{matrix:M,size};
+/* ---- QR encoder (pure JS) ---- */
+var QRGen = (function(){
+  var EXP=new Uint8Array(512), LOG=new Uint8Array(256);
+  (function(){
+    var x=1;
+    for(var i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x=x<128?x<<1:(x<<1)^285&0xff}
+    for(var j=255;j<512;j++)EXP[j]=EXP[j-255];
+  })();
+  function mul(a,b){return a&&b?EXP[LOG[a]+LOG[b]]:0}
+  function poly(ec){
+    var p=[1];
+    for(var i=0;i<ec;i++){
+      var t=new Array(p.length+1).fill(0);
+      for(var j=0;j<p.length;j++){t[j]^=mul(p[j],1);t[j+1]^=mul(p[j],EXP[i])}
+      p=t;
+    }
+    return p;
   }
-  return{encode};
+  function ecBytes(data,n){
+    var g=poly(n);
+    var r=data.concat(new Array(n).fill(0));
+    for(var i=0;i<data.length;i++){
+      var c=r.shift();r.push(0);
+      if(c)for(var j=0;j<g.length;j++)r[j]^=mul(c,g[j]);
+    }
+    return r.slice(-n);
+  }
+  var CAP=[0,16,28,44,64,86,108,124,154,182,216];
+  var EC_CW=[0,10,16,26,36,48,64,72,88,110,130];
+  var EC_BL=[[],[1],[1],[1],[2],[2],[4],[4],[4],[5],[5]];
+  var ALIGN=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,28,46],[6,32,50]];
+  function encode(text){
+    var bytes=new TextEncoder().encode(text), n=bytes.length;
+    var ver=1; while(ver<=10 && CAP[ver]<n) ver++; if(ver>10) ver=10;
+    var ecN=EC_CW[ver], bCount=EC_BL[ver][0]||1, totalData=CAP[ver];
+    var dataBits=[];
+    dataBits.push(0,1,0,0);
+    for(var i=7;i>=0;i--)dataBits.push((n>>i)&1);
+    for(var bi2=0;bi2<bytes.length;bi2++){var b=bytes[bi2];for(var k=7;k>=0;k--)dataBits.push((b>>k)&1)}
+    for(var pi3=0;pi3<4 && dataBits.length<totalData*8;pi3++)dataBits.push(0);
+    while(dataBits.length%8)dataBits.push(0);
+    var pad=[0xEC,0x11],pi=0;
+    while(dataBits.length<totalData*8){for(var k2=7;k2>=0;k2--)dataBits.push((pad[pi]>>k2)&1);pi^=1}
+    var dataBytes=[];
+    for(var di=0;di<dataBits.length;di+=8){var v=0;for(var dj=0;dj<8;dj++)v=(v<<1)|dataBits[di+dj];dataBytes.push(v)}
+    var bLen=dataBytes.length, shortLen=Math.floor(bLen/bCount), longCount=bLen%bCount;
+    var dBlocks=[], eBlocks=[], idx=0;
+    for(var bc=0;bc<bCount;bc++){
+      var len=bc<bCount-longCount?shortLen:shortLen+1;
+      var blk=dataBytes.slice(idx,idx+len); idx+=len;
+      dBlocks.push(blk); eBlocks.push(ecBytes(blk,ecN));
+    }
+    var interleaved=[];
+    var maxD=0; for(var m=0;m<dBlocks.length;m++)maxD=Math.max(maxD,dBlocks[m].length);
+    for(var ii=0;ii<maxD;ii++)for(var jj=0;jj<dBlocks.length;jj++)if(ii<dBlocks[jj].length)interleaved.push(dBlocks[jj][ii]);
+    for(var ie=0;ie<ecN;ie++)for(var je=0;je<eBlocks.length;je++)interleaved.push(eBlocks[je][ie]);
+    var size=ver*4+17;
+    var M=[],R=[];
+    for(var r0=0;r0<size;r0++){M.push(new Int8Array(size).fill(-1));R.push(new Uint8Array(size))}
+    function set(r,c,val,res){if(r>=0&&r<size&&c>=0&&c<size){M[r][c]=val;if(res)R[r][c]=1}}
+    function finder(tr,tc){
+      for(var r=-1;r<=7;r++)for(var c=-1;c<=7;c++){
+        var val=(r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4))?1:0;
+        set(tr+r,tc+c,val,true);
+      }
+    }
+    finder(0,0);finder(0,size-7);finder(size-7,0);
+    for(var t=8;t<size-8;t++){set(6,t,t%2?0:1,true);set(t,6,t%2?0:1,true)}
+    set(size-8,8,1,true);
+    var ap=ALIGN[ver];
+    for(var a1=0;a1<ap.length;a1++)for(var a2=0;a2<ap.length;a2++){
+      var ar=ap[a1],ac=ap[a2];
+      if(R[ar][ac])continue;
+      for(var r2=-2;r2<=2;r2++)for(var c2=-2;c2<=2;c2++){
+        set(ar+r2,ac+c2,(Math.abs(r2)===2||Math.abs(c2)===2)?1:(r2===0&&c2===0?1:0),true);
+      }
+    }
+    var fPos=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+    var fPos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+    for(var f1=0;f1<fPos.length;f1++){R[fPos[f1][0]][fPos[f1][1]]=1}
+    for(var f2=0;f2<fPos2.length;f2++){R[fPos2[f2][0]][fPos2[f2][1]]=1}
+    var bits=[];
+    for(var ib=0;ib<interleaved.length;ib++){var bb=interleaved[ib];for(var ik=7;ik>=0;ik--)bits.push((bb>>ik)&1)}
+    var bi=0;
+    for(var col=size-1;col>=0;col-=2){
+      if(col===6)col--;
+      for(var row=0;row<size;row++){
+        var rr=(Math.floor(col/2)%2===0)?size-1-row:row;
+        for(var dc=0;dc<=1;dc++){
+          var cc=col-dc;
+          if(!R[rr][cc]){
+            var maskOn=(rr+cc)%2===0;
+            var bitv=bi<bits.length?bits[bi++]:0;
+            M[rr][cc]=bitv^(maskOn?1:0);
+          }
+        }
+      }
+    }
+    var FMT=[1,0,1,1,0,1,1,1,1,0,0,0,1,0,0];
+    for(var ff=0;ff<15;ff++){set(fPos[ff][0],fPos[ff][1],FMT[ff],false);set(fPos2[ff][0],fPos2[ff][1],FMT[ff],false)}
+    return {matrix:M,size:size};
+  }
+  return {encode:encode};
 })();
 
-function QRCanvas({url,size=160}){
-  const ref=useRef(null);
-  useEffect(()=>{
+function QRCanvas(props){
+  var url=props.url, size=props.size||160;
+  var ref=useRef(null);
+  useEffect(function(){
     if(!ref.current||!url)return;
     try{
-      const{matrix,size:n}=QRGen.encode(url);
-      const cvs=ref.current;cvs.width=size;cvs.height=size;
-      const ctx=cvs.getContext('2d'),cell=size/n;
-      ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
+      var res=QRGen.encode(url);
+      var matrix=res.matrix, n=res.size;
+      var cvs=ref.current; cvs.width=size; cvs.height=size;
+      var ctx=cvs.getContext('2d'); var cell=size/n;
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,size,size);
       ctx.fillStyle='#000';
-      for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(matrix[r][c]===1)ctx.fillRect(c*cell,r*cell,cell,cell);
-    }catch(e){console.warn('QR',e)}
+      for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(matrix[r][c]===1)ctx.fillRect(c*cell,r*cell,cell,cell);
+    }catch(e){console.warn('QR error',e)}
   },[url,size]);
   return <canvas ref={ref} style={{imageRendering:'pixelated',display:'block'}}/>;
 }
 
-/* ── Confirm ── */
-function Confirm({msg,onOk,onCancel}){
-  return(
-    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onCancel()}>
-      <div className="cbox">
-        <p>{msg}</p>
-        <div style={{display:'flex',gap:8,justifyContent:'center'}}>
-          <button className="btn btn-d" onClick={onOk}>Delete 確認刪除</button>
-          <button className="btn btn-g" onClick={onCancel}>Cancel 取消</button>
-        </div>
+/* ---- Confirm dialog ---- */
+function Confirm(props){
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onCancel()}}>
+    <div className="cbox">
+      <p>{props.msg}</p>
+      <div style={{display:'flex',gap:8,justifyContent:'center'}}>
+        <button className="btn btn-d" onClick={props.onOk}>Delete 確認刪除</button>
+        <button className="btn btn-g" onClick={props.onCancel}>Cancel 取消</button>
       </div>
     </div>
-  );
+  </div>;
 }
 
-/* ── Mic SVG icon ── */
-function MicIcon({size=22,active=false}){
-  const c=active?'#fff':'#fff';
-  return(
-    <svg width={size} height={size} viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* capsule body */}
-      <rect x="7" y="1" width="8" height="14" rx="4" fill={c} fillOpacity={active?1:.9}/>
-      {/* stand arc */}
-      <path d="M4 13a7 7 0 0 0 14 0" stroke={c} strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-      {/* stem */}
-      <line x1="11" y1="20" x2="11" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
-      {/* base */}
-      <line x1="7" y1="24" x2="15" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-/* ── Voice textarea ── */
-function VoiceTxt({value,onChange,placeholder,rows=3}){
-  const [lang,setLang]=useState('zh-TW');
-  const [rec,setRec]=useState(false);
-  const rr=useRef(null);
-  const mic=()=>{
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+/* ---- Voice textarea ---- */
+function VoiceTxt(props){
+  var value=props.value, onChange=props.onChange, placeholder=props.placeholder, rows=props.rows||3;
+  var langState=useState('zh-TW'); var lang=langState[0], setLang=langState[1];
+  var recState=useState(false); var rec=recState[0], setRec=recState[1];
+  var rr=useRef(null);
+  function mic(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(!SR){alert('Speech not supported / 不支援語音輸入');return}
-    if(rec){rr.current?.stop();return}
-    const r=new SR();r.lang=lang;r.interimResults=false;
-    r.onresult=e=>onChange(value+e.results[0][0].transcript);
-    r.onend=()=>setRec(false);r.onerror=()=>setRec(false);
-    rr.current=r;r.start();setRec(true);
-  };
-  const label=lang==='zh-TW'?'中':'EN';
-  return(
-    <div>
-      <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5}}>
-        <button
-          onClick={mic}
-          title={rec?'Stop recording 停止':'Voice input 語音輸入'}
-          style={{
-            display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-            gap:1,background:rec?'#b91c1c':'var(--green)',
-            border:'none',borderRadius:8,padding:'5px 8px',cursor:'pointer',
-            animation:rec?'pulse 1s infinite':'none',minWidth:40,
-          }}
-        >
-          <MicIcon size={20} active={rec}/>
-          <span style={{fontSize:10,color:'#fff',fontWeight:700,lineHeight:1,fontFamily:'inherit',letterSpacing:.5}}>
-            {label}
-          </span>
-        </button>
-        <select value={lang} onChange={e=>setLang(e.target.value)} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
-          <option value="zh-TW">中文</option><option value="en-US">English</option>
-        </select>
-        {rec&&<span style={{fontSize:12,color:'#b91c1c'}}>Recording…</span>}
-      </div>
-      <textarea rows={rows} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{width:'100%'}}/>
+    if(rec){if(rr.current)rr.current.stop();return}
+    var r=new SR(); r.lang=lang; r.interimResults=false;
+    r.onresult=function(e){onChange(value+e.results[0][0].transcript)};
+    r.onend=function(){setRec(false)};
+    r.onerror=function(){setRec(false)};
+    rr.current=r; r.start(); setRec(true);
+  }
+  var label = lang==='zh-TW' ? '中' : 'EN';
+  return <div>
+    <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5}}>
+      <button onClick={mic} title={rec?'Stop 停止':'Voice input 語音輸入'}
+        style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:1,background:rec?'#b91c1c':'var(--green)',border:'none',borderRadius:8,padding:'5px 8px',cursor:'pointer',minWidth:40}}>
+        <MicIcon size={20}/>
+        <span style={{fontSize:10,color:'#fff',fontWeight:700,lineHeight:1,letterSpacing:.5}}>{label}</span>
+      </button>
+      <select value={lang} onChange={function(e){setLang(e.target.value)}} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
+        <option value="zh-TW">中文</option>
+        <option value="en-US">English</option>
+      </select>
+      {rec && <span style={{fontSize:12,color:'#b91c1c'}}>Recording…</span>}
     </div>
-  );
+    <textarea rows={rows} value={value} onChange={function(e){onChange(e.target.value)}} placeholder={placeholder} style={{width:'100%'}}/>
+  </div>;
 }
 
-/* ── helpers ── */
-const likeIn=(arr,id)=>(arr||[]).map(a=>a.id===id?{...a,likes:(a.likes||0)+1,liked:true}:{...a,replies:likeIn(a.replies,id)});
-const addReplyIn=(arr,pid,text,auth)=>(arr||[]).map(a=>a.id===pid?{...a,replies:[...(a.replies||[]),{id:uid(),text,author:auth,likes:0,liked:false,replies:[],createdAt:ts()}]}:{...a,replies:addReplyIn(a.replies,pid,text,auth)});
-const delIn=(arr,id)=>(arr||[]).filter(a=>a.id!==id).map(a=>({...a,replies:delIn(a.replies,id)}));
+/* ---- helpers ---- */
+function likeIn(arr,id){
+  return (arr||[]).map(function(a){
+    if(a.id===id)return Object.assign({},a,{likes:(a.likes||0)+1,liked:true});
+    return Object.assign({},a,{replies:likeIn(a.replies,id)});
+  });
+}
+function addReplyIn(arr,pid,text,auth){
+  return (arr||[]).map(function(a){
+    if(a.id===pid){
+      var rep={id:uid(),text:text,author:auth,likes:0,liked:false,replies:[],createdAt:ts()};
+      return Object.assign({},a,{replies:(a.replies||[]).concat([rep])});
+    }
+    return Object.assign({},a,{replies:addReplyIn(a.replies,pid,text,auth)});
+  });
+}
+function delIn(arr,id){
+  return (arr||[]).filter(function(a){return a.id!==id}).map(function(a){
+    return Object.assign({},a,{replies:delIn(a.replies,id)});
+  });
+}
 
-/* ── beep ── */
+/* ---- beep ---- */
 function beep3(){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    [0,.35,.7].forEach(t=>{
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);o.frequency.value=880;
-      g.gain.setValueAtTime(.5,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);
-      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3);
+    var ctx=new (window.AudioContext||window.webkitAudioContext)();
+    [0,0.35,0.7].forEach(function(t){
+      var o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value=880;
+      g.gain.setValueAtTime(0.5,ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.25);
+      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.3);
     });
   }catch(e){}
 }
 
-/* ── Timer ── */
-function Timer({expiresAt,onExpire}){
-  const [left,setLeft]=useState(null);
-  const fired=useRef(false);
-  useEffect(()=>{
+/* ---- Timer ---- */
+function Timer(props){
+  var expiresAt=props.expiresAt, onExpire=props.onExpire;
+  var leftState=useState(null); var left=leftState[0], setLeft=leftState[1];
+  var fired=useRef(false);
+  useEffect(function(){
     if(!expiresAt)return;
     fired.current=false;
-    const tick=()=>{
-      const s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));
+    function tick(){
+      var s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));
       setLeft(s);
-      if(s===0&&!fired.current){fired.current=true;beep3();onExpire&&onExpire()}
-    };
-    tick();const iv=setInterval(tick,1000);return()=>clearInterval(iv);
+      if(s===0 && !fired.current){fired.current=true;beep3();if(onExpire)onExpire()}
+    }
+    tick();
+    var iv=setInterval(tick,1000);
+    return function(){clearInterval(iv)};
   },[expiresAt]);
   if(left===null)return null;
-  const h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
-  const fmt=n=>String(n).padStart(2,'0');
-  return(
-    <span className={`tchip${left<60?' warn':''}`}>
-      <IconClock/>{h>0?`${fmt(h)}:`:''}{ fmt(m)}:{fmt(s)}{left===0?' Closed':''}
-    </span>
-  );
+  var h=Math.floor(left/3600), m=Math.floor((left%3600)/60), s=left%60;
+  function fmt(n){return String(n).padStart(2,'0')}
+  return <span className={'tchip'+(left<60?' warn':'')}>
+    <IconClock/>{h>0?(fmt(h)+':'):''}{fmt(m)}:{fmt(s)}{left===0?' Closed':''}
+  </span>;
 }
 
-/* ── Reply ── */
-function ReplyItem({reply,onAct,isHost,depth=0}){
-  const [show,setShow]=useState(false);
-  const [txt,setTxt]=useState('');
-  const [conf,setConf]=useState(false);
-  const sorted=[...(reply.replies||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
-  return(
-    <div style={{marginTop:8}}>
-      {conf&&<Confirm msg="Delete this reply?\n刪除此回覆？" onOk={()=>{onAct('del',reply.id);setConf(false)}} onCancel={()=>setConf(false)}/>}
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
-        <div style={{flex:1}}>
-          <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author}</span>
-          <span style={{fontSize:13}}>{reply.text}</span>
-        </div>
-        {isHost&&<button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={()=>setConf(true)}>Del</button>}
+/* ---- Reply item ---- */
+function ReplyItem(props){
+  var reply=props.reply, onAct=props.onAct, isHost=props.isHost, depth=props.depth||0;
+  var showState=useState(false); var show=showState[0], setShow=showState[1];
+  var txtState=useState(''); var txt=txtState[0], setTxt=txtState[1];
+  var confState=useState(false); var conf=confState[0], setConf=confState[1];
+  var sorted=(reply.replies||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
+  return <div style={{marginTop:8}}>
+    {conf && <Confirm msg={"Delete this reply?\n刪除此回覆？"} onOk={function(){onAct('del',reply.id);setConf(false)}} onCancel={function(){setConf(false)}}/>}
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+      <div style={{flex:1}}>
+        <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author}</span>
+        <span style={{fontSize:13}}>{reply.text}</span>
       </div>
-      <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-        <button className={`like-btn${reply.liked?' liked':''}`} onClick={()=>onAct('like',reply.id)}>
-          <IconThumb/> {reply.likes||0}
-        </button>
-        {depth<1&&<button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={()=>setShow(v=>!v)}>Reply 回覆</button>}
-      </div>
-      {show&&(
-        <div style={{marginTop:6}}>
-          <VoiceTxt value={txt} onChange={setTxt} placeholder="Type reply… / 輸入回覆…" rows={2}/>
-          <div style={{display:'flex',gap:6,marginTop:5}}>
-            <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={()=>{onAct('add_reply',reply.id,txt);setTxt('');setShow(false)}}>Submit 送出</button>
-            <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShow(false)}>Cancel 取消</button>
-          </div>
-        </div>
-      )}
-      {sorted.length>0&&(
-        <div className="rthread">
-          {sorted.map(r2=><ReplyItem key={r2.id} reply={r2} onAct={onAct} isHost={isHost} depth={depth+1}/>)}
-        </div>
-      )}
+      {isHost && <button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={function(){setConf(true)}}>Del</button>}
     </div>
-  );
+    <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
+      <button className={'like-btn'+(reply.liked?' liked':'')} onClick={function(){onAct('like',reply.id)}}>
+        <IconThumb/> {reply.likes||0}
+      </button>
+      {depth<1 && <button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={function(){setShow(!show)}}>Reply 回覆</button>}
+    </div>
+    {show && <div style={{marginTop:6}}>
+      <VoiceTxt value={txt} onChange={setTxt} placeholder="Type reply… / 輸入回覆…" rows={2}/>
+      <div style={{display:'flex',gap:6,marginTop:5}}>
+        <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={function(){onAct('add_reply',reply.id,txt);setTxt('');setShow(false)}}>Submit 送出</button>
+        <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShow(false)}}>Cancel 取消</button>
+      </div>
+    </div>}
+    {sorted.length>0 && <div className="rthread">
+      {sorted.map(function(r2){return <ReplyItem key={r2.id} reply={r2} onAct={onAct} isHost={isHost} depth={depth+1}/>})}
+    </div>}
+  </div>;
 }
 
-/* ── QCard ── */
-function QCard({q,isHost,anon,onUpdate,onDelete}){
-  const [showA,setShowA]=useState(false);
-  const [atxt,setAtxt]=useState('');
-  const [aname,setAname]=useState('');
-  const [confQ,setConfQ]=useState(false);
-  const act=(type,id,txt)=>{
-    if(type==='like')onUpdate({...q,answers:likeIn(q.answers,id)});
-    else if(type==='add_reply')onUpdate({...q,answers:addReplyIn(q.answers,id,txt,anon?'Anon 匿名':aname)});
-    else if(type==='del')onUpdate({...q,answers:delIn(q.answers,id)});
-  };
-  const submitA=()=>{
+/* ---- QCard ---- */
+function QCard(props){
+  var q=props.q, isHost=props.isHost, anon=props.anon, onUpdate=props.onUpdate, onDelete=props.onDelete;
+  var showAState=useState(false); var showA=showAState[0], setShowA=showAState[1];
+  var atxtState=useState(''); var atxt=atxtState[0], setAtxt=atxtState[1];
+  var anameState=useState(''); var aname=anameState[0], setAname=anameState[1];
+  var confQState=useState(false); var confQ=confQState[0], setConfQ=confQState[1];
+  function act(type,id,txt){
+    if(type==='like')onUpdate(Object.assign({},q,{answers:likeIn(q.answers,id)}));
+    else if(type==='add_reply')onUpdate(Object.assign({},q,{answers:addReplyIn(q.answers,id,txt,anon?'Anon 匿名':aname)}));
+    else if(type==='del')onUpdate(Object.assign({},q,{answers:delIn(q.answers,id)}));
+  }
+  function submitA(){
     if(!atxt.trim())return;
-    if(!anon&&!aname.trim()){alert('Name required / 請填寫名字');return}
-    const a={id:uid(),text:atxt,author:anon?'Anon 匿名':aname.trim(),likes:0,liked:false,replies:[],createdAt:ts()};
-    onUpdate({...q,answers:[...(q.answers||[]),a]});
-    setAtxt('');setAname('');setShowA(false);
-  };
-  const sorted=[...(q.answers||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
-  return(
-    <div className="card">
-      {confQ&&<Confirm msg="Delete this question?\n刪除此問題？" onOk={()=>{onDelete(q.id);setConfQ(false)}} onCancel={()=>setConfQ(false)}/>}
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
-        <div style={{flex:1}}>
-          <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
-            <span className={`badge ${anon?'ba':'bn'}`}>{anon?'Anon 匿名':'Named 具名'}</span>
-            {!anon&&<span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
-            <span style={{fontSize:11,color:'#9ca3af'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
-          </div>
-          <p style={{margin:0,fontSize:15,fontWeight:600,lineHeight:1.5}}>{q.text}</p>
+    if(!anon && !aname.trim()){alert('Name required / 請填寫名字');return}
+    var a={id:uid(),text:atxt,author:anon?'Anon 匿名':aname.trim(),likes:0,liked:false,replies:[],createdAt:ts()};
+    onUpdate(Object.assign({},q,{answers:(q.answers||[]).concat([a])}));
+    setAtxt(''); setAname(''); setShowA(false);
+  }
+  var sorted=(q.answers||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
+  return <div className="card">
+    {confQ && <Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){onDelete(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+      <div style={{flex:1}}>
+        <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
+          <span className={'badge '+(anon?'ba':'bn')}>{anon?'Anon 匿名':'Named 具名'}</span>
+          {!anon && <span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
+          <span style={{fontSize:11,color:'#9ca3af'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
         </div>
-        {isHost&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={()=>setConfQ(true)}>Del</button>}
+        <p style={{margin:0,fontSize:15,fontWeight:600,lineHeight:1.5}}>{q.text}</p>
       </div>
-      <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
-        <button className={`like-btn${q.liked?' liked':''}`} onClick={()=>onUpdate({...q,likes:(q.likes||0)+1,liked:true})}>
-          <IconThumb/> {q.likes||0}
-        </button>
-        <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShowA(v=>!v)}>
-          Reply 回答 ({(q.answers||[]).length})
-        </button>
-      </div>
-      {sorted.length>0&&(
-        <div className="rthread" style={{marginTop:10}}>
-          {sorted.map(a=><ReplyItem key={a.id} reply={a} onAct={act} isHost={isHost}/>)}
-        </div>
-      )}
-      {showA&&(
-        <div style={{marginTop:10,padding:10,background:'#f9fafb',borderRadius:8}}>
-          {!anon&&(
-            <div style={{marginBottom:7}}>
-              <input type="text" value={aname} onChange={e=>setAname(e.target.value)}
-                placeholder="Your name 你的名字 *"
-                style={{borderColor:aname.trim()?'#d1d5db':'#f87171'}}/>
-              {!aname.trim()&&<div className="err">Required 必填</div>}
-            </div>
-          )}
-          <VoiceTxt value={atxt} onChange={setAtxt} placeholder="Type answer… / 輸入回答…" rows={2}/>
-          <div style={{display:'flex',gap:6,marginTop:6}}>
-            <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={submitA}>Submit 送出</button>
-            <button className="btn btn-g" style={{fontSize:12}} onClick={()=>setShowA(false)}>Cancel 取消</button>
-          </div>
-        </div>
-      )}
+      {isHost && <button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
     </div>
-  );
-}
-
-/* ── Code Pill ── */
-function CodePill({code,onZoom}){
-  const [vis,setVis]=useState(true);
-  const [cp,setCp]=useState(false);
-  const [done,setDone]=useState(false);
-  const tmr=useRef(null);
-  const start=()=>{tmr.current=setTimeout(()=>{navigator.clipboard?.writeText(code).then(()=>{setDone(true);setTimeout(()=>setDone(false),1400)})},1000);setCp(true)};
-  const end=()=>{clearTimeout(tmr.current);setCp(false)};
-  return(
-    <div className="cpill">
-      <button className="cpill-side" onClick={()=>setVis(v=>!v)} title={vis?'Hide Code':'Show Code'}>
-        {vis?<IconMinus/>:<IconPlus/>}
+    <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
+      <button className={'like-btn'+(q.liked?' liked':'')} onClick={function(){onUpdate(Object.assign({},q,{likes:(q.likes||0)+1,liked:true}))}}>
+        <IconThumb/> {q.likes||0}
       </button>
-      <div className={`cpill-mid${cp?' cp':''}`}
-        onMouseDown={start} onMouseUp={end} onMouseLeave={end}
-        onTouchStart={start} onTouchEnd={end}
-        title="Hold 1s to copy / 長按1秒複製">
-        {vis?(done?'Copied!':code):'···'}
-      </div>
-      <div className="cpill-div"/>
-      <button className="cpill-side" onClick={onZoom} title="Zoom Code">
-        <IconSearch/>
+      <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(!showA)}}>
+        Reply 回答 ({(q.answers||[]).length})
       </button>
     </div>
-  );
+    {sorted.length>0 && <div className="rthread" style={{marginTop:10}}>
+      {sorted.map(function(a){return <ReplyItem key={a.id} reply={a} onAct={act} isHost={isHost}/>})}
+    </div>}
+    {showA && <div style={{marginTop:10,padding:10,background:'#f9fafb',borderRadius:8}}>
+      {!anon && <div style={{marginBottom:7}}>
+        <input type="text" value={aname} onChange={function(e){setAname(e.target.value)}}
+          placeholder="Your name 你的名字 *" style={{borderColor:aname.trim()?'#d1d5db':'#f87171'}}/>
+        {!aname.trim() && <div className="err">Required 必填</div>}
+      </div>}
+      <VoiceTxt value={atxt} onChange={setAtxt} placeholder="Type answer… / 輸入回答…" rows={2}/>
+      <div style={{display:'flex',gap:6,marginTop:6}}>
+        <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={submitA}>Submit 送出</button>
+        <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(false)}}>Cancel 取消</button>
+      </div>
+    </div>}
+  </div>;
 }
 
-/* ── Manage dropdown (CSV + Delete) ── */
-function ManageMenu({onCSV,onDelete}){
-  const [open,setOpen]=useState(false);
-  const ref=useRef(null);
-  useEffect(()=>{
-    const close=e=>{if(ref.current&&!ref.current.contains(e.target))setOpen(false)};
+/* ---- Code Pill ---- */
+function CodePill(props){
+  var code=props.code, onZoom=props.onZoom;
+  var visState=useState(true); var vis=visState[0], setVis=visState[1];
+  var cpState=useState(false); var cp=cpState[0], setCp=cpState[1];
+  var doneState=useState(false); var done=doneState[0], setDone=doneState[1];
+  var tmr=useRef(null);
+  function start(){
+    tmr.current=setTimeout(function(){
+      if(navigator.clipboard) navigator.clipboard.writeText(code).then(function(){setDone(true);setTimeout(function(){setDone(false)},1400)});
+    },1000);
+    setCp(true);
+  }
+  function end(){clearTimeout(tmr.current);setCp(false)}
+  return <div className="cpill">
+    <button className="cpill-side" onClick={function(){setVis(!vis)}} title={vis?'Hide Code':'Show Code'}>
+      {vis ? <IconMinus/> : <IconPlus/>}
+    </button>
+    <div className={'cpill-mid'+(cp?' cp':'')}
+      onMouseDown={start} onMouseUp={end} onMouseLeave={end}
+      onTouchStart={start} onTouchEnd={end}
+      title="Hold 1s to copy / 長按1秒複製">
+      {vis ? (done?'Copied!':code) : '···'}
+    </div>
+    <div className="cpill-div"></div>
+    <button className="cpill-side" onClick={onZoom} title="Zoom Code">
+      <IconSearch/>
+    </button>
+  </div>;
+}
+
+/* ---- Manage dropdown ---- */
+function ManageMenu(props){
+  var onCSV=props.onCSV, onDelete=props.onDelete;
+  var openState=useState(false); var open=openState[0], setOpen=openState[1];
+  var ref=useRef(null);
+  useEffect(function(){
+    function close(e){if(ref.current && !ref.current.contains(e.target))setOpen(false)}
     document.addEventListener('click',close);
-    return()=>document.removeEventListener('click',close);
+    return function(){document.removeEventListener('click',close)};
   },[]);
-  return(
-    <div className="mgwrap" ref={ref}>
-      <button className="ic" onClick={()=>setOpen(v=>!v)} title="Manage 管理">
-        <IconGear/> Manage
-      </button>
-      {open&&(
-        <div className="mgmenu">
-          <button className="mgitem" onClick={()=>{onCSV();setOpen(false)}}>Export CSV 匯出</button>
-          <button className="mgitem danger" onClick={()=>{onDelete();setOpen(false)}}>Delete Room 刪除問答室</button>
-        </div>
-      )}
-    </div>
-  );
-}
-  const [mins,setMins]=useState(1);
-  return(
-    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{maxWidth:310,textAlign:'center'}}>
-        <h2>Time's up! 時間到</h2>
-        <p style={{color:'#374151',fontSize:14,margin:'0 0 14px'}}>Extend the session? 要延長嗎？</p>
-        <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center',marginBottom:18}}>
-          <input type="number" value={mins} min={1} max={60} onChange={e=>setMins(+e.target.value)} style={{width:66,textAlign:'center',fontSize:18}}/>
-          <span style={{fontSize:14}}>min 分</span>
-        </div>
-        <div style={{display:'flex',gap:8,justifyContent:'center'}}>
-          <button className="btn btn-p" onClick={()=>{onExtend(mins);onClose()}}>Extend 延長</button>
-          <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
-        </div>
-      </div>
-    </div>
-  );
+  return <div className="mgwrap" ref={ref}>
+    <button className="ic" onClick={function(){setOpen(!open)}} title="Manage 管理">
+      <IconGear/> Manage
+    </button>
+    {open && <div className="mgmenu">
+      <button className="mgitem" onClick={function(){onCSV();setOpen(false)}}>Export CSV 匯出</button>
+      <button className="mgitem danger" onClick={function(){onDelete();setOpen(false)}}>Delete Room 刪除問答室</button>
+    </div>}
+  </div>;
 }
 
-function QRModal({url,onPin,onClose}){
-  const [copied,setCopied]=useState(false);
-  const copy=()=>navigator.clipboard?.writeText(url).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1400)});
-  return(
-    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{textAlign:'center',maxWidth:320}}>
-        <h2>QR Code</h2>
-        <div style={{display:'flex',justifyContent:'center',margin:'10px 0 12px'}}>
-          <QRCanvas url={url} size={230}/>
-        </div>
-        <p style={{fontSize:11,color:'#6b7280',wordBreak:'break-all',margin:'0 0 14px'}}>{url}</p>
-        <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-          <button className="btn btn-p" onClick={()=>{onPin();onClose()}}>Pin 固定頁首</button>
-          <button className="btn btn-g" onClick={copy}>{copied?'Copied!':'Copy Link 複製'}</button>
-          <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
-        </div>
+/* ---- Modals ---- */
+function ExtendModal(props){
+  var onExtend=props.onExtend, onClose=props.onClose;
+  var minsState=useState(1); var mins=minsState[0], setMins=minsState[1];
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+    <div className="modal" style={{maxWidth:310,textAlign:'center'}}>
+      <h2>Time's up! 時間到</h2>
+      <p style={{color:'#374151',fontSize:14,margin:'0 0 14px'}}>Extend the session? 要延長嗎？</p>
+      <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center',marginBottom:18}}>
+        <input type="number" value={mins} min={1} max={60} onChange={function(e){setMins(+e.target.value)}} style={{width:66,textAlign:'center',fontSize:18}}/>
+        <span style={{fontSize:14}}>min 分</span>
+      </div>
+      <div style={{display:'flex',gap:8,justifyContent:'center'}}>
+        <button className="btn btn-p" onClick={function(){onExtend(mins);onClose()}}>Extend 延長</button>
+        <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
       </div>
     </div>
-  );
+  </div>;
 }
 
-function CodeModal({code,onClose}){
-  const [copied,setCopied]=useState(false);
-  const copy=()=>navigator.clipboard?.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),1400)});
-  return(
-    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{textAlign:'center',maxWidth:320}}>
-        <h2>Room Code</h2>
-        <div style={{fontSize:46,fontWeight:900,letterSpacing:8,color:'var(--green)',margin:'14px 0',fontVariantNumeric:'tabular-nums'}}>{code}</div>
-        <div style={{display:'flex',gap:8,justifyContent:'center'}}>
-          <button className="btn btn-p" onClick={copy}>{copied?'Copied!':'Copy 複製'}</button>
-          <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
-        </div>
+function QRModal(props){
+  var url=props.url, onPin=props.onPin, onClose=props.onClose;
+  var copiedState=useState(false); var copied=copiedState[0], setCopied=copiedState[1];
+  function copy(){if(navigator.clipboard)navigator.clipboard.writeText(url).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+    <div className="modal" style={{textAlign:'center',maxWidth:320}}>
+      <h2>QR Code</h2>
+      <div style={{display:'flex',justifyContent:'center',margin:'10px 0 12px'}}>
+        <QRCanvas url={url} size={230}/>
+      </div>
+      <p style={{fontSize:11,color:'#6b7280',wordBreak:'break-all',margin:'0 0 14px'}}>{url}</p>
+      <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+        <button className="btn btn-p" onClick={function(){onPin();onClose()}}>Pin 固定頁首</button>
+        <button className="btn btn-g" onClick={copy}>{copied?'Copied!':'Copy Link 複製'}</button>
+        <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
       </div>
     </div>
-  );
+  </div>;
 }
 
-function CreateModal({onClose,onCreate}){
-  const [name,setName]=useState('');
-  const [anon,setAnon]=useState(false);
-  const [timed,setTimed]=useState(false);
-  const [hrs,setHrs]=useState(0);
-  const [mins,setMins]=useState(30);
-  const submit=()=>{
+function CodeModal(props){
+  var code=props.code, onClose=props.onClose;
+  var copiedState=useState(false); var copied=copiedState[0], setCopied=copiedState[1];
+  function copy(){if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+    <div className="modal" style={{textAlign:'center',maxWidth:320}}>
+      <h2>Room Code</h2>
+      <div style={{fontSize:46,fontWeight:900,letterSpacing:8,color:'var(--green)',margin:'14px 0',fontVariantNumeric:'tabular-nums'}}>{code}</div>
+      <div style={{display:'flex',gap:8,justifyContent:'center'}}>
+        <button className="btn btn-p" onClick={copy}>{copied?'Copied!':'Copy 複製'}</button>
+        <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
+      </div>
+    </div>
+  </div>;
+}
+
+function CreateModal(props){
+  var onClose=props.onClose, onCreate=props.onCreate;
+  var nameState=useState(''); var name=nameState[0], setName=nameState[1];
+  var anonState=useState(false); var anon=anonState[0], setAnon=anonState[1];
+  var timedState=useState(false); var timed=timedState[0], setTimed=timedState[1];
+  var hrsState=useState(0); var hrs=hrsState[0], setHrs=hrsState[1];
+  var minsState=useState(30); var mins=minsState[0], setMins=minsState[1];
+  function submit(){
     if(!name.trim())return;
-    const expiresAt=timed?Date.now()+(hrs*3600+mins*60)*1000:null;
-    onCreate(name.trim(),anon,expiresAt);onClose();
-  };
-  return(
-    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal">
-        <h2>Create Room 建立問答室</h2>
-        <div className="field"><label>Room Name 名稱</label>
-          <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Week 3 Q&A" onKeyDown={e=>e.key==='Enter'&&submit()} autoFocus/>
+    var expiresAt = timed ? Date.now()+(hrs*3600+mins*60)*1000 : null;
+    onCreate(name.trim(),anon,expiresAt);
+    onClose();
+  }
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+    <div className="modal">
+      <h2>Create Room 建立問答室</h2>
+      <div className="field"><label>Room Name 名稱</label>
+        <input type="text" value={name} onChange={function(e){setName(e.target.value)}} placeholder="e.g. Week 3 Q&A" onKeyDown={function(e){if(e.key==='Enter')submit()}} autoFocus/>
+      </div>
+      <label className="row"><input type="checkbox" checked={anon} onChange={function(e){setAnon(e.target.checked)}}/> Anonymous 匿名模式</label>
+      <label className="row"><input type="checkbox" checked={timed} onChange={function(e){setTimed(e.target.checked)}}/> <IconClock/> Set Timer 限時開放</label>
+      {timed && <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
+        <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+          <input type="number" value={hrs} min={0} max={23} onChange={function(e){setHrs(+e.target.value)}} style={{width:58}}/>
+          <span style={{fontSize:13}}>hr 時</span>
         </div>
-        <label className="row"><input type="checkbox" checked={anon} onChange={e=>setAnon(e.target.checked)}/> Anonymous 匿名模式</label>
-        <label className="row"><input type="checkbox" checked={timed} onChange={e=>setTimed(e.target.checked)}/><IconClock/> Set Timer 限時開放</label>
-        {timed&&(
-          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
-            <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-              <input type="number" value={hrs} min={0} max={23} onChange={e=>setHrs(+e.target.value)} style={{width:58}}/>
-              <span style={{fontSize:13}}>hr 時</span>
-            </div>
-            <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-              <input type="number" value={mins} min={0} max={59} onChange={e=>setMins(+e.target.value)} style={{width:58}}/>
-              <span style={{fontSize:13}}>min 分</span>
-            </div>
-          </div>
-        )}
-        <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:6}}>
-          <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
-          <button className="btn btn-p" onClick={submit}>Create 建立</button>
+        <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+          <input type="number" value={mins} min={0} max={59} onChange={function(e){setMins(+e.target.value)}} style={{width:58}}/>
+          <span style={{fontSize:13}}>min 分</span>
         </div>
+      </div>}
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:6}}>
+        <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
+        <button className="btn btn-p" onClick={submit}>Create 建立</button>
       </div>
     </div>
-  );
+  </div>;
 }
 
-function JoinModal({onClose,onJoin}){
-  const [code,setCode]=useState('');
-  return(
-    <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal">
-        <h2>Join Room 加入問答室</h2>
-        <div className="field"><label>Room Code</label>
-          <input type="text" value={code} onChange={e=>setCode(e.target.value.trim())} placeholder="Paste 8-char code" onKeyDown={e=>e.key==='Enter'&&onJoin(code)} autoFocus/>
-        </div>
-        <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
-          <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
-          <button className="btn btn-p" onClick={()=>onJoin(code)}>Join 加入</button>
-        </div>
+function JoinModal(props){
+  var onClose=props.onClose, onJoin=props.onJoin;
+  var codeState=useState(''); var code=codeState[0], setCode=codeState[1];
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+    <div className="modal">
+      <h2>Join Room 加入問答室</h2>
+      <div className="field"><label>Room Code</label>
+        <input type="text" value={code} onChange={function(e){setCode(e.target.value.trim())}} placeholder="Paste 8-char code" onKeyDown={function(e){if(e.key==='Enter')onJoin(code)}} autoFocus/>
+      </div>
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+        <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
+        <button className="btn btn-p" onClick={function(){onJoin(code)}}>Join 加入</button>
       </div>
     </div>
-  );
+  </div>;
 }
 
-/* ── App ── */
+/* ---- App ---- */
 function App(){
-  const [rooms,setRooms]=useState(()=>load(SK));
-  const [hosts,setHosts]=useState(()=>load(HK));
-  const [activeId,setActiveId]=useState(null);
-  const [modal,setModal]=useState(null);
-  const [newQ,setNewQ]=useState('');
-  const [qAuthor,setQAuthor]=useState('');
-  const [sideOpen,setSideOpen]=useState(false);
-  const [qrPinned,setQrPinned]=useState(false);
-  const [showExtend,setShowExtend]=useState(false);
-  const [confRoom,setConfRoom]=useState(false);
+  var roomsState=useState(function(){return load(SK)}); var rooms=roomsState[0], setRooms=roomsState[1];
+  var hostsState=useState(function(){return load(HK)}); var hosts=hostsState[0], setHosts=hostsState[1];
+  var activeIdState=useState(null); var activeId=activeIdState[0], setActiveId=activeIdState[1];
+  var modalState=useState(null); var modal=modalState[0], setModal=modalState[1];
+  var newQState=useState(''); var newQ=newQState[0], setNewQ=newQState[1];
+  var qAuthorState=useState(''); var qAuthor=qAuthorState[0], setQAuthor=qAuthorState[1];
+  var sideOpenState=useState(false); var sideOpen=sideOpenState[0], setSideOpen=sideOpenState[1];
+  var qrPinnedState=useState(false); var qrPinned=qrPinnedState[0], setQrPinned=qrPinnedState[1];
+  var showExtendState=useState(false); var showExtend=showExtendState[0], setShowExtend=showExtendState[1];
+  var confRoomState=useState(false); var confRoom=confRoomState[0], setConfRoom=confRoomState[1];
 
-  useEffect(()=>save(SK,rooms),[rooms]);
-  useEffect(()=>save(HK,hosts),[hosts]);
-  useEffect(()=>{const p=new URLSearchParams(window.location.search).get('room');if(p&&rooms[p])setActiveId(p)},[]);
+  useEffect(function(){save(SK,rooms)},[rooms]);
+  useEffect(function(){save(HK,hosts)},[hosts]);
+  useEffect(function(){
+    var p=new URLSearchParams(window.location.search).get('room');
+    if(p && rooms[p])setActiveId(p);
+  },[]);
 
-  const rm=rooms[activeId]||null;
-  const isHost=!!(activeId&&hosts[activeId]);
-  const isClosed=!!(rm?.expiresAt&&Date.now()>rm.expiresAt);
-  const pageUrl=rm?`${window.location.href.split('?')[0]}?room=${activeId}`:'';
+  var rm = rooms[activeId] || null;
+  var isHost = !!(activeId && hosts[activeId]);
+  var isClosed = !!(rm && rm.expiresAt && Date.now()>rm.expiresAt);
+  var pageUrl = rm ? (window.location.href.split('?')[0]+'?room='+activeId) : '';
 
-  const createRoom=(name,anon,expiresAt)=>{const id=uid();setRooms(r=>({...r,[id]:{id,name,anonymous:anon,expiresAt,questions:[],createdAt:ts()}}));setHosts(h=>({...h,[id]:uid()}));setActiveId(id)};
-  const joinRoom=code=>{if(rooms[code]){setActiveId(code);setModal(null)}else alert('Room not found / 找不到此 Room')};
-  const deleteRoom=id=>{setRooms(r=>{const n={...r};delete n[id];return n});setHosts(h=>{const n={...h};delete n[id];return n});if(activeId===id)setActiveId(null)};
-  const exportCSV=rm=>{
-    const pad=n=>String(n).padStart(2,'0');
-    const now=new Date();
-    const dt=`${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
-    const fname=`${rm.name}-${rm.id}-${dt}.csv`;
-    const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
-    const rows=[['Type 類型','Author 作者','Content 內容','Likes 讚數','Time 時間','Parent 上層ID','ID']];
-    (rm.questions||[]).forEach(q=>{
-      rows.push(['Question 提問',esc(q.author),esc(q.text),q.likes||0,new Date(q.createdAt).toLocaleString(),'',q.id]);
-      (q.answers||[]).forEach(a=>{
-        rows.push(['Answer 回答',esc(a.author),esc(a.text),a.likes||0,new Date(a.createdAt).toLocaleString(),q.id,a.id]);
-        (a.replies||[]).forEach(r=>{
-          rows.push(['Reply 回覆',esc(r.author),esc(r.text),r.likes||0,new Date(r.createdAt).toLocaleString(),a.id,r.id]);
+  function createRoom(name,anon,expiresAt){
+    var id=uid();
+    setRooms(function(r){var n=Object.assign({},r);n[id]={id:id,name:name,anonymous:anon,expiresAt:expiresAt,questions:[],createdAt:ts()};return n});
+    setHosts(function(h){var n=Object.assign({},h);n[id]=uid();return n});
+    setActiveId(id);
+  }
+  function joinRoom(code){
+    if(rooms[code]){setActiveId(code);setModal(null)}
+    else alert('Room not found / 找不到此 Room');
+  }
+  function deleteRoom(id){
+    setRooms(function(r){var n=Object.assign({},r);delete n[id];return n});
+    setHosts(function(h){var n=Object.assign({},h);delete n[id];return n});
+    if(activeId===id)setActiveId(null);
+  }
+  function exportCSV(rm){
+    function pad(n){return String(n).padStart(2,'0')}
+    var now=new Date();
+    var dt=''+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'-'+pad(now.getHours())+pad(now.getMinutes());
+    var fname=rm.name+'-'+rm.id+'-'+dt+'.csv';
+    function esc(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}
+    var rows=[['Type','Author','Content','Likes','Time','Parent','ID']];
+    (rm.questions||[]).forEach(function(q){
+      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,new Date(q.createdAt).toLocaleString(),'',q.id]);
+      (q.answers||[]).forEach(function(a){
+        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,new Date(a.createdAt).toLocaleString(),q.id,a.id]);
+        (a.replies||[]).forEach(function(r){
+          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,new Date(r.createdAt).toLocaleString(),a.id,r.id]);
         });
       });
     });
-    const csv='\uFEFF'+rows.map(r=>r.join(',')).join('\n');
-    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;a.download=fname;a.click();
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
-  };
-  const extendRoom=mins=>{if(!rm)return;const newExp=Math.max(Date.now(),rm.expiresAt||Date.now())+(mins*60*1000);setRooms(r=>({...r,[activeId]:{...rm,expiresAt:newExp}}))};
-  const postQ=()=>{
+    var csv='\uFEFF'+rows.map(function(r){return r.join(',')}).join('\n');
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download=fname; a.click();
+    setTimeout(function(){URL.revokeObjectURL(url)},1000);
+  }
+  function extendRoom(mins){
+    if(!rm)return;
+    var newExp=Math.max(Date.now(), rm.expiresAt||Date.now())+(mins*60*1000);
+    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{expiresAt:newExp});return n});
+  }
+  function postQ(){
     if(!newQ.trim()||!rm||isClosed)return;
-    if(!rm.anonymous&&!qAuthor.trim()){alert('Name required / 請填寫名字');return}
-    const q={id:uid(),text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,liked:false,answers:[],createdAt:ts()};
-    setRooms(r=>({...r,[activeId]:{...rm,questions:[...(rm.questions||[]),q]}}));
-    setNewQ('');setQAuthor('');
-  };
-  const updQ=q=>setRooms(r=>({...r,[activeId]:{...rm,questions:(rm.questions||[]).map(x=>x.id===q.id?q:x)}}));
-  const delQ=id=>setRooms(r=>({...r,[activeId]:{...rm,questions:(rm.questions||[]).filter(x=>x.id!==id)}}));
-  const sorted=[...(rm?.questions||[])].sort((a,b)=>(b.likes||0)-(a.likes||0));
+    if(!rm.anonymous && !qAuthor.trim()){alert('Name required / 請填寫名字');return}
+    var q={id:uid(),text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,liked:false,answers:[],createdAt:ts()};
+    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{questions:(rm.questions||[]).concat([q])});return n});
+    setNewQ(''); setQAuthor('');
+  }
+  function updQ(q){
+    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{questions:(rm.questions||[]).map(function(x){return x.id===q.id?q:x})});return n});
+  }
+  function delQ(id){
+    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{questions:(rm.questions||[]).filter(function(x){return x.id!==id})});return n});
+  }
+  var sorted = rm ? (rm.questions||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)}) : [];
 
-  return(
-    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
-      {confRoom&&<Confirm msg={`Delete room "${rm?.name}"?\n刪除問答室「${rm?.name}」？`} onOk={()=>{deleteRoom(activeId);setConfRoom(false)}} onCancel={()=>setConfRoom(false)}/>}
+  return <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
+    {confRoom && <Confirm msg={'Delete room "'+(rm?rm.name:'')+'"?\n刪除問答室「'+(rm?rm.name:'')+'」？'} onOk={function(){deleteRoom(activeId);setConfRoom(false)}} onCancel={function(){setConfRoom(false)}}/>}
 
-      {/* Sidebar scrim (mobile + desktop) */}
-      {sideOpen&&<div className="sidebar-scrim" onClick={()=>setSideOpen(false)}/>}
+    {sideOpen && <div className="sidebar-scrim" onClick={function(){setSideOpen(false)}}/>}
 
-      {/* Sidebar */}
-      <div className={`sidebar${sideOpen?'':' closed'}`}>
-        <div style={{padding:'14px 10px 10px',borderBottom:'1px solid #e5e7eb',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <div style={{fontWeight:800,color:'var(--green)',fontSize:16,letterSpacing:.5}}>ClassQ&amp;A</div>
-          <button onClick={()=>setSideOpen(false)} style={{background:'none',border:'none',color:'#6b7280',fontSize:18,cursor:'pointer',lineHeight:1,padding:'2px 4px'}} title="Close menu">&#10005;</button>
-        </div>
-        <div style={{padding:'8px 6px',flex:1,overflowY:'auto'}}>
-          <div style={{fontSize:10,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1,fontWeight:600}}>ROOMS</div>
-          {Object.keys(rooms).length===0&&<div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>No rooms yet</div>}
-          {Object.values(rooms).map(r=>(
-            <div key={r.id} className={`rtab${activeId===r.id?' act':''}`} onClick={()=>{setActiveId(r.id);setSideOpen(false)}}>
-              <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
-              <div style={{fontSize:11,opacity:.72,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
-                {hosts[r.id]&&<span>Host</span>}
-                <span>{r.anonymous?'Anon':'Named'}</span>
-                {r.expiresAt&&<><IconClock/></>}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="sfooter">
-          Architect: <a href="https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo" target="_blank" rel="noopener noreferrer">Prof. Shihmin Lo</a>
-        </div>
+    <div className={'sidebar'+(sideOpen?'':' closed')}>
+      <div style={{padding:'14px 10px 10px',borderBottom:'1px solid #e5e7eb',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div style={{fontWeight:800,color:'var(--green)',fontSize:16,letterSpacing:.5}}>ClassQ&A</div>
+        <button onClick={function(){setSideOpen(false)}} style={{background:'none',border:'none',color:'#6b7280',fontSize:18,cursor:'pointer',lineHeight:1,padding:'2px 4px'}} title="Close menu">&#10005;</button>
       </div>
-
-      {/* Main */}
-      <div className="main-col">
-        <div className="topbar">
-          <button onClick={()=>setSideOpen(v=>!v)} style={{background:'none',border:'none',color:'#fff',fontSize:19,cursor:'pointer',padding:'0 3px',flexShrink:0,lineHeight:1}} title="Menu 目錄">&#9776;</button>
-          <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'28%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
-            {rm?rm.name:'ClassQ&A'}
-          </span>
-          {rm&&(
-            <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
-              {rm.expiresAt&&<Timer expiresAt={rm.expiresAt} onExpire={()=>setShowExtend(true)}/>}
-              <CodePill code={activeId} onZoom={()=>setModal('code')}/>
-              <button className="ic" onClick={()=>setModal('qr')} title="QR Code">
-                <IconQR/>
-              </button>
-              {isHost&&<ManageMenu onCSV={()=>exportCSV(rm)} onDelete={()=>setConfRoom(true)}/>}
+      <div style={{padding:'8px 6px',flex:1,overflowY:'auto'}}>
+        <div style={{fontSize:10,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1,fontWeight:600}}>ROOMS</div>
+        {Object.keys(rooms).length===0 && <div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>No rooms yet</div>}
+        {Object.values(rooms).map(function(r){
+          return <div key={r.id} className={'rtab'+(activeId===r.id?' act':'')} onClick={function(){setActiveId(r.id);setSideOpen(false)}}>
+            <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
+            <div style={{fontSize:11,opacity:.72,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
+              {hosts[r.id] && <span>Host</span>}
+              <span>{r.anonymous?'Anon':'Named'}</span>
+              {r.expiresAt && <IconClock/>}
             </div>
-          )}
-        </div>
-
-        {/* Always-visible Create/Join bar */}
-        <div className="actionsbar">
-          <button className="btn btn-p" onClick={()=>setModal('create')} style={{fontSize:12}}>+ Create 建立</button>
-          <button className="btn btn-g" onClick={()=>setModal('join')} style={{fontSize:12}}>Join 加入</button>
-          {rm&&<span style={{fontSize:11,color:'#9ca3af',marginLeft:'auto'}}>Current 目前：{rm.name}</span>}
-        </div>
-
-        {rm&&qrPinned&&(
-          <div className="qrstrip">
-            <QRCanvas url={pageUrl} size={88}/>
-            <button onClick={()=>setQrPinned(false)} style={{background:'none',border:'none',cursor:'pointer',fontSize:15,color:'#6b7280',padding:'0 2px',lineHeight:1}} title="Unpin">&#10005;</button>
-          </div>
-        )}
-
-        <div className="content-area">
-          {!rm?(
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
-              <div style={{fontSize:28,fontWeight:800,color:'var(--green)',letterSpacing:.5}}>ClassQ&amp;A</div>
-              <div style={{fontSize:14,color:'#6b7280',maxWidth:300,lineHeight:1.6}}>
-                Create or join a room to start.<br/>建立或加入問答室開始提問。
-              </div>
-            </div>
-          ):(
-            <div className="content-inner">
-              {isClosed?(
-                <div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
-                  Session closed 問答已結束
-                  {isHost&&<div style={{marginTop:10}}><button className="btn btn-p" onClick={()=>setShowExtend(true)}>Extend 延長</button></div>}
-                </div>
-              ):(
-                <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
-                  <div style={{fontWeight:700,color:'var(--green)',marginBottom:9,fontSize:13,letterSpacing:.3}}>Ask a Question 提問</div>
-                  {!rm.anonymous&&(
-                    <div style={{marginBottom:8}}>
-                      <input type="text" value={qAuthor} onChange={e=>setQAuthor(e.target.value)}
-                        placeholder="Your name 你的名字 *"
-                        style={{borderColor:qAuthor.trim()?'#d1d5db':'#f87171'}}/>
-                      {!qAuthor.trim()&&<div className="err">Required 必填</div>}
-                    </div>
-                  )}
-                  <VoiceTxt value={newQ} onChange={setNewQ} placeholder="Type or speak your question… / 輸入或語音提問…" rows={3}/>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:9,flexWrap:'wrap',gap:8}}>
-                    <span style={{fontSize:12,color:'#9ca3af'}}>{rm.anonymous?'Anon 匿名':'Named 具名'}</span>
-                    <button className="btn btn-p" onClick={postQ}>Submit 送出</button>
-                  </div>
-                </div>
-              )}
-              {sorted.length===0?(
-                <div style={{textAlign:'center',color:'#9ca3af',padding:'34px 0',fontSize:14,lineHeight:1.7}}>
-                  No questions yet. Be the first!<br/>尚無提問，歡迎第一個提問！
-                </div>
-              ):(
-                <>
-                  <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
-                    {sorted.length} question{sorted.length>1?'s':''} · sorted by likes 依讚數排序
-                  </div>
-                  {sorted.map(q=><QCard key={q.id} q={q} isHost={isHost} anon={rm.anonymous} onUpdate={updQ} onDelete={delQ}/>)}
-                </>
-              )}
-            </div>
-          )}
-        </div>
+          </div>;
+        })}
       </div>
-
-      {modal==='create'&&<CreateModal onClose={()=>setModal(null)} onCreate={createRoom}/>}
-      {modal==='join'&&<JoinModal onClose={()=>setModal(null)} onJoin={joinRoom}/>}
-      {modal==='qr'&&<QRModal url={pageUrl} onPin={()=>setQrPinned(true)} onClose={()=>setModal(null)}/>}
-      {modal==='code'&&<CodeModal code={activeId||''} onClose={()=>setModal(null)}/>}
-      {showExtend&&<ExtendModal onExtend={extendRoom} onClose={()=>setShowExtend(false)}/>}
+      <div className="sfooter">
+        Architect: <a href="https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo" target="_blank" rel="noopener noreferrer">Prof. Shihmin Lo</a>
+      </div>
     </div>
-  );
+
+    <div className="main-col">
+      <div className="topbar">
+        <button onClick={function(){setSideOpen(!sideOpen)}} style={{background:'none',border:'none',color:'#fff',fontSize:19,cursor:'pointer',padding:'0 3px',flexShrink:0,lineHeight:1}} title="Menu 目錄">&#9776;</button>
+        <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'28%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+          {rm ? rm.name : 'ClassQ&A'}
+        </span>
+        {rm && <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
+          {rm.expiresAt && <Timer expiresAt={rm.expiresAt} onExpire={function(){setShowExtend(true)}}/>}
+          <CodePill code={activeId} onZoom={function(){setModal('code')}}/>
+          <button className="ic" onClick={function(){setModal('qr')}} title="QR Code"><IconQR/></button>
+          {isHost && <ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
+        </div>}
+      </div>
+
+      <div className="actionsbar">
+        <button className="btn btn-p" onClick={function(){setModal('create')}} style={{fontSize:12}}>+ Create 建立</button>
+        <button className="btn btn-g" onClick={function(){setModal('join')}} style={{fontSize:12}}>Join 加入</button>
+        {rm && <span style={{fontSize:11,color:'#9ca3af',marginLeft:'auto'}}>Current 目前：{rm.name}</span>}
+      </div>
+
+      {rm && qrPinned && <div className="qrstrip">
+        <QRCanvas url={pageUrl} size={88}/>
+        <button onClick={function(){setQrPinned(false)}} style={{background:'none',border:'none',cursor:'pointer',fontSize:15,color:'#6b7280',padding:'0 2px',lineHeight:1}} title="Unpin">&#10005;</button>
+      </div>}
+
+      <div className="content-area">
+        {!rm ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
+          <div style={{fontSize:28,fontWeight:800,color:'var(--green)',letterSpacing:.5}}>ClassQ&A</div>
+          <div style={{fontSize:14,color:'#6b7280',maxWidth:300,lineHeight:1.6}}>
+            Create or join a room to start.<br/>建立或加入問答室開始提問。
+          </div>
+        </div> : <div className="content-inner">
+          {isClosed ? <div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
+            Session closed 問答已結束
+            {isHost && <div style={{marginTop:10}}><button className="btn btn-p" onClick={function(){setShowExtend(true)}}>Extend 延長</button></div>}
+          </div> : <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
+            <div style={{fontWeight:700,color:'var(--green)',marginBottom:9,fontSize:13,letterSpacing:.3}}>Ask a Question 提問</div>
+            {!rm.anonymous && <div style={{marginBottom:8}}>
+              <input type="text" value={qAuthor} onChange={function(e){setQAuthor(e.target.value)}}
+                placeholder="Your name 你的名字 *" style={{borderColor:qAuthor.trim()?'#d1d5db':'#f87171'}}/>
+              {!qAuthor.trim() && <div className="err">Required 必填</div>}
+            </div>}
+            <VoiceTxt value={newQ} onChange={setNewQ} placeholder="Type or speak your question… / 輸入或語音提問…" rows={3}/>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:9,flexWrap:'wrap',gap:8}}>
+              <span style={{fontSize:12,color:'#9ca3af'}}>{rm.anonymous?'Anon 匿名':'Named 具名'}</span>
+              <button className="btn btn-p" onClick={postQ}>Submit 送出</button>
+            </div>
+          </div>}
+          {sorted.length===0 ? <div style={{textAlign:'center',color:'#9ca3af',padding:'34px 0',fontSize:14,lineHeight:1.7}}>
+            No questions yet. Be the first!<br/>尚無提問，歡迎第一個提問！
+          </div> : <div>
+            <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
+              {sorted.length} question{sorted.length>1?'s':''} · sorted by likes 依讚數排序
+            </div>
+            {sorted.map(function(q){return <QCard key={q.id} q={q} isHost={isHost} anon={rm.anonymous} onUpdate={updQ} onDelete={delQ}/>})}
+          </div>}
+        </div>}
+      </div>
+    </div>
+
+    {modal==='create' && <CreateModal onClose={function(){setModal(null)}} onCreate={createRoom}/>}
+    {modal==='join' && <JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom}/>}
+    {modal==='qr' && <QRModal url={pageUrl} onPin={function(){setQrPinned(true)}} onClose={function(){setModal(null)}}/>}
+    {modal==='code' && <CodeModal code={activeId||''} onClose={function(){setModal(null)}}/>}
+    {showExtend && <ExtendModal onExtend={extendRoom} onClose={function(){setShowExtend(false)}}/>}
+  </div>;
 }
-ReactDOM.render(<App/>,document.getElementById('root'));
+
+ReactDOM.render(<App/>, document.getElementById('root'));
 </script>
 </body>
 </html>
