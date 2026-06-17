@@ -865,7 +865,7 @@ function App(){
           <div style={{fontSize:14,color:'#6b7280',maxWidth:300,lineHeight:1.6}}>
             Create or join a room to start.<br/>建立或加入問答室開始提問。
           </div>
-        </div> : loading ? <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'#9ca3af',fontSize:14}}>
+        </div> : (loading || rm===null) ? <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'#9ca3af',fontSize:14}}>
           Loading… 連線中…
         </div> : rm===undefined ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:10,textAlign:'center',padding:20}}>
           <div style={{fontSize:15,color:'#b91c1c',fontWeight:600}}>Room not found 找不到此問答室</div>
