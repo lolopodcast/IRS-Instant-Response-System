@@ -7,6 +7,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
 textarea,input{-webkit-user-select:text;user-select:text}
@@ -27,7 +29,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;fon
 .content-inner{max-width:700px;margin:0 auto}
 .card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
 .like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s}
-.like-btn:hover,.like-btn.liked{background:var(--gold)}
+.like-btn:hover{background:var(--gold)}
 textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit}
 textarea{resize:vertical}
 textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
@@ -89,6 +91,19 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
   </div>
 </div>
 <script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyAORiGVsnvS-XHFMYod-d3ZxbJdFqhiArs",
+    authDomain: "classqa-ncnu.firebaseapp.com",
+    databaseURL: "https://classqa-ncnu-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "classqa-ncnu",
+    storageBucket: "classqa-ncnu.firebasestorage.app",
+    messagingSenderId: "930969614847",
+    appId: "1:930969614847:web:31e3149579b64dba6b0fca"
+  };
+  firebase.initializeApp(firebaseConfig);
+  window.fbdb = firebase.database();
+</script>
+<script>
 (function(){
   var toast=document.getElementById('cpr-toast');
   function show(){ toast.style.display='flex'; }
@@ -103,12 +118,32 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
 })();
 </script>
 <script type="text/babel" data-presets="react">
-const {useState,useEffect,useRef} = React;
-const SK='cqa6r',HK='cqa6h';
-const uid=function(){return Math.random().toString(36).slice(2,10)};
-const ts=function(){return Date.now()};
-const load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
-const save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
+var useState = React.useState;
+var useEffect = React.useEffect;
+var useRef = React.useRef;
+
+var uid=function(){return Math.random().toString(36).slice(2,10)};
+var ts=function(){return Date.now()};
+var load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
+var save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
+var HK='cqa7h';
+var db=window.fbdb;
+
+function fbSet(path,val){return db.ref(path).set(val)}
+function fbUpdate(path,val){return db.ref(path).update(val)}
+function fbPush(path,val){var r=db.ref(path).push();r.set(val);return r.key}
+function fbRemove(path){return db.ref(path).remove()}
+function fbIncLike(path){db.ref(path+'/likes').transaction(function(cur){return (cur||0)+1})}
+function arrify(obj){
+  if(!obj)return [];
+  return Object.keys(obj).map(function(k){return Object.assign({id:k},obj[k])});
+}
+function normQ(qid,qval){
+  var answers = arrify(qval.answers).map(function(a){
+    return Object.assign({},a,{replies:arrify(a.replies)});
+  });
+  return Object.assign({id:qid},qval,{answers:answers});
+}
 
 /* ---- SVG icons ---- */
 function IconMinus(){
@@ -285,7 +320,6 @@ function QRCanvas(props){
   return <canvas ref={ref} style={{imageRendering:'pixelated',display:'block'}}/>;
 }
 
-/* ---- Confirm dialog ---- */
 function Confirm(props){
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onCancel()}}>
     <div className="cbox">
@@ -298,7 +332,6 @@ function Confirm(props){
   </div>;
 }
 
-/* ---- Voice textarea ---- */
 function VoiceTxt(props){
   var value=props.value, onChange=props.onChange, placeholder=props.placeholder, rows=props.rows||3;
   var langState=useState('zh-TW'); var lang=langState[0], setLang=langState[1];
@@ -332,29 +365,6 @@ function VoiceTxt(props){
   </div>;
 }
 
-/* ---- helpers ---- */
-function likeIn(arr,id){
-  return (arr||[]).map(function(a){
-    if(a.id===id)return Object.assign({},a,{likes:(a.likes||0)+1,liked:true});
-    return Object.assign({},a,{replies:likeIn(a.replies,id)});
-  });
-}
-function addReplyIn(arr,pid,text,auth){
-  return (arr||[]).map(function(a){
-    if(a.id===pid){
-      var rep={id:uid(),text:text,author:auth,likes:0,liked:false,replies:[],createdAt:ts()};
-      return Object.assign({},a,{replies:(a.replies||[]).concat([rep])});
-    }
-    return Object.assign({},a,{replies:addReplyIn(a.replies,pid,text,auth)});
-  });
-}
-function delIn(arr,id){
-  return (arr||[]).filter(function(a){return a.id!==id}).map(function(a){
-    return Object.assign({},a,{replies:delIn(a.replies,id)});
-  });
-}
-
-/* ---- beep ---- */
 function beep3(){
   try{
     var ctx=new (window.AudioContext||window.webkitAudioContext)();
@@ -369,7 +379,6 @@ function beep3(){
   }catch(e){}
 }
 
-/* ---- Timer ---- */
 function Timer(props){
   var expiresAt=props.expiresAt, onExpire=props.onExpire;
   var leftState=useState(null); var left=leftState[0], setLeft=leftState[1];
@@ -394,63 +403,46 @@ function Timer(props){
   </span>;
 }
 
-/* ---- Reply item ---- */
-function ReplyItem(props){
-  var reply=props.reply, onAct=props.onAct, isHost=props.isHost, depth=props.depth||0;
+function AnswerDelBtn(props){
+  var confState=useState(false); var conf=confState[0], setConf=confState[1];
+  return <span>
+    {conf && <Confirm msg={"Delete this item?\n刪除此項目？"} onOk={function(){props.onDelete();setConf(false)}} onCancel={function(){setConf(false)}}/>}
+    <button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={function(){setConf(true)}}>Del</button>
+  </span>;
+}
+function AnswerReplyToggle(props){
   var showState=useState(false); var show=showState[0], setShow=showState[1];
   var txtState=useState(''); var txt=txtState[0], setTxt=txtState[1];
-  var confState=useState(false); var conf=confState[0], setConf=confState[1];
-  var sorted=(reply.replies||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
-  return <div style={{marginTop:8}}>
-    {conf && <Confirm msg={"Delete this reply?\n刪除此回覆？"} onOk={function(){onAct('del',reply.id);setConf(false)}} onCancel={function(){setConf(false)}}/>}
-    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
-      <div style={{flex:1}}>
-        <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{reply.author}</span>
-        <span style={{fontSize:13}}>{reply.text}</span>
-      </div>
-      {isHost && <button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={function(){setConf(true)}}>Del</button>}
-    </div>
-    <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-      <button className={'like-btn'+(reply.liked?' liked':'')} onClick={function(){onAct('like',reply.id)}}>
-        <IconThumb/> {reply.likes||0}
-      </button>
-      {depth<1 && <button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={function(){setShow(!show)}}>Reply 回覆</button>}
-    </div>
-    {show && <div style={{marginTop:6}}>
+  return <span style={{display:'inline-block'}}>
+    <button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={function(){setShow(!show)}}>Reply 回覆</button>
+    {show && <div style={{marginTop:6,width:'100%'}}>
       <VoiceTxt value={txt} onChange={setTxt} placeholder="Type reply… / 輸入回覆…" rows={2}/>
       <div style={{display:'flex',gap:6,marginTop:5}}>
-        <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={function(){onAct('add_reply',reply.id,txt);setTxt('');setShow(false)}}>Submit 送出</button>
+        <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={function(){if(!txt.trim())return;props.onSubmit(txt);setTxt('');setShow(false)}}>Submit 送出</button>
         <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShow(false)}}>Cancel 取消</button>
       </div>
     </div>}
-    {sorted.length>0 && <div className="rthread">
-      {sorted.map(function(r2){return <ReplyItem key={r2.id} reply={r2} onAct={onAct} isHost={isHost} depth={depth+1}/>})}
-    </div>}
-  </div>;
+  </span>;
 }
 
-/* ---- QCard ---- */
 function QCard(props){
-  var q=props.q, isHost=props.isHost, anon=props.anon, onUpdate=props.onUpdate, onDelete=props.onDelete;
+  var q=props.q, isHost=props.isHost, anon=props.anon;
+  var onLikeQ=props.onLikeQ, onDeleteQ=props.onDeleteQ;
+  var onLikeAnswer=props.onLikeAnswer, onAddAnswer=props.onAddAnswer, onDeleteAnswer=props.onDeleteAnswer;
+  var onLikeReply=props.onLikeReply, onAddReply=props.onAddReply, onDeleteReply=props.onDeleteReply;
   var showAState=useState(false); var showA=showAState[0], setShowA=showAState[1];
   var atxtState=useState(''); var atxt=atxtState[0], setAtxt=atxtState[1];
   var anameState=useState(''); var aname=anameState[0], setAname=anameState[1];
   var confQState=useState(false); var confQ=confQState[0], setConfQ=confQState[1];
-  function act(type,id,txt){
-    if(type==='like')onUpdate(Object.assign({},q,{answers:likeIn(q.answers,id)}));
-    else if(type==='add_reply')onUpdate(Object.assign({},q,{answers:addReplyIn(q.answers,id,txt,anon?'Anon 匿名':aname)}));
-    else if(type==='del')onUpdate(Object.assign({},q,{answers:delIn(q.answers,id)}));
-  }
   function submitA(){
     if(!atxt.trim())return;
     if(!anon && !aname.trim()){alert('Name required / 請填寫名字');return}
-    var a={id:uid(),text:atxt,author:anon?'Anon 匿名':aname.trim(),likes:0,liked:false,replies:[],createdAt:ts()};
-    onUpdate(Object.assign({},q,{answers:(q.answers||[]).concat([a])}));
+    onAddAnswer(q.id, atxt, anon?'Anon 匿名':aname.trim());
     setAtxt(''); setAname(''); setShowA(false);
   }
   var sorted=(q.answers||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
   return <div className="card">
-    {confQ && <Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){onDelete(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
+    {confQ && <Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){onDeleteQ(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
       <div style={{flex:1}}>
         <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
@@ -463,7 +455,7 @@ function QCard(props){
       {isHost && <button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
     </div>
     <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
-      <button className={'like-btn'+(q.liked?' liked':'')} onClick={function(){onUpdate(Object.assign({},q,{likes:(q.likes||0)+1,liked:true}))}}>
+      <button className="like-btn" onClick={function(){onLikeQ(q)}}>
         <IconThumb/> {q.likes||0}
       </button>
       <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(!showA)}}>
@@ -471,7 +463,38 @@ function QCard(props){
       </button>
     </div>
     {sorted.length>0 && <div className="rthread" style={{marginTop:10}}>
-      {sorted.map(function(a){return <ReplyItem key={a.id} reply={a} onAct={act} isHost={isHost}/>})}
+      {sorted.map(function(a){
+        var subSorted=(a.replies||[]).slice().sort(function(x,y){return (y.likes||0)-(x.likes||0)});
+        return <div key={a.id} style={{marginTop:8}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+            <div style={{flex:1}}>
+              <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{a.author}</span>
+              <span style={{fontSize:13}}>{a.text}</span>
+            </div>
+            {isHost && <AnswerDelBtn onDelete={function(){onDeleteAnswer(q.id,a.id)}}/>}
+          </div>
+          <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
+            <button className="like-btn" onClick={function(){onLikeAnswer(q.id,a.id)}}><IconThumb/> {a.likes||0}</button>
+            <AnswerReplyToggle onSubmit={function(t){onAddReply(q.id,a.id,t,anon?'Anon 匿名':'User')}}/>
+          </div>
+          {subSorted.length>0 && <div className="rthread">
+            {subSorted.map(function(r2){
+              return <div key={r2.id} style={{marginTop:8}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+                  <div style={{flex:1}}>
+                    <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{r2.author}</span>
+                    <span style={{fontSize:13}}>{r2.text}</span>
+                  </div>
+                  {isHost && <AnswerDelBtn onDelete={function(){onDeleteReply(q.id,a.id,r2.id)}}/>}
+                </div>
+                <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
+                  <button className="like-btn" onClick={function(){onLikeReply(q.id,a.id,r2.id)}}><IconThumb/> {r2.likes||0}</button>
+                </div>
+              </div>;
+            })}
+          </div>}
+        </div>;
+      })}
     </div>}
     {showA && <div style={{marginTop:10,padding:10,background:'#f9fafb',borderRadius:8}}>
       {!anon && <div style={{marginBottom:7}}>
@@ -488,7 +511,6 @@ function QCard(props){
   </div>;
 }
 
-/* ---- Code Pill ---- */
 function CodePill(props){
   var code=props.code, onZoom=props.onZoom;
   var visState=useState(true); var vis=visState[0], setVis=visState[1];
@@ -519,7 +541,6 @@ function CodePill(props){
   </div>;
 }
 
-/* ---- Manage dropdown ---- */
 function ManageMenu(props){
   var onCSV=props.onCSV, onDelete=props.onDelete;
   var openState=useState(false); var open=openState[0], setOpen=openState[1];
@@ -540,7 +561,6 @@ function ManageMenu(props){
   </div>;
 }
 
-/* ---- Modals ---- */
 function ExtendModal(props){
   var onExtend=props.onExtend, onClose=props.onClose;
   var minsState=useState(1); var mins=minsState[0], setMins=minsState[1];
@@ -652,11 +672,11 @@ function JoinModal(props){
   </div>;
 }
 
-/* ---- App ---- */
 function App(){
-  var roomsState=useState(function(){return load(SK)}); var rooms=roomsState[0], setRooms=roomsState[1];
   var hostsState=useState(function(){return load(HK)}); var hosts=hostsState[0], setHosts=hostsState[1];
+  var roomListState=useState({}); var roomList=roomListState[0], setRoomList=roomListState[1];
   var activeIdState=useState(null); var activeId=activeIdState[0], setActiveId=activeIdState[1];
+  var activeRoomState=useState(null); var activeRoomData=activeRoomState[0], setActiveRoomData=activeRoomState[1];
   var modalState=useState(null); var modal=modalState[0], setModal=modalState[1];
   var newQState=useState(''); var newQ=newQState[0], setNewQ=newQState[1];
   var qAuthorState=useState(''); var qAuthor=qAuthorState[0], setQAuthor=qAuthorState[1];
@@ -664,42 +684,90 @@ function App(){
   var qrPinnedState=useState(false); var qrPinned=qrPinnedState[0], setQrPinned=qrPinnedState[1];
   var showExtendState=useState(false); var showExtend=showExtendState[0], setShowExtend=showExtendState[1];
   var confRoomState=useState(false); var confRoom=confRoomState[0], setConfRoom=confRoomState[1];
+  var loadingState=useState(false); var loading=loadingState[0], setLoading=loadingState[1];
 
-  useEffect(function(){save(SK,rooms)},[rooms]);
   useEffect(function(){save(HK,hosts)},[hosts]);
+
+  useEffect(function(){
+    var knownIds = Object.keys(hosts);
+    var p = new URLSearchParams(window.location.search).get('room');
+    if(p && knownIds.indexOf(p)===-1) knownIds = knownIds.concat([p]);
+    if(knownIds.length===0){ setRoomList({}); return; }
+    var unsubs = knownIds.map(function(id){
+      var ref = db.ref('rooms/'+id+'/meta');
+      var cb = function(snap){
+        var val = snap.val();
+        setRoomList(function(prev){
+          var n=Object.assign({},prev);
+          if(val) n[id]=Object.assign({id:id},val);
+          else delete n[id];
+          return n;
+        });
+      };
+      ref.on('value',cb);
+      return function(){ref.off('value',cb)};
+    });
+    return function(){unsubs.forEach(function(u){u()})};
+  },[hosts]);
+
   useEffect(function(){
     var p=new URLSearchParams(window.location.search).get('room');
-    if(p && rooms[p])setActiveId(p);
+    if(p) setActiveId(p);
   },[]);
 
-  var rm = rooms[activeId] || null;
+  useEffect(function(){
+    if(!activeId){ setActiveRoomData(null); return; }
+    setLoading(true);
+    var ref = db.ref('rooms/'+activeId);
+    var cb = function(snap){
+      var val = snap.val();
+      setLoading(false);
+      if(!val){ setActiveRoomData(undefined); return; }
+      var meta = val.meta || {};
+      var questions = Object.keys(val.questions||{}).map(function(qid){
+        return normQ(qid, val.questions[qid]);
+      });
+      setActiveRoomData(Object.assign({id:activeId},meta,{questions:questions}));
+    };
+    ref.on('value',cb);
+    return function(){ref.off('value',cb)};
+  },[activeId]);
+
+  var rm = activeRoomData || null;
   var isHost = !!(activeId && hosts[activeId]);
   var isClosed = !!(rm && rm.expiresAt && Date.now()>rm.expiresAt);
-  var pageUrl = rm ? (window.location.href.split('?')[0]+'?room='+activeId) : '';
+  var pageUrl = activeId ? (window.location.href.split('?')[0]+'?room='+activeId) : '';
 
   function createRoom(name,anon,expiresAt){
     var id=uid();
-    setRooms(function(r){var n=Object.assign({},r);n[id]={id:id,name:name,anonymous:anon,expiresAt:expiresAt,questions:[],createdAt:ts()};return n});
-    setHosts(function(h){var n=Object.assign({},h);n[id]=uid();return n});
+    var token=uid();
+    var meta={name:name,anonymous:anon,expiresAt:expiresAt||null,createdAt:ts(),hostToken:token};
+    fbSet('rooms/'+id+'/meta',meta);
+    setHosts(function(h){var n=Object.assign({},h);n[id]=token;return n});
     setActiveId(id);
   }
   function joinRoom(code){
-    if(rooms[code]){setActiveId(code);setModal(null)}
-    else alert('Room not found / 找不到此 Room');
+    code=code.trim();
+    if(!code)return;
+    db.ref('rooms/'+code+'/meta').once('value').then(function(snap){
+      if(snap.exists()){ setActiveId(code); setModal(null); }
+      else alert('Room not found / 找不到此 Room');
+    });
   }
   function deleteRoom(id){
-    setRooms(function(r){var n=Object.assign({},r);delete n[id];return n});
+    fbRemove('rooms/'+id);
     setHosts(function(h){var n=Object.assign({},h);delete n[id];return n});
+    setRoomList(function(r){var n=Object.assign({},r);delete n[id];return n});
     if(activeId===id)setActiveId(null);
   }
-  function exportCSV(rm){
+  function exportCSV(rmv){
     function pad(n){return String(n).padStart(2,'0')}
     var now=new Date();
     var dt=''+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'-'+pad(now.getHours())+pad(now.getMinutes());
-    var fname=rm.name+'-'+rm.id+'-'+dt+'.csv';
+    var fname=rmv.name+'-'+rmv.id+'-'+dt+'.csv';
     function esc(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}
     var rows=[['Type','Author','Content','Likes','Time','Parent','ID']];
-    (rm.questions||[]).forEach(function(q){
+    (rmv.questions||[]).forEach(function(q){
       rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,new Date(q.createdAt).toLocaleString(),'',q.id]);
       (q.answers||[]).forEach(function(a){
         rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,new Date(a.createdAt).toLocaleString(),q.id,a.id]);
@@ -717,25 +785,28 @@ function App(){
   function extendRoom(mins){
     if(!rm)return;
     var newExp=Math.max(Date.now(), rm.expiresAt||Date.now())+(mins*60*1000);
-    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{expiresAt:newExp});return n});
+    fbUpdate('rooms/'+activeId+'/meta',{expiresAt:newExp});
   }
   function postQ(){
     if(!newQ.trim()||!rm||isClosed)return;
     if(!rm.anonymous && !qAuthor.trim()){alert('Name required / 請填寫名字');return}
-    var q={id:uid(),text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,liked:false,answers:[],createdAt:ts()};
-    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{questions:(rm.questions||[]).concat([q])});return n});
+    var q={text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,createdAt:ts()};
+    fbPush('rooms/'+activeId+'/questions',q);
     setNewQ(''); setQAuthor('');
   }
-  function updQ(q){
-    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{questions:(rm.questions||[]).map(function(x){return x.id===q.id?q:x})});return n});
-  }
-  function delQ(id){
-    setRooms(function(r){var n=Object.assign({},r);n[activeId]=Object.assign({},rm,{questions:(rm.questions||[]).filter(function(x){return x.id!==id})});return n});
-  }
+  function likeQuestion(q){ fbIncLike('rooms/'+activeId+'/questions/'+q.id) }
+  function deleteQuestion(qid){ fbRemove('rooms/'+activeId+'/questions/'+qid) }
+  function likeAnswer(qid,aid){ fbIncLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid) }
+  function addAnswer(qid,text,author){ fbPush('rooms/'+activeId+'/questions/'+qid+'/answers',{text:text,author:author,likes:0,createdAt:ts()}) }
+  function deleteAnswer(qid,aid){ fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid) }
+  function likeReply(qid,aid,rid){ fbIncLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid) }
+  function addReply(qid,aid,text,author){ fbPush('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies',{text:text,author:author,likes:0,createdAt:ts()}) }
+  function deleteReply(qid,aid,rid){ fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid) }
+
   var sorted = rm ? (rm.questions||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)}) : [];
 
   return <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
-    {confRoom && <Confirm msg={'Delete room "'+(rm?rm.name:'')+'"?\n刪除問答室「'+(rm?rm.name:'')+'」？'} onOk={function(){deleteRoom(activeId);setConfRoom(false)}} onCancel={function(){setConfRoom(false)}}/>}
+    {confRoom && <Confirm msg={'Delete room "'+(rm?rm.name:activeId)+'"?\n刪除問答室「'+(rm?rm.name:activeId)+'」？'} onOk={function(){deleteRoom(activeId);setConfRoom(false)}} onCancel={function(){setConfRoom(false)}}/>}
 
     {sideOpen && <div className="sidebar-scrim" onClick={function(){setSideOpen(false)}}/>}
 
@@ -746,8 +817,8 @@ function App(){
       </div>
       <div style={{padding:'8px 6px',flex:1,overflowY:'auto'}}>
         <div style={{fontSize:10,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1,fontWeight:600}}>ROOMS</div>
-        {Object.keys(rooms).length===0 && <div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>No rooms yet</div>}
-        {Object.values(rooms).map(function(r){
+        {Object.keys(roomList).length===0 && <div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>No rooms yet</div>}
+        {Object.values(roomList).map(function(r){
           return <div key={r.id} className={'rtab'+(activeId===r.id?' act':'')} onClick={function(){setActiveId(r.id);setSideOpen(false)}}>
             <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
             <div style={{fontSize:11,opacity:.72,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
@@ -789,11 +860,15 @@ function App(){
       </div>}
 
       <div className="content-area">
-        {!rm ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
+        {!activeId ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
           <div style={{fontSize:28,fontWeight:800,color:'var(--green)',letterSpacing:.5}}>ClassQ&A</div>
           <div style={{fontSize:14,color:'#6b7280',maxWidth:300,lineHeight:1.6}}>
             Create or join a room to start.<br/>建立或加入問答室開始提問。
           </div>
+        </div> : loading ? <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'#9ca3af',fontSize:14}}>
+          Loading… 連線中…
+        </div> : rm===undefined ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:10,textAlign:'center',padding:20}}>
+          <div style={{fontSize:15,color:'#b91c1c',fontWeight:600}}>Room not found 找不到此問答室</div>
         </div> : <div className="content-inner">
           {isClosed ? <div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
             Session closed 問答已結束
@@ -817,7 +892,10 @@ function App(){
             <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
               {sorted.length} question{sorted.length>1?'s':''} · sorted by likes 依讚數排序
             </div>
-            {sorted.map(function(q){return <QCard key={q.id} q={q} isHost={isHost} anon={rm.anonymous} onUpdate={updQ} onDelete={delQ}/>})}
+            {sorted.map(function(q){return <QCard key={q.id} q={q} isHost={isHost} anon={rm.anonymous}
+              onLikeQ={likeQuestion} onDeleteQ={deleteQuestion}
+              onLikeAnswer={likeAnswer} onAddAnswer={addAnswer} onDeleteAnswer={deleteAnswer}
+              onLikeReply={likeReply} onAddReply={addReply} onDeleteReply={deleteReply}/>})}
           </div>}
         </div>}
       </div>
