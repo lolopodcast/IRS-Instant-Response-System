@@ -55,7 +55,6 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
 .cpill-mid:hover{background:rgba(255,255,255,.13)}
 .cpill-mid.cp{background:rgba(255,255,255,.32)}
 .cpill-div{width:1px;height:20px;background:rgba(255,255,255,.25);flex-shrink:0}
-.qrstrip{background:#fff;border-bottom:1px solid #e5e7eb;display:flex;justify-content:center;align-items:flex-start;padding:8px;gap:5px}
 .actionsbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .mgwrap{position:relative}
 .mgmenu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);min-width:150px;overflow:hidden;z-index:50}
@@ -169,16 +168,6 @@ function IconSearch(){
     <line x1="9.2" y1="9.2" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
   </svg>;
 }
-function IconQR(){
-  return <svg className="svg-ic" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-    <rect x="1" y="1" width="5" height="5"/><rect x="2" y="2" width="3" height="3" fill="#fff"/>
-    <rect x="10" y="1" width="5" height="5"/><rect x="11" y="2" width="3" height="3" fill="#fff"/>
-    <rect x="1" y="10" width="5" height="5"/><rect x="2" y="11" width="3" height="3" fill="#fff"/>
-    <rect x="8" y="8" width="2" height="2"/><rect x="11" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
-    <rect x="8" y="11" width="2" height="2"/><rect x="11" y="11" width="2" height="2"/>
-    <rect x="8" y="14" width="2" height="2"/><rect x="11" y="14" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/>
-  </svg>;
-}
 function IconClock(){
   return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none">
     <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
@@ -208,129 +197,25 @@ function MicIcon(props){
   </svg>;
 }
 
-/* ---- QR encoder (pure JS) ---- */
-var QRGen = (function(){
-  var EXP=new Uint8Array(512), LOG=new Uint8Array(256);
-  (function(){
-    var x=1;
-    for(var i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x=x<128?x<<1:(x<<1)^285&0xff}
-    for(var j=255;j<512;j++)EXP[j]=EXP[j-255];
-  })();
-  function mul(a,b){return a&&b?EXP[LOG[a]+LOG[b]]:0}
-  function poly(ec){
-    var p=[1];
-    for(var i=0;i<ec;i++){
-      var t=new Array(p.length+1).fill(0);
-      for(var j=0;j<p.length;j++){t[j]^=mul(p[j],1);t[j+1]^=mul(p[j],EXP[i])}
-      p=t;
-    }
-    return p;
-  }
-  function ecBytes(data,n){
-    var g=poly(n);
-    var r=data.concat(new Array(n).fill(0));
-    for(var i=0;i<data.length;i++){
-      var c=r.shift();r.push(0);
-      if(c)for(var j=0;j<g.length;j++)r[j]^=mul(c,g[j]);
-    }
-    return r.slice(-n);
-  }
-  var CAP=[0,16,28,44,64,86,108,124,154,182,216];
-  var EC_CW=[0,10,16,26,36,48,64,72,88,110,130];
-  var EC_BL=[[],[1],[1],[1],[2],[2],[4],[4],[4],[5],[5]];
-  var ALIGN=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,28,46],[6,32,50]];
-  function encode(text){
-    var bytes=new TextEncoder().encode(text), n=bytes.length;
-    var ver=1; while(ver<=10 && CAP[ver]<n) ver++; if(ver>10) ver=10;
-    var ecN=EC_CW[ver], bCount=EC_BL[ver][0]||1, totalData=CAP[ver];
-    var dataBits=[];
-    dataBits.push(0,1,0,0);
-    for(var i=7;i>=0;i--)dataBits.push((n>>i)&1);
-    for(var bi2=0;bi2<bytes.length;bi2++){var b=bytes[bi2];for(var k=7;k>=0;k--)dataBits.push((b>>k)&1)}
-    for(var pi3=0;pi3<4 && dataBits.length<totalData*8;pi3++)dataBits.push(0);
-    while(dataBits.length%8)dataBits.push(0);
-    var pad=[0xEC,0x11],pi=0;
-    while(dataBits.length<totalData*8){for(var k2=7;k2>=0;k2--)dataBits.push((pad[pi]>>k2)&1);pi^=1}
-    var dataBytes=[];
-    for(var di=0;di<dataBits.length;di+=8){var v=0;for(var dj=0;dj<8;dj++)v=(v<<1)|dataBits[di+dj];dataBytes.push(v)}
-    var bLen=dataBytes.length, shortLen=Math.floor(bLen/bCount), longCount=bLen%bCount;
-    var dBlocks=[], eBlocks=[], idx=0;
-    for(var bc=0;bc<bCount;bc++){
-      var len=bc<bCount-longCount?shortLen:shortLen+1;
-      var blk=dataBytes.slice(idx,idx+len); idx+=len;
-      dBlocks.push(blk); eBlocks.push(ecBytes(blk,ecN));
-    }
-    var interleaved=[];
-    var maxD=0; for(var m=0;m<dBlocks.length;m++)maxD=Math.max(maxD,dBlocks[m].length);
-    for(var ii=0;ii<maxD;ii++)for(var jj=0;jj<dBlocks.length;jj++)if(ii<dBlocks[jj].length)interleaved.push(dBlocks[jj][ii]);
-    for(var ie=0;ie<ecN;ie++)for(var je=0;je<eBlocks.length;je++)interleaved.push(eBlocks[je][ie]);
-    var size=ver*4+17;
-    var M=[],R=[];
-    for(var r0=0;r0<size;r0++){M.push(new Int8Array(size).fill(-1));R.push(new Uint8Array(size))}
-    function set(r,c,val,res){if(r>=0&&r<size&&c>=0&&c<size){M[r][c]=val;if(res)R[r][c]=1}}
-    function finder(tr,tc){
-      for(var r=-1;r<=7;r++)for(var c=-1;c<=7;c++){
-        var val=(r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4))?1:0;
-        set(tr+r,tc+c,val,true);
-      }
-    }
-    finder(0,0);finder(0,size-7);finder(size-7,0);
-    for(var t=8;t<size-8;t++){set(6,t,t%2?0:1,true);set(t,6,t%2?0:1,true)}
-    set(size-8,8,1,true);
-    var ap=ALIGN[ver];
-    for(var a1=0;a1<ap.length;a1++)for(var a2=0;a2<ap.length;a2++){
-      var ar=ap[a1],ac=ap[a2];
-      if(R[ar][ac])continue;
-      for(var r2=-2;r2<=2;r2++)for(var c2=-2;c2<=2;c2++){
-        set(ar+r2,ac+c2,(Math.abs(r2)===2||Math.abs(c2)===2)?1:(r2===0&&c2===0?1:0),true);
-      }
-    }
-    var fPos=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
-    var fPos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
-    for(var f1=0;f1<fPos.length;f1++){R[fPos[f1][0]][fPos[f1][1]]=1}
-    for(var f2=0;f2<fPos2.length;f2++){R[fPos2[f2][0]][fPos2[f2][1]]=1}
-    var bits=[];
-    for(var ib=0;ib<interleaved.length;ib++){var bb=interleaved[ib];for(var ik=7;ik>=0;ik--)bits.push((bb>>ik)&1)}
-    var bi=0;
-    var upward=true;
-    for(var col=size-1;col>=0;col-=2){
-      if(col===6)col--;
-      for(var rstep=0;rstep<size;rstep++){
-        var rr = upward ? (size-1-rstep) : rstep;
-        for(var dc=0;dc<=1;dc++){
-          var cc=col-dc;
-          if(!R[rr][cc]){
-            var maskOn=(rr+cc)%2===0;
-            var bitv=bi<bits.length?bits[bi++]:0;
-            M[rr][cc]=bitv^(maskOn?1:0);
-          }
-        }
-      }
-      upward = !upward;
-    }
-    var FMT=[1,0,1,1,0,1,1,1,1,0,0,0,1,0,0];
-    for(var ff=0;ff<15;ff++){set(fPos[ff][0],fPos[ff][1],FMT[ff],false);set(fPos2[ff][0],fPos2[ff][1],FMT[ff],false)}
-    return {matrix:M,size:size};
-  }
-  return {encode:encode};
-})();
-
+/* ---- QR Canvas (using qrcodejs library) ---- */
 function QRCanvas(props){
   var url=props.url, size=props.size||160;
   var ref=useRef(null);
   useEffect(function(){
     if(!ref.current||!url)return;
+    ref.current.innerHTML='';
     try{
-      var res=QRGen.encode(url);
-      var matrix=res.matrix, n=res.size;
-      var cvs=ref.current; cvs.width=size; cvs.height=size;
-      var ctx=cvs.getContext('2d'); var cell=size/n;
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,size,size);
-      ctx.fillStyle='#000';
-      for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(matrix[r][c]===1)ctx.fillRect(c*cell,r*cell,cell,cell);
+      new QRCode(ref.current,{
+        text:url,
+        width:size,
+        height:size,
+        colorDark:'#000000',
+        colorLight:'#ffffff',
+        correctLevel:QRCode.CorrectLevel.M
+      });
     }catch(e){console.warn('QR error',e)}
   },[url,size]);
-  return <canvas ref={ref} style={{imageRendering:'pixelated',display:'block'}}/>;
+  return <div ref={ref} style={{display:'inline-block',lineHeight:0}}/>;
 }
 
 function Confirm(props){
@@ -424,14 +309,27 @@ function AnswerDelBtn(props){
   </span>;
 }
 function AnswerReplyToggle(props){
+  var anon=props.anon;
   var showState=useState(false); var show=showState[0], setShow=showState[1];
   var txtState=useState(''); var txt=txtState[0], setTxt=txtState[1];
+  var nameState=useState(''); var rname=nameState[0], setRname=nameState[1];
+  function submit(){
+    if(!txt.trim())return;
+    if(!anon && !rname.trim()){alert('Name required / 請填寫名字');return}
+    props.onSubmit(txt, anon?'Anon 匿名':rname.trim());
+    setTxt(''); setRname(''); setShow(false);
+  }
   return <span style={{display:'inline-block'}}>
     <button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={function(){setShow(!show)}}>Reply 回覆</button>
     {show && <div style={{marginTop:6,width:'100%'}}>
+      {!anon && <div style={{marginBottom:6}}>
+        <input type="text" value={rname} onChange={function(e){setRname(e.target.value)}}
+          placeholder="Your name 你的名字 *" style={{borderColor:rname.trim()?'#d1d5db':'#f87171'}}/>
+        {!rname.trim() && <div className="err">Required 必填</div>}
+      </div>}
       <VoiceTxt value={txt} onChange={setTxt} placeholder="Type reply… / 輸入回覆…" rows={2}/>
       <div style={{display:'flex',gap:6,marginTop:5}}>
-        <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={function(){if(!txt.trim())return;props.onSubmit(txt);setTxt('');setShow(false)}}>Submit 送出</button>
+        <button className="btn btn-p" style={{fontSize:12,padding:'4px 12px'}} onClick={submit}>Submit 送出</button>
         <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShow(false)}}>Cancel 取消</button>
       </div>
     </div>}
@@ -494,7 +392,7 @@ function QCard(props){
               onClick={function(){if(hasLiked('a_'+a.id))return;setLiked('a_'+a.id);onLikeAnswer(q.id,a.id)}}>
               <IconThumb/> {a.likes||0}
             </button>
-            <AnswerReplyToggle onSubmit={function(t){onAddReply(q.id,a.id,t,anon?'Anon 匿名':'User')}}/>
+            <AnswerReplyToggle anon={anon} onSubmit={function(t,author){onAddReply(q.id,a.id,t,author)}}/>
           </div>
           {subSorted.length>0 && <div className="rthread">
             {subSorted.map(function(r2){
@@ -603,26 +501,6 @@ function ExtendModal(props){
   </div>;
 }
 
-function QRModal(props){
-  var url=props.url, onPin=props.onPin, onClose=props.onClose;
-  var copiedState=useState(false); var copied=copiedState[0], setCopied=copiedState[1];
-  function copy(){if(navigator.clipboard)navigator.clipboard.writeText(url).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
-  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
-    <div className="modal" style={{textAlign:'center',maxWidth:320}}>
-      <h2>QR Code</h2>
-      <div style={{display:'flex',justifyContent:'center',margin:'10px 0 12px'}}>
-        <QRCanvas url={url} size={230}/>
-      </div>
-      <p style={{fontSize:11,color:'#6b7280',wordBreak:'break-all',margin:'0 0 14px'}}>{url}</p>
-      <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-        <button className="btn btn-p" onClick={function(){onPin();onClose()}}>Pin 固定頁首</button>
-        <button className="btn btn-g" onClick={copy}>{copied?'Copied!':'Copy Link 複製'}</button>
-        <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
-      </div>
-    </div>
-  </div>;
-}
-
 function CodeModal(props){
   var code=props.code, onClose=props.onClose;
   var copiedState=useState(false); var copied=copiedState[0], setCopied=copiedState[1];
@@ -716,7 +594,6 @@ function App(){
   var newQState=useState(''); var newQ=newQState[0], setNewQ=newQState[1];
   var qAuthorState=useState(''); var qAuthor=qAuthorState[0], setQAuthor=qAuthorState[1];
   var sideOpenState=useState(false); var sideOpen=sideOpenState[0], setSideOpen=sideOpenState[1];
-  var qrPinnedState=useState(false); var qrPinned=qrPinnedState[0], setQrPinned=qrPinnedState[1];
   var showExtendState=useState(false); var showExtend=showExtendState[0], setShowExtend=showExtendState[1];
   var confRoomState=useState(false); var confRoom=confRoomState[0], setConfRoom=confRoomState[1];
   var loadingState=useState(false); var loading=loadingState[0], setLoading=loadingState[1];
@@ -806,19 +683,25 @@ function App(){
     function pad(n){return String(n).padStart(2,'0')}
     var now=new Date();
     var dt=''+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'-'+pad(now.getHours())+pad(now.getMinutes());
-    var fname=rmv.name+'-'+rmv.id+'-'+dt+'.csv';
-    function esc(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}
+    var fname=(rmv.name||'room')+'-'+rmv.id+'-'+dt+'.csv';
+    function esc(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'}
+    function fmtTime(t){
+      if(!t && t!==0) return '';
+      var d=new Date(t);
+      if(isNaN(d.getTime())) return '';
+      return d.toLocaleString();
+    }
     var rows=[['Type','Author','Content','Likes','Time','Parent','ID']];
     (rmv.questions||[]).forEach(function(q){
-      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,new Date(q.createdAt).toLocaleString(),'',q.id]);
+      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,esc(fmtTime(q.createdAt)),'',esc(q.id)]);
       (q.answers||[]).forEach(function(a){
-        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,new Date(a.createdAt).toLocaleString(),q.id,a.id]);
+        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,esc(fmtTime(a.createdAt)),esc(q.id),esc(a.id)]);
         (a.replies||[]).forEach(function(r){
-          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,new Date(r.createdAt).toLocaleString(),a.id,r.id]);
+          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,esc(fmtTime(r.createdAt)),esc(a.id),esc(r.id)]);
         });
       });
     });
-    var csv='\uFEFF'+rows.map(function(r){return r.join(',')}).join('\n');
+    var csv='\uFEFF'+rows.map(function(r){return r.join(',')}).join('\r\n');
     var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a'); a.href=url; a.download=fname; a.click();
@@ -830,7 +713,8 @@ function App(){
     fbUpdate('rooms/'+activeId+'/meta',{expiresAt:newExp});
   }
   function postQ(){
-    if(!newQ.trim()||!rm||isClosed)return;
+    if(!newQ.trim()||!rm)return;
+    if(rm.expiresAt && Date.now()>rm.expiresAt){alert('This room is closed / 此問答室已結束');return}
     if(!rm.anonymous && !qAuthor.trim()){alert('Name required / 請填寫名字');return}
     var q={text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,createdAt:ts()};
     fbPush('rooms/'+activeId+'/questions',q);
@@ -839,10 +723,16 @@ function App(){
   function likeQuestion(q){ fbIncLike('rooms/'+activeId+'/questions/'+q.id) }
   function deleteQuestion(qid){ fbRemove('rooms/'+activeId+'/questions/'+qid) }
   function likeAnswer(qid,aid){ fbIncLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid) }
-  function addAnswer(qid,text,author){ fbPush('rooms/'+activeId+'/questions/'+qid+'/answers',{text:text,author:author,likes:0,createdAt:ts()}) }
+  function addAnswer(qid,text,author){
+    if(rm && rm.expiresAt && Date.now()>rm.expiresAt){alert('This room is closed / 此問答室已結束');return}
+    fbPush('rooms/'+activeId+'/questions/'+qid+'/answers',{text:text,author:author,likes:0,createdAt:ts()});
+  }
   function deleteAnswer(qid,aid){ fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid) }
   function likeReply(qid,aid,rid){ fbIncLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid) }
-  function addReply(qid,aid,text,author){ fbPush('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies',{text:text,author:author,likes:0,createdAt:ts()}) }
+  function addReply(qid,aid,text,author){
+    if(rm && rm.expiresAt && Date.now()>rm.expiresAt){alert('This room is closed / 此問答室已結束');return}
+    fbPush('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies',{text:text,author:author,likes:0,createdAt:ts()});
+  }
   function deleteReply(qid,aid,rid){ fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid) }
 
   var sorted = rm ? (rm.questions||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)}) : [];
@@ -885,7 +775,6 @@ function App(){
         {rm && <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
           {rm.expiresAt && <Timer expiresAt={rm.expiresAt} onExpire={function(){setShowExtend(true)}}/>}
           <CodePill code={activeId} onZoom={function(){setModal('code')}}/>
-          <button className="ic" onClick={function(){setModal('qr')}} title="QR Code"><IconQR/></button>
           {isHost && <ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
         </div>}
       </div>
@@ -896,10 +785,6 @@ function App(){
         {rm && <span style={{fontSize:11,color:'#9ca3af',marginLeft:'auto'}}>Current 目前：{rm.name}</span>}
       </div>
 
-      {rm && qrPinned && <div className="qrstrip">
-        <QRCanvas url={pageUrl} size={88}/>
-        <button onClick={function(){setQrPinned(false)}} style={{background:'none',border:'none',cursor:'pointer',fontSize:15,color:'#6b7280',padding:'0 2px',lineHeight:1}} title="Unpin">&#10005;</button>
-      </div>}
 
       <div className="content-area">
         {!activeId ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
@@ -945,7 +830,6 @@ function App(){
 
     {modal==='create' && <CreateModal onClose={function(){setModal(null)}} onCreate={createRoom}/>}
     {modal==='join' && <JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom} joinedRooms={Object.values(roomList).filter(function(r){return joined[r.id] && r.id!==activeId})}/>}
-    {modal==='qr' && <QRModal url={pageUrl} onPin={function(){setQrPinned(true)}} onClose={function(){setModal(null)}}/>}
     {modal==='code' && <CodeModal code={activeId||''} onClose={function(){setModal(null)}}/>}
     {showExtend && <ExtendModal onExtend={extendRoom} onClose={function(){setShowExtend(false)}}/>}
   </div>;
