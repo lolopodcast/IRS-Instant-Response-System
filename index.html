@@ -524,10 +524,11 @@ function CreateModal(props){
   var timedState=useState(false); var timed=timedState[0], setTimed=timedState[1];
   var hrsState=useState(0); var hrs=hrsState[0], setHrs=hrsState[1];
   var minsState=useState(30); var mins=minsState[0], setMins=minsState[1];
+  var allowExportState=useState(false); var allowExport=allowExportState[0], setAllowExport=allowExportState[1];
   function submit(){
     if(!name.trim())return;
     var expiresAt = timed ? Date.now()+(hrs*3600+mins*60)*1000 : null;
-    onCreate(name.trim(),anon,expiresAt);
+    onCreate(name.trim(),anon,expiresAt,allowExport);
     onClose();
   }
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
@@ -537,6 +538,7 @@ function CreateModal(props){
         <input type="text" value={name} onChange={function(e){setName(e.target.value)}} placeholder="e.g. Week 3 Q&A" onKeyDown={function(e){if(e.key==='Enter')submit()}} autoFocus/>
       </div>
       <label className="row"><input type="checkbox" checked={anon} onChange={function(e){setAnon(e.target.checked)}}/> Anonymous 匿名模式</label>
+      <label className="row"><input type="checkbox" checked={allowExport} onChange={function(e){setAllowExport(e.target.checked)}}/> Allow everyone to export CSV 允許所有人匯出</label>
       <label className="row"><input type="checkbox" checked={timed} onChange={function(e){setTimed(e.target.checked)}}/> <IconClock/> Set Timer 限時開放</label>
       {timed && <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
         <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
@@ -652,10 +654,10 @@ function App(){
   var isClosed = !!(rm && rm.expiresAt && Date.now()>rm.expiresAt);
   var pageUrl = activeId ? (window.location.href.split('?')[0]+'?room='+activeId) : '';
 
-  function createRoom(name,anon,expiresAt){
+  function createRoom(name,anon,expiresAt,allowExport){
     var id=uid();
     var token=uid();
-    var meta={name:name,anonymous:anon,expiresAt:expiresAt||null,createdAt:ts(),hostToken:token};
+    var meta={name:name,anonymous:anon,expiresAt:expiresAt||null,createdAt:ts(),hostToken:token,allowExport:!!allowExport};
     fbSet('rooms/'+id+'/meta',meta);
     setHosts(function(h){var n=Object.assign({},h);n[id]=token;return n});
     setActiveId(id);
@@ -691,13 +693,18 @@ function App(){
       if(isNaN(d.getTime())) return '';
       return d.toLocaleString();
     }
-    var rows=[['Type','Author','Content','Likes','Time','Parent','ID']];
-    (rmv.questions||[]).forEach(function(q){
-      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,esc(fmtTime(q.createdAt)),'',esc(q.id)]);
-      (q.answers||[]).forEach(function(a){
-        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,esc(fmtTime(a.createdAt)),esc(q.id),esc(a.id)]);
-        (a.replies||[]).forEach(function(r){
-          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,esc(fmtTime(r.createdAt)),esc(a.id),esc(r.id)]);
+    var rows=[['Type','Author','Content','Likes','Time','Question #','Answer #']];
+    var qSorted=(rmv.questions||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
+    qSorted.forEach(function(q,qi){
+      var qNum='Q'+(qi+1);
+      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,esc(fmtTime(q.createdAt)),esc(qNum),'']);
+      var aSorted=(q.answers||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
+      aSorted.forEach(function(a,ai){
+        var aNum='A'+(ai+1);
+        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,esc(fmtTime(a.createdAt)),esc(qNum),esc(aNum)]);
+        var rSorted=(a.replies||[]).slice().sort(function(x,y){return (x.createdAt||0)-(y.createdAt||0)});
+        rSorted.forEach(function(r,ri){
+          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,esc(fmtTime(r.createdAt)),esc(qNum),esc(aNum+'-R'+(ri+1))]);
         });
       });
     });
@@ -776,6 +783,7 @@ function App(){
           {rm.expiresAt && <Timer expiresAt={rm.expiresAt} onExpire={function(){setShowExtend(true)}}/>}
           <CodePill code={activeId} onZoom={function(){setModal('code')}}/>
           {isHost && <ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
+          {!isHost && rm.allowExport && <button className="ic" onClick={function(){exportCSV(rm)}} title="Export CSV 匯出">CSV</button>}
         </div>}
       </div>
 
