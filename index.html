@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClassQ&A 課堂問答</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23004030'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Segoe UI,sans-serif' font-weight='700' fill='%23D8C3A5' text-anchor='middle'%3EQ%3C/text%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -11,7 +12,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
-textarea,input{-webkit-user-select:text;user-select:text}
+textarea,input,.card p,.card span,.content-area{-webkit-user-select:text;user-select:text}
 :root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed;--fs:14px;--fss:13px;--fsxs:11px}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;font-size:var(--fs)}
 .btn{border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:opacity .18s,background .15s;white-space:nowrap}
@@ -522,12 +523,29 @@ function CreateModal(props){
   var nameState=useState(''); var name=nameState[0], setName=nameState[1];
   var anonState=useState(false); var anon=anonState[0], setAnon=anonState[1];
   var timedState=useState(false); var timed=timedState[0], setTimed=timedState[1];
+  var timerModeState=useState('duration'); var timerMode=timerModeState[0], setTimerMode=timerModeState[1];
   var hrsState=useState(0); var hrs=hrsState[0], setHrs=hrsState[1];
   var minsState=useState(30); var mins=minsState[0], setMins=minsState[1];
+  function todayStr(){
+    var d=new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  var dateState=useState(todayStr()); var dateVal=dateState[0], setDateVal=dateState[1];
+  var timeState=useState('23:59'); var timeVal=timeState[0], setTimeVal=timeState[1];
   var allowExportState=useState(false); var allowExport=allowExportState[0], setAllowExport=allowExportState[1];
   function submit(){
     if(!name.trim())return;
-    var expiresAt = timed ? Date.now()+(hrs*3600+mins*60)*1000 : null;
+    var expiresAt = null;
+    if(timed){
+      if(timerMode==='duration'){
+        expiresAt = Date.now()+(hrs*3600+mins*60)*1000;
+      } else {
+        var dt = new Date(dateVal+'T'+timeVal+':00');
+        if(isNaN(dt.getTime())){ alert('Invalid date/time / 日期時間格式錯誤'); return; }
+        expiresAt = dt.getTime();
+        if(expiresAt<=Date.now()){ alert('Must be in the future / 時間需晚於現在'); return; }
+      }
+    }
     onCreate(name.trim(),anon,expiresAt,allowExport);
     onClose();
   }
@@ -540,15 +558,36 @@ function CreateModal(props){
       <label className="row"><input type="checkbox" checked={anon} onChange={function(e){setAnon(e.target.checked)}}/> Anonymous 匿名模式</label>
       <label className="row"><input type="checkbox" checked={allowExport} onChange={function(e){setAllowExport(e.target.checked)}}/> Allow everyone to export CSV 允許所有人匯出</label>
       <label className="row"><input type="checkbox" checked={timed} onChange={function(e){setTimed(e.target.checked)}}/> <IconClock/> Set Timer 限時開放</label>
-      {timed && <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
-        <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-          <input type="number" value={hrs} min={0} max={23} onChange={function(e){setHrs(+e.target.value)}} style={{width:58}}/>
-          <span style={{fontSize:13}}>hr 時</span>
+      {timed && <div style={{marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
+        <div style={{display:'flex',gap:14,marginBottom:10}}>
+          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer'}}>
+            <input type="radio" name="timermode" checked={timerMode==='duration'} onChange={function(){setTimerMode('duration')}}/>
+            Duration 時長
+          </label>
+          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer'}}>
+            <input type="radio" name="timermode" checked={timerMode==='datetime'} onChange={function(){setTimerMode('datetime')}}/>
+            Specific Date/Time 指定時間
+          </label>
         </div>
-        <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-          <input type="number" value={mins} min={0} max={59} onChange={function(e){setMins(+e.target.value)}} style={{width:58}}/>
-          <span style={{fontSize:13}}>min 分</span>
-        </div>
+        {timerMode==='duration' ? <div style={{display:'flex',gap:10,alignItems:'center'}}>
+          <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+            <input type="number" value={hrs} min={0} max={23} onChange={function(e){setHrs(+e.target.value)}} style={{width:58}}/>
+            <span style={{fontSize:13}}>hr 時</span>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+            <input type="number" value={mins} min={0} max={59} onChange={function(e){setMins(+e.target.value)}} style={{width:58}}/>
+            <span style={{fontSize:13}}>min 分</span>
+          </div>
+        </div> : <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
+          <div style={{flex:1,minWidth:140}}>
+            <label style={{display:'block',fontSize:11,color:'#6b7280',marginBottom:3}}>Date 日期</label>
+            <input type="date" value={dateVal} onChange={function(e){setDateVal(e.target.value)}}/>
+          </div>
+          <div style={{flex:1,minWidth:100}}>
+            <label style={{display:'block',fontSize:11,color:'#6b7280',marginBottom:3}}>Time 時間</label>
+            <input type="time" value={timeVal} onChange={function(e){setTimeVal(e.target.value)}}/>
+          </div>
+        </div>}
       </div>}
       <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:6}}>
         <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
