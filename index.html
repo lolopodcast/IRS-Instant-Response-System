@@ -819,7 +819,7 @@ function App(){
           {rm ? rm.name : 'ClassQ&A'}
         </span>
         {rm && <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
-          {rm.expiresAt && <Timer expiresAt={rm.expiresAt} onExpire={function(){setShowExtend(true)}}/>}
+          {rm.expiresAt && <Timer expiresAt={rm.expiresAt} onExpire={function(){if(isHost)setShowExtend(true)}}/>}
           <CodePill code={activeId} onZoom={function(){setModal('code')}}/>
           {isHost && <ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
           {!isHost && rm.allowExport && <button className="ic" onClick={function(){exportCSV(rm)}} title="Export CSV 匯出">CSV</button>}
