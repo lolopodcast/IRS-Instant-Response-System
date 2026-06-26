@@ -13,40 +13,43 @@
 <style>
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
 textarea,input,.card p,.card span,.content-area{-webkit-user-select:text;user-select:text}
-:root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed;--fs:14px;--fss:13px;--fsxs:11px}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;margin:0;font-size:var(--fs)}
+:root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed;--fs:14px;--fss:13px;--fsxs:11px;
+  --bg:#f5f5f0;--surface:#fff;--border:#e5e7eb;--text:#111;--subtext:#6b7280;--subtext2:#9ca3af}
+body.dark{--bg:#1a1a1a;--surface:#242424;--border:#333;--text:#f0f0f0;--subtext:#aaa;--subtext2:#666}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;font-size:var(--fs);color:var(--text);transition:background .2s,color .2s}
 .btn{border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:opacity .18s,background .15s;white-space:nowrap}
 .btn-p{background:var(--green);color:#fff}.btn-p:hover{opacity:.82}
 .btn-g{background:transparent;border:1.5px solid var(--green);color:var(--green)}.btn-g:hover{background:var(--lg)}
 .btn-d{background:#b91c1c;color:#fff}.btn-d:hover{opacity:.82}
 .ic{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:var(--fss);font-family:inherit;line-height:1.4;display:inline-flex;align-items:center;gap:4px}
 .ic:hover{background:rgba(255,255,255,.27)}
-.sidebar{position:fixed;top:0;left:0;width:214px;background:#fff;border-right:1px solid #e5e7eb;height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s;z-index:150;transform:translateX(0)}
+.sidebar{position:fixed;top:0;left:0;width:214px;background:var(--surface);border-right:1px solid var(--border);height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s,background .2s;z-index:150;transform:translateX(0)}
 .sidebar.closed{transform:translateX(-100%)}
 .sidebar-scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:140}
 .main-col{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden}
 .topbar{background:var(--green);color:#fff;padding:9px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-height:50px}
 .content-area{flex:1;overflow-y:auto;padding:16px}
 .content-inner{max-width:700px;margin:0 auto}
-.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
-.like-btn{display:inline-flex;align-items:center;gap:5px;background:#f3f4f6;border:none;border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s}
-.like-btn:hover{background:var(--gold)}
-.like-btn.liked{background:var(--gold);opacity:.85}
-.like-btn:disabled{cursor:default}
-textarea,input[type=text],input[type=number],select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit}
+.card{background:var(--surface);border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px;transition:background .2s}
+.like-btn{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s,opacity .15s;color:var(--text)}
+.like-btn:hover{background:var(--gold);border-color:var(--gold)}
+.like-btn.liked{background:var(--gold);border-color:var(--gold)}
+.like-btn.liked:hover{opacity:.75}
+.like-btn:disabled{cursor:not-allowed;opacity:.5}
+textarea,input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit;background:var(--surface);color:var(--text)}
 textarea{resize:vertical}
 textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
 .badge{font-size:var(--fsxs);border-radius:999px;padding:1px 9px;color:#fff;font-weight:500}
 .ba{background:#6b7280}.bn{background:var(--green)}
-.rtab{cursor:pointer;padding:8px 10px;border-radius:8px;font-size:var(--fss);transition:background .13s;word-break:break-all}
+.rtab{cursor:pointer;padding:8px 10px;border-radius:8px;font-size:var(--fss);transition:background .13s;word-break:break-all;color:var(--text)}
 .rtab.act{background:var(--green);color:#fff}
 .rtab:not(.act):hover{background:var(--lg)}
 .rthread{border-left:3px solid var(--gold);padding-left:10px;margin-top:9px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.44);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
-.modal{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal{background:var(--surface);border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;color:var(--text)}
 .modal h2{margin:0 0 14px;color:var(--green);font-size:16px;font-weight:700}
-.cbox{background:#fff;border-radius:10px;padding:22px;width:100%;max-width:310px;text-align:center}
-.cbox p{margin:0 0 16px;font-size:var(--fs);color:#374151;line-height:1.5;white-space:pre-line}
+.cbox{background:var(--surface);border-radius:10px;padding:22px;width:100%;max-width:310px;text-align:center;color:var(--text)}
+.cbox p{margin:0 0 16px;font-size:var(--fs);line-height:1.5;white-space:pre-line}
 .tchip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 .tchip.warn{background:#b91c1c}
 .cpill{display:inline-flex;align-items:center;background:rgba(255,255,255,.17);border-radius:7px;overflow:hidden}
@@ -56,26 +59,25 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
 .cpill-mid:hover{background:rgba(255,255,255,.13)}
 .cpill-mid.cp{background:rgba(255,255,255,.32)}
 .cpill-div{width:1px;height:20px;background:rgba(255,255,255,.25);flex-shrink:0}
-.actionsbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.actionsbar{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;transition:background .2s}
 .mgwrap{position:relative}
-.mgmenu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);min-width:150px;overflow:hidden;z-index:50}
-.mgitem{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:#374151}
-.mgitem:hover{background:#f3f4f6}
+.mgmenu{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);min-width:150px;overflow:hidden;z-index:50;border:1px solid var(--border)}
+.mgitem{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--text)}
+.mgitem:hover{background:var(--bg)}
 .mgitem.danger{color:#b91c1c}
-label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:pointer;margin-bottom:11px}
+label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:pointer;margin-bottom:11px;color:var(--text)}
 .field{margin-bottom:12px}
-.field label{display:block;font-size:var(--fss);color:#374151;margin-bottom:4px;font-weight:500}
+.field label{display:block;font-size:var(--fss);color:var(--subtext);margin-bottom:4px;font-weight:500}
 .err{font-size:var(--fsxs);color:#b91c1c;margin-top:3px}
-.sfooter{padding:10px 12px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;line-height:1.6}
-.sfooter a{color:#9ca3af;text-decoration:none}
+.sfooter{padding:10px 12px;border-top:1px solid var(--border);font-size:10px;color:var(--subtext2);line-height:1.6}
+.sfooter a{color:var(--subtext2);text-decoration:none}
 .sfooter a:hover{color:var(--green);text-decoration:underline}
 .svg-ic{display:inline-block;vertical-align:middle}
+.q-index{font-size:11px;font-weight:700;color:var(--green);background:var(--lg);border-radius:4px;padding:1px 6px;margin-right:6px;flex-shrink:0}
 .cpr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
 .cpr-box{background:#fff;border-radius:12px;padding:28px 28px 22px;max-width:360px;width:100%;font-family:'Segoe UI',system-ui,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.18)}
-@media(max-width:600px){
-  .topbar{gap:5px}
-  .cpill-mid{min-width:66px;font-size:12px}
-}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media(max-width:600px){.topbar{gap:5px}.cpill-mid{min-width:66px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -93,136 +95,117 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
   </div>
 </div>
 <script>
-  var firebaseConfig = {
-    apiKey: "AIzaSyAORiGVsnvS-XHFMYod-d3ZxbJdFqhiArs",
-    authDomain: "classqa-ncnu.firebaseapp.com",
-    databaseURL: "https://classqa-ncnu-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "classqa-ncnu",
-    storageBucket: "classqa-ncnu.firebasestorage.app",
-    messagingSenderId: "930969614847",
-    appId: "1:930969614847:web:31e3149579b64dba6b0fca"
-  };
+  var firebaseConfig={apiKey:"AIzaSyAORiGVsnvS-XHFMYod-d3ZxbJdFqhiArs",authDomain:"classqa-ncnu.firebaseapp.com",databaseURL:"https://classqa-ncnu-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"classqa-ncnu",storageBucket:"classqa-ncnu.firebasestorage.app",messagingSenderId:"930969614847",appId:"1:930969614847:web:31e3149579b64dba6b0fca"};
   firebase.initializeApp(firebaseConfig);
-  window.fbdb = firebase.database();
+  window.fbdb=firebase.database();
 </script>
 <script>
 (function(){
   var toast=document.getElementById('cpr-toast');
-  function show(){ toast.style.display='flex'; }
-  function hide(){ toast.style.display='none'; }
-  document.getElementById('cpr-ok-btn').addEventListener('click', hide);
-  toast.addEventListener('click', function(e){ if(e.target===toast) hide(); });
-  document.addEventListener('contextmenu', function(e){ e.preventDefault(); show(); });
-  document.addEventListener('keydown', function(e){
-    var blocked = e.key==='F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].indexOf(e.key)>-1) || (e.ctrlKey && e.key==='U');
-    if(blocked){ e.preventDefault(); show(); }
+  function show(){toast.style.display='flex'}
+  function hide(){toast.style.display='none'}
+  document.getElementById('cpr-ok-btn').addEventListener('click',hide);
+  toast.addEventListener('click',function(e){if(e.target===toast)hide()});
+  document.addEventListener('contextmenu',function(e){e.preventDefault();show()});
+  document.addEventListener('keydown',function(e){
+    var b=e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].indexOf(e.key)>-1)||(e.ctrlKey&&e.key==='U');
+    if(b){e.preventDefault();show()}
   });
 })();
 </script>
 <script type="text/babel" data-presets="react">
-var useState = React.useState;
-var useEffect = React.useEffect;
-var useRef = React.useRef;
-
+var useState=React.useState;var useEffect=React.useEffect;var useRef=React.useRef;
+var HK='cqa8h',JK='cqa8j',LK='cqa8lk',TK='cqa8theme';
+var db=window.fbdb;
 var uid=function(){return Math.random().toString(36).slice(2,10)};
 var ts=function(){return Date.now()};
 var load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
 var save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
-var HK='cqa7h';
-var LK='cqa7liked';
-var JK='cqa7joined';
-var db=window.fbdb;
 
+/* liked store: key -> 1 (liked) | -1 (unliked/removed) */
 function getLiked(){try{return JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){return{}}}
-function setLiked(key){
-  var m=getLiked(); m[key]=true;
+function toggleLiked(key){
+  var m=getLiked();
+  if(m[key]===1){m[key]=-1}else{m[key]=1}
   localStorage.setItem(LK,JSON.stringify(m));
+  return m[key];
 }
-function hasLiked(key){return !!getLiked()[key]}
+function likedState(key){var m=getLiked();return m[key]||0} /* 1=liked, -1=unliked, 0=never */
 
-function fbSet(path,val){return db.ref(path).set(val)}
-function fbUpdate(path,val){return db.ref(path).update(val)}
-function fbPush(path,val){var r=db.ref(path).push();r.set(val);return r.key}
-function fbRemove(path){return db.ref(path).remove()}
-function fbIncLike(path){db.ref(path+'/likes').transaction(function(cur){return (cur||0)+1})}
-function arrify(obj){
-  if(!obj)return [];
-  return Object.keys(obj).map(function(k){return Object.assign({id:k},obj[k])});
-}
+function fbSet(p,v){return db.ref(p).set(v)}
+function fbUpdate(p,v){return db.ref(p).update(v)}
+function fbPush(p,v){var r=db.ref(p).push();r.set(v);return r.key}
+function fbRemove(p){return db.ref(p).remove()}
+function fbLike(p,delta){db.ref(p+'/likes').transaction(function(cur){return Math.max(0,(cur||0)+delta)})}
+function arrify(obj){if(!obj)return [];return Object.keys(obj).map(function(k){return Object.assign({id:k},obj[k])})}
 function normQ(qid,qval){
-  var answers = arrify(qval.answers).map(function(a){
-    return Object.assign({},a,{replies:arrify(a.replies)});
-  });
+  var answers=arrify(qval.answers).map(function(a){return Object.assign({},a,{replies:arrify(a.replies)})});
   return Object.assign({id:qid},qval,{answers:answers});
 }
 
-/* ---- SVG icons ---- */
-function IconMinus(){
-  return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/></svg>;
-}
-function IconPlus(){
-  return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/><rect x="5.5" y="2" width="2" height="9" rx="1" fill="currentColor"/></svg>;
-}
-function IconSearch(){
-  return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
-    <circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.8"/>
-    <line x1="9.2" y1="9.2" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>;
-}
-function IconClock(){
-  return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none">
-    <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
-    <line x1="6.5" y1="3.5" x2="6.5" y2="6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    <line x1="6.5" y1="6.5" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>;
-}
-function IconThumb(){
-  return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none">
-    <path d="M5 12H10.5C11.05 12 11.5 11.6 11.65 11.07L12.9 6.57C13.1 5.85 12.55 5.15 11.8 5.15H8.5V2.5C8.5 1.95 8.05 1.5 7.5 1.5H7.3L4.8 7.1C4.65 7.4 4.35 7.6 4 7.6V12M1.5 7.6H4V12H1.5V7.6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
-  </svg>;
-}
-function IconGear(){
-  return <svg className="svg-ic" width="14" height="14" viewBox="0 0 16 16" fill="none">
-    <circle cx="8" cy="8" r="2.3" stroke="currentColor" strokeWidth="1.4"/>
-    <path d="M8 1.5v1.6M8 12.9v1.6M2.4 8H4M12 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-  </svg>;
-}
-function MicIcon(props){
-  var size = props.size || 22;
-  var c = '#fff';
-  return <svg width={size} height={size} viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="7" y="1" width="8" height="14" rx="4" fill={c}/>
-    <path d="M4 13a7 7 0 0 0 14 0" stroke={c} strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-    <line x1="11" y1="20" x2="11" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
-    <line x1="7" y1="24" x2="15" y2="24" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>;
+/* ---- Icons ---- */
+function IconMinus(){return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/></svg>}
+function IconPlus(){return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="5.5" width="9" height="2" rx="1" fill="currentColor"/><rect x="5.5" y="2" width="2" height="9" rx="1" fill="currentColor"/></svg>}
+function IconSearch(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.8"/><line x1="9.2" y1="9.2" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>}
+function IconClock(){return <svg className="svg-ic" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.5"/><line x1="6.5" y1="3.5" x2="6.5" y2="6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><line x1="6.5" y1="6.5" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>}
+function IconThumb(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 12H10.5C11.05 12 11.5 11.6 11.65 11.07L12.9 6.57C13.1 5.85 12.55 5.15 11.8 5.15H8.5V2.5C8.5 1.95 8.05 1.5 7.5 1.5H7.3L4.8 7.1C4.65 7.4 4.35 7.6 4 7.6V12M1.5 7.6H4V12H1.5V7.6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>}
+function IconGear(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" strokeWidth="1.4"/><path d="M8 1.5v1.6M8 12.9v1.6M2.4 8H4M12 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>}
+function IconSun(){return <svg className="svg-ic" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="3" stroke="currentColor" strokeWidth="1.4"/><line x1="7.5" y1="1" x2="7.5" y2="2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="7.5" y1="12.5" x2="7.5" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="1" y1="7.5" x2="2.5" y2="7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="12.5" y1="7.5" x2="14" y2="7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="10.9" y1="10.9" x2="11.95" y2="11.95" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="10.9" y1="4.1" x2="11.95" y2="3.05" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="3.05" y1="11.95" x2="4.1" y2="10.9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>}
+function IconMoon(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12.5 9A6 6 0 0 1 5 1.5a6 6 0 1 0 7.5 7.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>}
+function MicIcon(props){var s=props.size||20;return <svg width={s} height={s} viewBox="0 0 22 28" fill="none"><rect x="7" y="1" width="8" height="14" rx="4" fill="#fff"/><path d="M4 13a7 7 0 0 0 14 0" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" fill="none"/><line x1="11" y1="20" x2="11" y2="24" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/><line x1="7" y1="24" x2="15" y2="24" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/></svg>}
+
+/* ---- Voice textarea ---- */
+function VoiceTxt(props){
+  var value=props.value,onChange=props.onChange,placeholder=props.placeholder,rows=props.rows||3;
+  var ls=useState('zh-TW');var lang=ls[0],setLang=ls[1];
+  var rs=useState(false);var rec=rs[0],setRec=rs[1];
+  var rr=useRef(null);
+  function mic(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Speech not supported / 不支援語音輸入');return}
+    if(rec){if(rr.current)rr.current.stop();return}
+    var r=new SR();r.lang=lang;r.interimResults=false;
+    r.onresult=function(e){onChange(value+e.results[0][0].transcript)};
+    r.onend=function(){setRec(false)};r.onerror=function(){setRec(false)};
+    rr.current=r;r.start();setRec(true);
+  }
+  return <div>
+    <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5}}>
+      <button onClick={mic} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:1,background:rec?'#b91c1c':'var(--green)',border:'none',borderRadius:8,padding:'5px 8px',cursor:'pointer',minWidth:40,animation:rec?'pulse 1s infinite':'none'}}>
+        <MicIcon size={20}/><span style={{fontSize:10,color:'#fff',fontWeight:700,lineHeight:1}}>{lang==='zh-TW'?'中':'EN'}</span>
+      </button>
+      <select value={lang} onChange={function(e){setLang(e.target.value)}} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
+        <option value="zh-TW">中文</option><option value="en-US">English</option>
+      </select>
+      {rec&&<span style={{fontSize:12,color:'#b91c1c'}}>Recording…</span>}
+    </div>
+    <textarea rows={rows} value={value} onChange={function(e){onChange(e.target.value)}} placeholder={placeholder} style={{width:'100%'}}/>
+  </div>;
 }
 
-/* ---- QR Canvas (using qrcodejs library) ---- */
-function QRCanvas(props){
-  var url=props.url, size=props.size||160;
-  var ref=useRef(null);
+/* ---- beep ---- */
+function beep3(){try{var ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.35,.7].forEach(function(t){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.setValueAtTime(.5,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3)})}catch(e){}}
+
+/* ---- Timer ---- */
+function Timer(props){
+  var expiresAt=props.expiresAt,onExpire=props.onExpire;
+  var ls=useState(null);var left=ls[0],setLeft=ls[1];
+  var fired=useRef(false);
   useEffect(function(){
-    if(!ref.current||!url)return;
-    ref.current.innerHTML='';
-    try{
-      new QRCode(ref.current,{
-        text:url,
-        width:size,
-        height:size,
-        colorDark:'#000000',
-        colorLight:'#ffffff',
-        correctLevel:QRCode.CorrectLevel.M
-      });
-    }catch(e){console.warn('QR error',e)}
-  },[url,size]);
-  return <div ref={ref} style={{display:'inline-block',lineHeight:0}}/>;
+    if(!expiresAt)return;fired.current=false;
+    function tick(){var s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));setLeft(s);if(s===0&&!fired.current){fired.current=true;beep3();if(onExpire)onExpire()}}
+    tick();var iv=setInterval(tick,1000);return function(){clearInterval(iv)};
+  },[expiresAt]);
+  if(left===null)return null;
+  var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
+  function fmt(n){return String(n).padStart(2,'0')}
+  return <span className={'tchip'+(left<60?' warn':'')}><IconClock/>{h>0?(fmt(h)+':'):''}{fmt(m)}:{fmt(s)}{left===0?' Closed':''}</span>;
 }
 
+/* ---- Confirm ---- */
 function Confirm(props){
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onCancel()}}>
-    <div className="cbox">
-      <p>{props.msg}</p>
+    <div className="cbox"><p>{props.msg}</p>
       <div style={{display:'flex',gap:8,justifyContent:'center'}}>
         <button className="btn btn-d" onClick={props.onOk}>Delete 確認刪除</button>
         <button className="btn btn-g" onClick={props.onCancel}>Cancel 取消</button>
@@ -231,102 +214,55 @@ function Confirm(props){
   </div>;
 }
 
-function VoiceTxt(props){
-  var value=props.value, onChange=props.onChange, placeholder=props.placeholder, rows=props.rows||3;
-  var langState=useState('zh-TW'); var lang=langState[0], setLang=langState[1];
-  var recState=useState(false); var rec=recState[0], setRec=recState[1];
-  var rr=useRef(null);
-  function mic(){
-    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){alert('Speech not supported / 不支援語音輸入');return}
-    if(rec){if(rr.current)rr.current.stop();return}
-    var r=new SR(); r.lang=lang; r.interimResults=false;
-    r.onresult=function(e){onChange(value+e.results[0][0].transcript)};
-    r.onend=function(){setRec(false)};
-    r.onerror=function(){setRec(false)};
-    rr.current=r; r.start(); setRec(true);
+/* ---- LikeBtn (toggleable) ---- */
+function LikeBtn(props){
+  var likeKey=props.likeKey,count=props.count,onLike=props.onLike,disabled=props.disabled;
+  var initState=likedState(likeKey);
+  var ls=useState(initState===1);var liked=ls[0],setLiked=ls[1];
+  var cs=useState(count||0);var localCount=cs[0],setLocalCount=cs[1];
+  useEffect(function(){setLocalCount(count||0)},[count]);
+  function handle(){
+    if(disabled)return;
+    var cur=liked;
+    var delta=cur?-1:1;
+    toggleLiked(likeKey);
+    setLiked(!cur);
+    setLocalCount(function(c){return Math.max(0,c+delta)});
+    onLike(delta);
   }
-  var label = lang==='zh-TW' ? '中' : 'EN';
-  return <div>
-    <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:5}}>
-      <button onClick={mic} title={rec?'Stop 停止':'Voice input 語音輸入'}
-        style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:1,background:rec?'#b91c1c':'var(--green)',border:'none',borderRadius:8,padding:'5px 8px',cursor:'pointer',minWidth:40}}>
-        <MicIcon size={20}/>
-        <span style={{fontSize:10,color:'#fff',fontWeight:700,lineHeight:1,letterSpacing:.5}}>{label}</span>
-      </button>
-      <select value={lang} onChange={function(e){setLang(e.target.value)}} style={{width:'auto',fontSize:12,padding:'3px 6px'}}>
-        <option value="zh-TW">中文</option>
-        <option value="en-US">English</option>
-      </select>
-      {rec && <span style={{fontSize:12,color:'#b91c1c'}}>Recording…</span>}
-    </div>
-    <textarea rows={rows} value={value} onChange={function(e){onChange(e.target.value)}} placeholder={placeholder} style={{width:'100%'}}/>
-  </div>;
+  return <button className={'like-btn'+(liked?' liked':'')} onClick={handle} disabled={disabled} title={disabled?'Session closed':'Toggle like 按讚/收回'}>
+    <IconThumb/> {localCount}
+  </button>;
 }
 
-function beep3(){
-  try{
-    var ctx=new (window.AudioContext||window.webkitAudioContext)();
-    [0,0.35,0.7].forEach(function(t){
-      var o=ctx.createOscillator(), g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value=880;
-      g.gain.setValueAtTime(0.5,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.25);
-      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.3);
-    });
-  }catch(e){}
-}
-
-function Timer(props){
-  var expiresAt=props.expiresAt, onExpire=props.onExpire;
-  var leftState=useState(null); var left=leftState[0], setLeft=leftState[1];
-  var fired=useRef(false);
-  useEffect(function(){
-    if(!expiresAt)return;
-    fired.current=false;
-    function tick(){
-      var s=Math.max(0,Math.floor((expiresAt-Date.now())/1000));
-      setLeft(s);
-      if(s===0 && !fired.current){fired.current=true;beep3();if(onExpire)onExpire()}
-    }
-    tick();
-    var iv=setInterval(tick,1000);
-    return function(){clearInterval(iv)};
-  },[expiresAt]);
-  if(left===null)return null;
-  var h=Math.floor(left/3600), m=Math.floor((left%3600)/60), s=left%60;
-  function fmt(n){return String(n).padStart(2,'0')}
-  return <span className={'tchip'+(left<60?' warn':'')}>
-    <IconClock/>{h>0?(fmt(h)+':'):''}{fmt(m)}:{fmt(s)}{left===0?' Closed':''}
-  </span>;
-}
-
+/* ---- AnswerDelBtn ---- */
 function AnswerDelBtn(props){
-  var confState=useState(false); var conf=confState[0], setConf=confState[1];
+  var cs=useState(false);var conf=cs[0],setConf=cs[1];
   return <span>
-    {conf && <Confirm msg={"Delete this item?\n刪除此項目？"} onOk={function(){props.onDelete();setConf(false)}} onCancel={function(){setConf(false)}}/>}
+    {conf&&<Confirm msg={"Delete this item?\n刪除此項目？"} onOk={function(){props.onDelete();setConf(false)}} onCancel={function(){setConf(false)}}/>}
     <button className="btn btn-d" style={{padding:'2px 7px',fontSize:11}} onClick={function(){setConf(true)}}>Del</button>
   </span>;
 }
+
+/* ---- AnswerReplyToggle ---- */
 function AnswerReplyToggle(props){
-  var anon=props.anon;
-  var showState=useState(false); var show=showState[0], setShow=showState[1];
-  var txtState=useState(''); var txt=txtState[0], setTxt=txtState[1];
-  var nameState=useState(''); var rname=nameState[0], setRname=nameState[1];
+  var anon=props.anon,disabled=props.disabled;
+  var ss=useState(false);var show=ss[0],setShow=ss[1];
+  var ts2=useState('');var txt=ts2[0],setTxt=ts2[1];
+  var ns=useState('');var rname=ns[0],setRname=ns[1];
   function submit(){
     if(!txt.trim())return;
-    if(!anon && !rname.trim()){alert('Name required / 請填寫名字');return}
-    props.onSubmit(txt, anon?'Anon 匿名':rname.trim());
-    setTxt(''); setRname(''); setShow(false);
+    if(!anon&&!rname.trim()){alert('Name required / 請填寫名字');return}
+    props.onSubmit(txt,anon?'Anon 匿名':rname.trim());
+    setTxt('');setRname('');setShow(false);
   }
+  if(disabled)return null;
   return <span style={{display:'inline-block'}}>
     <button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={function(){setShow(!show)}}>Reply 回覆</button>
-    {show && <div style={{marginTop:6,width:'100%'}}>
-      {!anon && <div style={{marginBottom:6}}>
-        <input type="text" value={rname} onChange={function(e){setRname(e.target.value)}}
-          placeholder="Your name 你的名字 *" style={{borderColor:rname.trim()?'#d1d5db':'#f87171'}}/>
-        {!rname.trim() && <div className="err">Required 必填</div>}
+    {show&&<div style={{marginTop:6}}>
+      {!anon&&<div style={{marginBottom:6}}>
+        <input type="text" value={rname} onChange={function(e){setRname(e.target.value)}} placeholder="Your name 你的名字 *" style={{borderColor:rname.trim()?undefined:'#f87171'}}/>
+        {!rname.trim()&&<div className="err">Required 必填</div>}
       </div>}
       <VoiceTxt value={txt} onChange={setTxt} placeholder="Type reply… / 輸入回覆…" rows={2}/>
       <div style={{display:'flex',gap:6,marginTop:5}}>
@@ -337,80 +273,69 @@ function AnswerReplyToggle(props){
   </span>;
 }
 
+/* ---- QCard ---- */
 function QCard(props){
-  var q=props.q, isHost=props.isHost, anon=props.anon;
-  var onLikeQ=props.onLikeQ, onDeleteQ=props.onDeleteQ;
-  var onLikeAnswer=props.onLikeAnswer, onAddAnswer=props.onAddAnswer, onDeleteAnswer=props.onDeleteAnswer;
-  var onLikeReply=props.onLikeReply, onAddReply=props.onAddReply, onDeleteReply=props.onDeleteReply;
-  var showAState=useState(false); var showA=showAState[0], setShowA=showAState[1];
-  var atxtState=useState(''); var atxt=atxtState[0], setAtxt=atxtState[1];
-  var anameState=useState(''); var aname=anameState[0], setAname=anameState[1];
-  var confQState=useState(false); var confQ=confQState[0], setConfQ=confQState[1];
+  var q=props.q,qNum=props.qNum,isHost=props.isHost,anon=props.anon,closed=props.closed;
+  var onLikeQ=props.onLikeQ,onDeleteQ=props.onDeleteQ;
+  var onLikeAnswer=props.onLikeAnswer,onAddAnswer=props.onAddAnswer,onDeleteAnswer=props.onDeleteAnswer;
+  var onLikeReply=props.onLikeReply,onAddReply=props.onAddReply,onDeleteReply=props.onDeleteReply;
+  var sas=useState(false);var showA=sas[0],setShowA=sas[1];
+  var ats=useState('');var atxt=ats[0],setAtxt=ats[1];
+  var ans=useState('');var aname=ans[0],setAname=ans[1];
+  var cqs=useState(false);var confQ=cqs[0],setConfQ=cqs[1];
   function submitA(){
     if(!atxt.trim())return;
-    if(!anon && !aname.trim()){alert('Name required / 請填寫名字');return}
-    onAddAnswer(q.id, atxt, anon?'Anon 匿名':aname.trim());
-    setAtxt(''); setAname(''); setShowA(false);
+    if(!anon&&!aname.trim()){alert('Name required / 請填寫名字');return}
+    onAddAnswer(q.id,atxt,anon?'Anon 匿名':aname.trim());
+    setAtxt('');setAname('');setShowA(false);
   }
   var sorted=(q.answers||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
   return <div className="card">
-    {confQ && <Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){onDeleteQ(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
+    {confQ&&<Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){onDeleteQ(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
       <div style={{flex:1}}>
         <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
+          <span className="q-index">{qNum}</span>
           <span className={'badge '+(anon?'ba':'bn')}>{anon?'Anon 匿名':'Named 具名'}</span>
-          {!anon && <span style={{fontSize:12,color:'#6b7280'}}>{q.author}</span>}
-          <span style={{fontSize:11,color:'#9ca3af'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
+          {!anon&&<span style={{fontSize:12,color:'var(--subtext)'}}>{q.author}</span>}
+          <span style={{fontSize:11,color:'var(--subtext2)'}}>{new Date(q.createdAt).toLocaleTimeString()}</span>
         </div>
-        <p style={{margin:0,fontSize:15,fontWeight:600,lineHeight:1.5}}>{q.text}</p>
+        <p style={{margin:0,fontSize:15,fontWeight:600,lineHeight:1.5,color:'var(--text)'}}>{q.text}</p>
       </div>
-      {isHost && <button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
+      {isHost&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
     </div>
     <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
-      <button className={'like-btn'+(hasLiked('q_'+q.id)?' liked':'')} disabled={hasLiked('q_'+q.id)}
-        style={hasLiked('q_'+q.id)?{cursor:'default',background:'var(--gold)'}:null}
-        onClick={function(){if(hasLiked('q_'+q.id))return;setLiked('q_'+q.id);onLikeQ(q)}}>
-        <IconThumb/> {q.likes||0}
-      </button>
-      <button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(!showA)}}>
-        Reply 回答 ({(q.answers||[]).length})
-      </button>
+      <LikeBtn likeKey={'q_'+q.id} count={q.likes} onLike={function(d){onLikeQ(q.id,d)}} disabled={closed}/>
+      {!closed&&<button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(!showA)}}>Reply 回答 ({(q.answers||[]).length})</button>}
+      {closed&&<span style={{fontSize:12,color:'var(--subtext2)'}}>({(q.answers||[]).length} replies)</span>}
     </div>
-    {sorted.length>0 && <div className="rthread" style={{marginTop:10}}>
+    {sorted.length>0&&<div className="rthread" style={{marginTop:10}}>
       {sorted.map(function(a){
         var subSorted=(a.replies||[]).slice().sort(function(x,y){return (y.likes||0)-(x.likes||0)});
         return <div key={a.id} style={{marginTop:8}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
             <div style={{flex:1}}>
-              <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{a.author}</span>
-              <span style={{fontSize:13}}>{a.text}</span>
+              <span style={{fontSize:12,color:'var(--subtext)',marginRight:6}}>{a.author}</span>
+              <span style={{fontSize:13,color:'var(--text)'}}>{a.text}</span>
             </div>
-            {isHost && <AnswerDelBtn onDelete={function(){onDeleteAnswer(q.id,a.id)}}/>}
+            {isHost&&<AnswerDelBtn onDelete={function(){onDeleteAnswer(q.id,a.id)}}/>}
           </div>
           <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-            <button className={'like-btn'+(hasLiked('a_'+a.id)?' liked':'')} disabled={hasLiked('a_'+a.id)}
-              style={hasLiked('a_'+a.id)?{cursor:'default',background:'var(--gold)'}:null}
-              onClick={function(){if(hasLiked('a_'+a.id))return;setLiked('a_'+a.id);onLikeAnswer(q.id,a.id)}}>
-              <IconThumb/> {a.likes||0}
-            </button>
-            <AnswerReplyToggle anon={anon} onSubmit={function(t,author){onAddReply(q.id,a.id,t,author)}}/>
+            <LikeBtn likeKey={'a_'+a.id} count={a.likes} onLike={function(d){onLikeAnswer(q.id,a.id,d)}} disabled={closed}/>
+            <AnswerReplyToggle anon={anon} disabled={closed} onSubmit={function(t,auth){onAddReply(q.id,a.id,t,auth)}}/>
           </div>
-          {subSorted.length>0 && <div className="rthread">
+          {subSorted.length>0&&<div className="rthread">
             {subSorted.map(function(r2){
               return <div key={r2.id} style={{marginTop:8}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
                   <div style={{flex:1}}>
-                    <span style={{fontSize:12,color:'#6b7280',marginRight:6}}>{r2.author}</span>
-                    <span style={{fontSize:13}}>{r2.text}</span>
+                    <span style={{fontSize:12,color:'var(--subtext)',marginRight:6}}>{r2.author}</span>
+                    <span style={{fontSize:13,color:'var(--text)'}}>{r2.text}</span>
                   </div>
-                  {isHost && <AnswerDelBtn onDelete={function(){onDeleteReply(q.id,a.id,r2.id)}}/>}
+                  {isHost&&<AnswerDelBtn onDelete={function(){onDeleteReply(q.id,a.id,r2.id)}}/>}
                 </div>
-                <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-                  <button className={'like-btn'+(hasLiked('r_'+r2.id)?' liked':'')} disabled={hasLiked('r_'+r2.id)}
-                    style={hasLiked('r_'+r2.id)?{cursor:'default',background:'var(--gold)'}:null}
-                    onClick={function(){if(hasLiked('r_'+r2.id))return;setLiked('r_'+r2.id);onLikeReply(q.id,a.id,r2.id)}}>
-                    <IconThumb/> {r2.likes||0}
-                  </button>
+                <div style={{display:'flex',gap:7,marginTop:5}}>
+                  <LikeBtn likeKey={'r_'+r2.id} count={r2.likes} onLike={function(d){onLikeReply(q.id,a.id,r2.id,d)}} disabled={closed}/>
                 </div>
               </div>;
             })}
@@ -418,11 +343,10 @@ function QCard(props){
         </div>;
       })}
     </div>}
-    {showA && <div style={{marginTop:10,padding:10,background:'#f9fafb',borderRadius:8}}>
-      {!anon && <div style={{marginBottom:7}}>
-        <input type="text" value={aname} onChange={function(e){setAname(e.target.value)}}
-          placeholder="Your name 你的名字 *" style={{borderColor:aname.trim()?'#d1d5db':'#f87171'}}/>
-        {!aname.trim() && <div className="err">Required 必填</div>}
+    {showA&&!closed&&<div style={{marginTop:10,padding:10,background:'var(--bg)',borderRadius:8}}>
+      {!anon&&<div style={{marginBottom:7}}>
+        <input type="text" value={aname} onChange={function(e){setAname(e.target.value)}} placeholder="Your name 你的名字 *" style={{borderColor:aname.trim()?undefined:'#f87171'}}/>
+        {!aname.trim()&&<div className="err">Required 必填</div>}
       </div>}
       <VoiceTxt value={atxt} onChange={setAtxt} placeholder="Type answer… / 輸入回答…" rows={2}/>
       <div style={{display:'flex',gap:6,marginTop:6}}>
@@ -433,123 +357,95 @@ function QCard(props){
   </div>;
 }
 
+/* ---- CodePill ---- */
 function CodePill(props){
-  var code=props.code, onZoom=props.onZoom;
-  var visState=useState(true); var vis=visState[0], setVis=visState[1];
-  var cpState=useState(false); var cp=cpState[0], setCp=cpState[1];
-  var doneState=useState(false); var done=doneState[0], setDone=doneState[1];
+  var code=props.code,onZoom=props.onZoom;
+  var vs=useState(true);var vis=vs[0],setVis=vs[1];
+  var cs=useState(false);var cp=cs[0],setCp=cs[1];
+  var ds=useState(false);var done=ds[0],setDone=ds[1];
   var tmr=useRef(null);
-  function start(){
-    tmr.current=setTimeout(function(){
-      if(navigator.clipboard) navigator.clipboard.writeText(code).then(function(){setDone(true);setTimeout(function(){setDone(false)},1400)});
-    },1000);
-    setCp(true);
-  }
+  function start(){tmr.current=setTimeout(function(){if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){setDone(true);setTimeout(function(){setDone(false)},1400)})},1000);setCp(true)}
   function end(){clearTimeout(tmr.current);setCp(false)}
   return <div className="cpill">
-    <button className="cpill-side" onClick={function(){setVis(!vis)}} title={vis?'Hide Code':'Show Code'}>
-      {vis ? <IconMinus/> : <IconPlus/>}
-    </button>
-    <div className={'cpill-mid'+(cp?' cp':'')}
-      onMouseDown={start} onMouseUp={end} onMouseLeave={end}
-      onTouchStart={start} onTouchEnd={end}
-      title="Hold 1s to copy / 長按1秒複製">
-      {vis ? (done?'Copied!':code) : '···'}
+    <button className="cpill-side" onClick={function(){setVis(!vis)}}>{vis?<IconMinus/>:<IconPlus/>}</button>
+    <div className={'cpill-mid'+(cp?' cp':'')} onMouseDown={start} onMouseUp={end} onMouseLeave={end} onTouchStart={start} onTouchEnd={end} title="Hold 1s to copy / 長按1秒複製">
+      {vis?(done?'Copied!':code):'···'}
     </div>
     <div className="cpill-div"></div>
-    <button className="cpill-side" onClick={onZoom} title="Zoom Code">
-      <IconSearch/>
-    </button>
+    <button className="cpill-side" onClick={onZoom}><IconSearch/></button>
   </div>;
 }
 
+/* ---- ManageMenu ---- */
 function ManageMenu(props){
-  var onCSV=props.onCSV, onDelete=props.onDelete;
-  var openState=useState(false); var open=openState[0], setOpen=openState[1];
+  var os=useState(false);var open=os[0],setOpen=os[1];
   var ref=useRef(null);
   useEffect(function(){
-    function close(e){if(ref.current && !ref.current.contains(e.target))setOpen(false)}
-    document.addEventListener('click',close);
-    return function(){document.removeEventListener('click',close)};
+    function close(e){if(ref.current&&!ref.current.contains(e.target))setOpen(false)}
+    document.addEventListener('click',close);return function(){document.removeEventListener('click',close)};
   },[]);
   return <div className="mgwrap" ref={ref}>
-    <button className="ic" onClick={function(){setOpen(!open)}} title="Manage 管理">
-      <IconGear/> Manage
-    </button>
-    {open && <div className="mgmenu">
-      <button className="mgitem" onClick={function(){onCSV();setOpen(false)}}>Export CSV 匯出</button>
-      <button className="mgitem danger" onClick={function(){onDelete();setOpen(false)}}>Delete Room 刪除問答室</button>
+    <button className="ic" onClick={function(){setOpen(!open)}}><IconGear/> Manage</button>
+    {open&&<div className="mgmenu">
+      <button className="mgitem" onClick={function(){props.onCSV();setOpen(false)}}>Export CSV 匯出</button>
+      <button className="mgitem danger" onClick={function(){props.onDelete();setOpen(false)}}>Delete Room 刪除問答室</button>
     </div>}
   </div>;
 }
 
+/* ---- Modals ---- */
 function ExtendModal(props){
-  var onExtend=props.onExtend, onClose=props.onClose;
-  var minsState=useState(1); var mins=minsState[0], setMins=minsState[1];
-  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+  var ms=useState(1);var mins=ms[0],setMins=ms[1];
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal" style={{maxWidth:310,textAlign:'center'}}>
       <h2>Time's up! 時間到</h2>
-      <p style={{color:'#374151',fontSize:14,margin:'0 0 14px'}}>Extend the session? 要延長嗎？</p>
+      <p style={{fontSize:14,margin:'0 0 14px'}}>Extend the session? 要延長嗎？</p>
       <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center',marginBottom:18}}>
         <input type="number" value={mins} min={1} max={60} onChange={function(e){setMins(+e.target.value)}} style={{width:66,textAlign:'center',fontSize:18}}/>
         <span style={{fontSize:14}}>min 分</span>
       </div>
       <div style={{display:'flex',gap:8,justifyContent:'center'}}>
-        <button className="btn btn-p" onClick={function(){onExtend(mins);onClose()}}>Extend 延長</button>
-        <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
+        <button className="btn btn-p" onClick={function(){props.onExtend(mins);props.onClose()}}>Extend 延長</button>
+        <button className="btn btn-g" onClick={props.onClose}>Close 關閉</button>
       </div>
     </div>
   </div>;
 }
-
 function CodeModal(props){
-  var code=props.code, onClose=props.onClose;
-  var copiedState=useState(false); var copied=copiedState[0], setCopied=copiedState[1];
-  function copy(){if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
-  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+  var cs=useState(false);var copied=cs[0],setCopied=cs[1];
+  function copy(){if(navigator.clipboard)navigator.clipboard.writeText(props.code).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal" style={{textAlign:'center',maxWidth:320}}>
       <h2>Room Code</h2>
-      <div style={{fontSize:46,fontWeight:900,letterSpacing:8,color:'var(--green)',margin:'14px 0',fontVariantNumeric:'tabular-nums'}}>{code}</div>
+      <div style={{fontSize:46,fontWeight:900,letterSpacing:8,color:'var(--green)',margin:'14px 0',fontVariantNumeric:'tabular-nums'}}>{props.code}</div>
       <div style={{display:'flex',gap:8,justifyContent:'center'}}>
         <button className="btn btn-p" onClick={copy}>{copied?'Copied!':'Copy 複製'}</button>
-        <button className="btn btn-g" onClick={onClose}>Close 關閉</button>
+        <button className="btn btn-g" onClick={props.onClose}>Close 關閉</button>
       </div>
     </div>
   </div>;
 }
-
 function CreateModal(props){
-  var onClose=props.onClose, onCreate=props.onCreate;
-  var nameState=useState(''); var name=nameState[0], setName=nameState[1];
-  var anonState=useState(false); var anon=anonState[0], setAnon=anonState[1];
-  var timedState=useState(false); var timed=timedState[0], setTimed=timedState[1];
-  var timerModeState=useState('duration'); var timerMode=timerModeState[0], setTimerMode=timerModeState[1];
-  var hrsState=useState(0); var hrs=hrsState[0], setHrs=hrsState[1];
-  var minsState=useState(30); var mins=minsState[0], setMins=minsState[1];
-  function todayStr(){
-    var d=new Date();
-    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  }
-  var dateState=useState(todayStr()); var dateVal=dateState[0], setDateVal=dateState[1];
-  var timeState=useState('23:59'); var timeVal=timeState[0], setTimeVal=timeState[1];
-  var allowExportState=useState(false); var allowExport=allowExportState[0], setAllowExport=allowExportState[1];
+  var ns=useState('');var name=ns[0],setName=ns[1];
+  var as=useState(false);var anon=as[0],setAnon=as[1];
+  var ts3=useState(false);var timed=ts3[0],setTimed=ts3[1];
+  var tms=useState('duration');var timerMode=tms[0],setTimerMode=tms[1];
+  var hs=useState(0);var hrs=hs[0],setHrs=hs[1];
+  var ms=useState(30);var mins=ms[0],setMins=ms[1];
+  function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  var dvs=useState(todayStr());var dateVal=dvs[0],setDateVal=dvs[1];
+  var tvs=useState('23:59');var timeVal=tvs[0],setTimeVal=tvs[1];
+  var aes=useState(false);var allowExport=aes[0],setAllowExport=aes[1];
   function submit(){
     if(!name.trim())return;
-    var expiresAt = null;
+    var expiresAt=null;
     if(timed){
-      if(timerMode==='duration'){
-        expiresAt = Date.now()+(hrs*3600+mins*60)*1000;
-      } else {
-        var dt = new Date(dateVal+'T'+timeVal+':00');
-        if(isNaN(dt.getTime())){ alert('Invalid date/time / 日期時間格式錯誤'); return; }
-        expiresAt = dt.getTime();
-        if(expiresAt<=Date.now()){ alert('Must be in the future / 時間需晚於現在'); return; }
-      }
+      if(timerMode==='duration'){expiresAt=Date.now()+(hrs*3600+mins*60)*1000}
+      else{var dt=new Date(dateVal+'T'+timeVal+':00');if(isNaN(dt.getTime())){alert('Invalid date/time');return}expiresAt=dt.getTime();if(expiresAt<=Date.now()){alert('Must be in the future / 時間需晚於現在');return}}
     }
-    onCreate(name.trim(),anon,expiresAt,allowExport);
-    onClose();
+    props.onCreate(name.trim(),anon,expiresAt,allowExport);props.onClose();
   }
-  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal">
       <h2>Create Room 建立問答室</h2>
       <div className="field"><label>Room Name 名稱</label>
@@ -558,158 +454,137 @@ function CreateModal(props){
       <label className="row"><input type="checkbox" checked={anon} onChange={function(e){setAnon(e.target.checked)}}/> Anonymous 匿名模式</label>
       <label className="row"><input type="checkbox" checked={allowExport} onChange={function(e){setAllowExport(e.target.checked)}}/> Allow everyone to export CSV 允許所有人匯出</label>
       <label className="row"><input type="checkbox" checked={timed} onChange={function(e){setTimed(e.target.checked)}}/> <IconClock/> Set Timer 限時開放</label>
-      {timed && <div style={{marginBottom:14,padding:'10px 12px',background:'#f9fafb',borderRadius:8}}>
+      {timed&&<div style={{marginBottom:14,padding:'10px 12px',background:'var(--bg)',borderRadius:8}}>
         <div style={{display:'flex',gap:14,marginBottom:10}}>
-          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer'}}>
-            <input type="radio" name="timermode" checked={timerMode==='duration'} onChange={function(){setTimerMode('duration')}}/>
-            Duration 時長
+          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer',color:'var(--text)'}}>
+            <input type="radio" name="timermode" checked={timerMode==='duration'} onChange={function(){setTimerMode('duration')}}/> Duration 時長
           </label>
-          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer'}}>
-            <input type="radio" name="timermode" checked={timerMode==='datetime'} onChange={function(){setTimerMode('datetime')}}/>
-            Specific Date/Time 指定時間
+          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer',color:'var(--text)'}}>
+            <input type="radio" name="timermode" checked={timerMode==='datetime'} onChange={function(){setTimerMode('datetime')}}/> Specific Date/Time 指定時間
           </label>
         </div>
-        {timerMode==='duration' ? <div style={{display:'flex',gap:10,alignItems:'center'}}>
+        {timerMode==='duration'?<div style={{display:'flex',gap:10,alignItems:'center'}}>
           <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-            <input type="number" value={hrs} min={0} max={23} onChange={function(e){setHrs(+e.target.value)}} style={{width:58}}/>
-            <span style={{fontSize:13}}>hr 時</span>
+            <input type="number" value={hrs} min={0} max={23} onChange={function(e){setHrs(+e.target.value)}} style={{width:58}}/><span style={{fontSize:13}}>hr 時</span>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
-            <input type="number" value={mins} min={0} max={59} onChange={function(e){setMins(+e.target.value)}} style={{width:58}}/>
-            <span style={{fontSize:13}}>min 分</span>
+            <input type="number" value={mins} min={0} max={59} onChange={function(e){setMins(+e.target.value)}} style={{width:58}}/><span style={{fontSize:13}}>min 分</span>
           </div>
-        </div> : <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
+        </div>:<div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
           <div style={{flex:1,minWidth:140}}>
-            <label style={{display:'block',fontSize:11,color:'#6b7280',marginBottom:3}}>Date 日期</label>
+            <label style={{display:'block',fontSize:11,color:'var(--subtext)',marginBottom:3}}>Date 日期</label>
             <input type="date" value={dateVal} onChange={function(e){setDateVal(e.target.value)}}/>
           </div>
           <div style={{flex:1,minWidth:100}}>
-            <label style={{display:'block',fontSize:11,color:'#6b7280',marginBottom:3}}>Time 時間</label>
+            <label style={{display:'block',fontSize:11,color:'var(--subtext)',marginBottom:3}}>Time 時間</label>
             <input type="time" value={timeVal} onChange={function(e){setTimeVal(e.target.value)}}/>
           </div>
         </div>}
       </div>}
       <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:6}}>
-        <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
+        <button className="btn btn-g" onClick={props.onClose}>Cancel 取消</button>
         <button className="btn btn-p" onClick={submit}>Create 建立</button>
       </div>
     </div>
   </div>;
 }
-
 function JoinModal(props){
-  var onClose=props.onClose, onJoin=props.onJoin, joinedRooms=props.joinedRooms||[];
-  var codeState=useState(''); var code=codeState[0], setCode=codeState[1];
-  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)onClose()}}>
+  var cs=useState('');var code=cs[0],setCode=cs[1];
+  var joined=props.joinedRooms||[];
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal">
       <h2>Join / Switch Room 加入或切換</h2>
       <div className="field"><label>Room Code</label>
-        <input type="text" value={code} onChange={function(e){setCode(e.target.value.trim())}} placeholder="Paste 8-char code" onKeyDown={function(e){if(e.key==='Enter')onJoin(code)}} autoFocus/>
+        <input type="text" value={code} onChange={function(e){setCode(e.target.value.trim())}} placeholder="Paste 8-char code" onKeyDown={function(e){if(e.key==='Enter')props.onJoin(code)}} autoFocus/>
       </div>
-      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginBottom:joinedRooms.length?16:0}}>
-        <button className="btn btn-g" onClick={onClose}>Cancel 取消</button>
-        <button className="btn btn-p" onClick={function(){onJoin(code)}}>Join 加入</button>
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginBottom:joined.length?16:0}}>
+        <button className="btn btn-g" onClick={props.onClose}>Cancel 取消</button>
+        <button className="btn btn-p" onClick={function(){props.onJoin(code)}}>Join 加入</button>
       </div>
-      {joinedRooms.length>0 && <div>
-        <div style={{fontSize:11,color:'#9ca3af',marginBottom:6,letterSpacing:1,fontWeight:600}}>RECENTLY JOINED 最近加入過</div>
+      {joined.length>0&&<div>
+        <div style={{fontSize:11,color:'var(--subtext2)',marginBottom:6,letterSpacing:1,fontWeight:600}}>RECENTLY JOINED 最近加入過</div>
         <div style={{display:'flex',flexDirection:'column',gap:6,maxHeight:200,overflowY:'auto'}}>
-          {joinedRooms.map(function(r){
-            return <div key={r.id} className="rtab" style={{border:'1px solid #e5e7eb'}} onClick={function(){onJoin(r.id)}}>
-              <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
-              <div style={{fontSize:11,opacity:.65,marginTop:2}}>{r.anonymous?'Anon':'Named'}</div>
-            </div>;
-          })}
+          {joined.map(function(r){return <div key={r.id} className="rtab" style={{border:'1px solid var(--border)'}} onClick={function(){props.onJoin(r.id)}}>
+            <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
+            <div style={{fontSize:11,opacity:.65,marginTop:2}}>{r.anonymous?'Anon':'Named'}</div>
+          </div>})}
         </div>
       </div>}
     </div>
   </div>;
 }
 
+/* ---- App ---- */
 function App(){
-  var hostsState=useState(function(){return load(HK)}); var hosts=hostsState[0], setHosts=hostsState[1];
-  var joinedState=useState(function(){return load(JK)}); var joined=joinedState[0], setJoined=joinedState[1];
-  var roomListState=useState({}); var roomList=roomListState[0], setRoomList=roomListState[1];
-  var activeIdState=useState(null); var activeId=activeIdState[0], setActiveId=activeIdState[1];
-  var activeRoomState=useState(null); var activeRoomData=activeRoomState[0], setActiveRoomData=activeRoomState[1];
-  var modalState=useState(null); var modal=modalState[0], setModal=modalState[1];
-  var newQState=useState(''); var newQ=newQState[0], setNewQ=newQState[1];
-  var qAuthorState=useState(''); var qAuthor=qAuthorState[0], setQAuthor=qAuthorState[1];
-  var sideOpenState=useState(false); var sideOpen=sideOpenState[0], setSideOpen=sideOpenState[1];
-  var showExtendState=useState(false); var showExtend=showExtendState[0], setShowExtend=showExtendState[1];
-  var confRoomState=useState(false); var confRoom=confRoomState[0], setConfRoom=confRoomState[1];
-  var loadingState=useState(false); var loading=loadingState[0], setLoading=loadingState[1];
+  var hs=useState(function(){return load(HK)});var hosts=hs[0],setHosts=hs[1];
+  var js=useState(function(){return load(JK)});var joined=js[0],setJoined=js[1];
+  var rls=useState({});var roomList=rls[0],setRoomList=rls[1];
+  var ais=useState(null);var activeId=ais[0],setActiveId=ais[1];
+  var ard=useState(null);var activeRoomData=ard[0],setActiveRoomData=ard[1];
+  var ms=useState(null);var modal=ms[0],setModal=ms[1];
+  var nqs=useState('');var newQ=nqs[0],setNewQ=nqs[1];
+  var qas=useState('');var qAuthor=qas[0],setQAuthor=qas[1];
+  var sos=useState(false);var sideOpen=sos[0],setSideOpen=sos[1];
+  var ses=useState(false);var showExtend=ses[0],setShowExtend=ses[1];
+  var crs=useState(false);var confRoom=crs[0],setConfRoom=crs[1];
+  var lds=useState(false);var loading=lds[0],setLoading=lds[1];
+  var themeInit=localStorage.getItem(TK)||'light';
+  var tms=useState(themeInit);var theme=tms[0],setTheme=tms[1];
 
+  useEffect(function(){
+    document.body.className=theme==='dark'?'dark':'';
+    localStorage.setItem(TK,theme);
+  },[theme]);
   useEffect(function(){save(HK,hosts)},[hosts]);
   useEffect(function(){save(JK,joined)},[joined]);
 
   useEffect(function(){
-    var knownIds = Object.keys(hosts).concat(Object.keys(joined));
-    var p = new URLSearchParams(window.location.search).get('room');
-    if(p && knownIds.indexOf(p)===-1) knownIds = knownIds.concat([p]);
-    knownIds = knownIds.filter(function(v,i,a){return a.indexOf(v)===i});
-    if(knownIds.length===0){ setRoomList({}); return; }
-    var unsubs = knownIds.map(function(id){
-      var ref = db.ref('rooms/'+id+'/meta');
-      var cb = function(snap){
-        var val = snap.val();
-        setRoomList(function(prev){
-          var n=Object.assign({},prev);
-          if(val) n[id]=Object.assign({id:id},val);
-          else delete n[id];
-          return n;
-        });
-      };
-      ref.on('value',cb);
-      return function(){ref.off('value',cb)};
+    var ids=Object.keys(hosts).concat(Object.keys(joined));
+    var p=new URLSearchParams(window.location.search).get('room');
+    if(p&&ids.indexOf(p)===-1)ids=ids.concat([p]);
+    ids=ids.filter(function(v,i,a){return a.indexOf(v)===i});
+    if(ids.length===0){setRoomList({});return}
+    var unsubs=ids.map(function(id){
+      var ref=db.ref('rooms/'+id+'/meta');
+      var cb=function(snap){var val=snap.val();setRoomList(function(prev){var n=Object.assign({},prev);if(val)n[id]=Object.assign({id:id},val);else delete n[id];return n})};
+      ref.on('value',cb);return function(){ref.off('value',cb)};
     });
     return function(){unsubs.forEach(function(u){u()})};
   },[hosts,joined]);
 
   useEffect(function(){
     var p=new URLSearchParams(window.location.search).get('room');
-    if(p) setActiveId(p);
+    if(p)setActiveId(p);
   },[]);
 
   useEffect(function(){
-    if(!activeId){ setActiveRoomData(null); return; }
+    if(!activeId){setActiveRoomData(null);return}
     setLoading(true);
-    var ref = db.ref('rooms/'+activeId);
-    var cb = function(snap){
-      var val = snap.val();
-      setLoading(false);
-      if(!val){ setActiveRoomData(undefined); return; }
-      var meta = val.meta || {};
-      var questions = Object.keys(val.questions||{}).map(function(qid){
-        return normQ(qid, val.questions[qid]);
-      });
+    var ref=db.ref('rooms/'+activeId);
+    var cb=function(snap){
+      var val=snap.val();setLoading(false);
+      if(!val){setActiveRoomData(undefined);return}
+      var meta=val.meta||{};
+      var questions=Object.keys(val.questions||{}).map(function(qid){return normQ(qid,val.questions[qid])});
       setActiveRoomData(Object.assign({id:activeId},meta,{questions:questions}));
     };
-    ref.on('value',cb);
-    return function(){ref.off('value',cb)};
+    ref.on('value',cb);return function(){ref.off('value',cb)};
   },[activeId]);
 
-  var rm = activeRoomData || null;
-  var isHost = !!(activeId && hosts[activeId]);
-  var isClosed = !!(rm && rm.expiresAt && Date.now()>rm.expiresAt);
-  var pageUrl = activeId ? (window.location.href.split('?')[0]+'?room='+activeId) : '';
+  var rm=activeRoomData||null;
+  var isHost=!!(activeId&&hosts[activeId]);
+  var isClosed=!!(rm&&rm.expiresAt&&Date.now()>rm.expiresAt);
 
   function createRoom(name,anon,expiresAt,allowExport){
-    var id=uid();
-    var token=uid();
-    var meta={name:name,anonymous:anon,expiresAt:expiresAt||null,createdAt:ts(),hostToken:token,allowExport:!!allowExport};
-    fbSet('rooms/'+id+'/meta',meta);
+    var id=uid(),token=uid();
+    fbSet('rooms/'+id+'/meta',{name:name,anonymous:anon,expiresAt:expiresAt||null,createdAt:ts(),hostToken:token,allowExport:!!allowExport});
     setHosts(function(h){var n=Object.assign({},h);n[id]=token;return n});
     setActiveId(id);
   }
   function joinRoom(code){
-    code=code.trim();
-    if(!code)return;
+    code=code.trim();if(!code)return;
     db.ref('rooms/'+code+'/meta').once('value').then(function(snap){
-      if(snap.exists()){
-        setActiveId(code);
-        setModal(null);
-        setJoined(function(j){ if(j[code]) return j; var n=Object.assign({},j); n[code]=true; return n; });
-      }
+      if(snap.exists()){setActiveId(code);setModal(null);setJoined(function(j){if(j[code])return j;var n=Object.assign({},j);n[code]=true;return n})}
       else alert('Room not found / 找不到此 Room');
     });
   }
@@ -726,12 +601,7 @@ function App(){
     var dt=''+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'-'+pad(now.getHours())+pad(now.getMinutes());
     var fname=(rmv.name||'room')+'-'+rmv.id+'-'+dt+'.csv';
     function esc(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'}
-    function fmtTime(t){
-      if(!t && t!==0) return '';
-      var d=new Date(t);
-      if(isNaN(d.getTime())) return '';
-      return d.toLocaleString();
-    }
+    function fmtTime(t){if(!t&&t!==0)return '';var d=new Date(t);if(isNaN(d.getTime()))return '';return d.toLocaleString()}
     var rows=[['Type','Author','Content','Likes','Time','Question #','Answer #']];
     var qSorted=(rmv.questions||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
     qSorted.forEach(function(q,qi){
@@ -750,123 +620,116 @@ function App(){
     var csv='\uFEFF'+rows.map(function(r){return r.join(',')}).join('\r\n');
     var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
     var url=URL.createObjectURL(blob);
-    var a=document.createElement('a'); a.href=url; a.download=fname; a.click();
+    var a=document.createElement('a');a.href=url;a.download=fname;a.click();
     setTimeout(function(){URL.revokeObjectURL(url)},1000);
   }
   function extendRoom(mins){
     if(!rm)return;
-    var newExp=Math.max(Date.now(), rm.expiresAt||Date.now())+(mins*60*1000);
+    var newExp=Math.max(Date.now(),rm.expiresAt||Date.now())+(mins*60*1000);
     fbUpdate('rooms/'+activeId+'/meta',{expiresAt:newExp});
   }
   function postQ(){
     if(!newQ.trim()||!rm)return;
-    if(rm.expiresAt && Date.now()>rm.expiresAt){alert('This room is closed / 此問答室已結束');return}
-    if(!rm.anonymous && !qAuthor.trim()){alert('Name required / 請填寫名字');return}
-    var q={text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,createdAt:ts()};
-    fbPush('rooms/'+activeId+'/questions',q);
-    setNewQ(''); setQAuthor('');
+    if(isClosed){alert('Session closed / 此問答室已結束');return}
+    if(!rm.anonymous&&!qAuthor.trim()){alert('Name required / 請填寫名字');return}
+    fbPush('rooms/'+activeId+'/questions',{text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,createdAt:ts()});
+    setNewQ('');setQAuthor('');
   }
-  function likeQuestion(q){ fbIncLike('rooms/'+activeId+'/questions/'+q.id) }
-  function deleteQuestion(qid){ fbRemove('rooms/'+activeId+'/questions/'+qid) }
-  function likeAnswer(qid,aid){ fbIncLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid) }
+  function likeQuestion(qid,delta){fbLike('rooms/'+activeId+'/questions/'+qid,delta)}
+  function deleteQuestion(qid){fbRemove('rooms/'+activeId+'/questions/'+qid)}
+  function likeAnswer(qid,aid,delta){fbLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid,delta)}
   function addAnswer(qid,text,author){
-    if(rm && rm.expiresAt && Date.now()>rm.expiresAt){alert('This room is closed / 此問答室已結束');return}
+    if(isClosed){alert('Session closed / 此問答室已結束');return}
     fbPush('rooms/'+activeId+'/questions/'+qid+'/answers',{text:text,author:author,likes:0,createdAt:ts()});
   }
-  function deleteAnswer(qid,aid){ fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid) }
-  function likeReply(qid,aid,rid){ fbIncLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid) }
+  function deleteAnswer(qid,aid){fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid)}
+  function likeReply(qid,aid,rid,delta){fbLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid,delta)}
   function addReply(qid,aid,text,author){
-    if(rm && rm.expiresAt && Date.now()>rm.expiresAt){alert('This room is closed / 此問答室已結束');return}
+    if(isClosed){alert('Session closed / 此問答室已結束');return}
     fbPush('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies',{text:text,author:author,likes:0,createdAt:ts()});
   }
-  function deleteReply(qid,aid,rid){ fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid) }
+  function deleteReply(qid,aid,rid){fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid)}
 
-  var sorted = rm ? (rm.questions||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)}) : [];
+  /* sort by likes, but carry original time-order index */
+  var qByTime=rm?(rm.questions||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)}):[];
+  var qIndexMap={};qByTime.forEach(function(q,i){qIndexMap[q.id]='Q'+(i+1)});
+  var sorted=qByTime.slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
 
   return <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
-    {confRoom && <Confirm msg={'Delete room "'+(rm?rm.name:activeId)+'"?\n刪除問答室「'+(rm?rm.name:activeId)+'」？'} onOk={function(){deleteRoom(activeId);setConfRoom(false)}} onCancel={function(){setConfRoom(false)}}/>}
-
-    {sideOpen && <div className="sidebar-scrim" onClick={function(){setSideOpen(false)}}/>}
+    {confRoom&&<Confirm msg={'Delete room "'+(rm?rm.name:activeId)+'"?\n刪除問答室「'+(rm?rm.name:activeId)+'」？'} onOk={function(){deleteRoom(activeId);setConfRoom(false)}} onCancel={function(){setConfRoom(false)}}/>}
+    {sideOpen&&<div className="sidebar-scrim" onClick={function(){setSideOpen(false)}}/>}
 
     <div className={'sidebar'+(sideOpen?'':' closed')}>
-      <div style={{padding:'14px 10px 10px',borderBottom:'1px solid #e5e7eb',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{padding:'14px 10px 10px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div style={{fontWeight:800,color:'var(--green)',fontSize:16,letterSpacing:.5}}>ClassQ&A</div>
-        <button onClick={function(){setSideOpen(false)}} style={{background:'none',border:'none',color:'#6b7280',fontSize:18,cursor:'pointer',lineHeight:1,padding:'2px 4px'}} title="Close menu">&#10005;</button>
+        <button onClick={function(){setSideOpen(false)}} style={{background:'none',border:'none',color:'var(--subtext)',fontSize:18,cursor:'pointer',lineHeight:1,padding:'2px 4px'}}>&#10005;</button>
       </div>
       <div style={{padding:'8px 6px',flex:1,overflowY:'auto'}}>
-        <div style={{fontSize:10,color:'#9ca3af',marginBottom:5,paddingLeft:4,letterSpacing:1,fontWeight:600}}>ROOMS</div>
-        {Object.keys(roomList).length===0 && <div style={{fontSize:13,color:'#9ca3af',padding:'6px 4px'}}>No rooms yet</div>}
+        <div style={{fontSize:10,color:'var(--subtext2)',marginBottom:5,paddingLeft:4,letterSpacing:1,fontWeight:600}}>ROOMS</div>
+        {Object.keys(roomList).length===0&&<div style={{fontSize:13,color:'var(--subtext2)',padding:'6px 4px'}}>No rooms yet</div>}
         {Object.values(roomList).map(function(r){
           return <div key={r.id} className={'rtab'+(activeId===r.id?' act':'')} onClick={function(){setActiveId(r.id);setSideOpen(false)}}>
             <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
             <div style={{fontSize:11,opacity:.72,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
-              {hosts[r.id] && <span>Host</span>}
+              {hosts[r.id]&&<span>Host</span>}
               <span>{r.anonymous?'Anon':'Named'}</span>
-              {r.expiresAt && <IconClock/>}
+              {r.expiresAt&&<IconClock/>}
             </div>
           </div>;
         })}
       </div>
-      <div className="sfooter">
-        Architect: <a href="https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo" target="_blank" rel="noopener noreferrer">Prof. Shihmin Lo</a>
-      </div>
+      <div className="sfooter">Architect: <a href="https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo" target="_blank" rel="noopener noreferrer">Prof. Shihmin Lo</a></div>
     </div>
 
     <div className="main-col">
       <div className="topbar">
-        <button onClick={function(){setSideOpen(!sideOpen)}} style={{background:'none',border:'none',color:'#fff',fontSize:19,cursor:'pointer',padding:'0 3px',flexShrink:0,lineHeight:1}} title="Menu 目錄">&#9776;</button>
-        <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'28%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
-          {rm ? rm.name : 'ClassQ&A'}
-        </span>
-        {rm && <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
-          {rm.expiresAt && <Timer expiresAt={rm.expiresAt} onExpire={function(){if(isHost)setShowExtend(true)}}/>}
+        <button onClick={function(){setSideOpen(!sideOpen)}} style={{background:'none',border:'none',color:'#fff',fontSize:19,cursor:'pointer',padding:'0 3px',flexShrink:0,lineHeight:1}}>&#9776;</button>
+        <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'28%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{rm?rm.name:'ClassQ&A'}</span>
+        {rm&&<div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
+          {rm.expiresAt&&<Timer expiresAt={rm.expiresAt} onExpire={function(){if(isHost)setShowExtend(true)}}/>}
           <CodePill code={activeId} onZoom={function(){setModal('code')}}/>
-          {isHost && <ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
-          {!isHost && rm.allowExport && <button className="ic" onClick={function(){exportCSV(rm)}} title="Export CSV 匯出">CSV</button>}
+          {isHost&&<ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
+          {!isHost&&rm.allowExport&&<button className="ic" onClick={function(){exportCSV(rm)}}>CSV</button>}
         </div>}
+        <button className="ic" onClick={function(){setTheme(theme==='dark'?'light':'dark')}} title="Toggle theme 切換主題">
+          {theme==='dark'?<IconSun/>:<IconMoon/>}
+        </button>
       </div>
 
       <div className="actionsbar">
         <button className="btn btn-p" onClick={function(){setModal('create')}} style={{fontSize:12}}>+ Create 建立</button>
         <button className="btn btn-g" onClick={function(){setModal('join')}} style={{fontSize:12}}>Join/Switch 加入或切換</button>
-        {rm && <span style={{fontSize:11,color:'#9ca3af',marginLeft:'auto'}}>Current 目前：{rm.name}</span>}
+        {rm&&<span style={{fontSize:11,color:'var(--subtext2)',marginLeft:'auto'}}>Current 目前：{rm.name}</span>}
       </div>
 
-
       <div className="content-area">
-        {!activeId ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
+        {!activeId?<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
           <div style={{fontSize:28,fontWeight:800,color:'var(--green)',letterSpacing:.5}}>ClassQ&A</div>
-          <div style={{fontSize:14,color:'#6b7280',maxWidth:300,lineHeight:1.6}}>
-            Create or join a room to start.<br/>建立或加入問答室開始提問。
-          </div>
-        </div> : (loading || rm===null) ? <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'#9ca3af',fontSize:14}}>
-          Loading… 連線中…
-        </div> : rm===undefined ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:10,textAlign:'center',padding:20}}>
-          <div style={{fontSize:15,color:'#b91c1c',fontWeight:600}}>Room not found 找不到此問答室</div>
-        </div> : <div className="content-inner">
-          {isClosed ? <div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
+          <div style={{fontSize:14,color:'var(--subtext)',maxWidth:300,lineHeight:1.6}}>Create or join a room to start.<br/>建立或加入問答室開始提問。</div>
+        </div>:loading||(rm===null)?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'var(--subtext2)',fontSize:14}}>Loading… 連線中…</div>
+        :rm===undefined?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'#b91c1c',fontSize:15,fontWeight:600}}>Room not found 找不到此問答室</div>
+        :<div className="content-inner">
+          {isClosed?<div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
             Session closed 問答已結束
-            {isHost && <div style={{marginTop:10}}><button className="btn btn-p" onClick={function(){setShowExtend(true)}}>Extend 延長</button></div>}
-          </div> : <div className="card" style={{borderLeft:'4px solid var(--green)'}}>
-            <div style={{fontWeight:700,color:'var(--green)',marginBottom:9,fontSize:13,letterSpacing:.3}}>Ask a Question 提問</div>
-            {!rm.anonymous && <div style={{marginBottom:8}}>
-              <input type="text" value={qAuthor} onChange={function(e){setQAuthor(e.target.value)}}
-                placeholder="Your name 你的名字 *" style={{borderColor:qAuthor.trim()?'#d1d5db':'#f87171'}}/>
-              {!qAuthor.trim() && <div className="err">Required 必填</div>}
+            {isHost&&<div style={{marginTop:10}}><button className="btn btn-p" onClick={function(){setShowExtend(true)}}>Extend 延長</button></div>}
+          </div>:<div className="card" style={{borderLeft:'4px solid var(--green)'}}>
+            <div style={{fontWeight:700,color:'var(--green)',marginBottom:9,fontSize:13}}>Ask a Question 提問</div>
+            {!rm.anonymous&&<div style={{marginBottom:8}}>
+              <input type="text" value={qAuthor} onChange={function(e){setQAuthor(e.target.value)}} placeholder="Your name 你的名字 *" style={{borderColor:qAuthor.trim()?undefined:'#f87171'}}/>
+              {!qAuthor.trim()&&<div className="err">Required 必填</div>}
             </div>}
             <VoiceTxt value={newQ} onChange={setNewQ} placeholder="Type or speak your question… / 輸入或語音提問…" rows={3}/>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:9,flexWrap:'wrap',gap:8}}>
-              <span style={{fontSize:12,color:'#9ca3af'}}>{rm.anonymous?'Anon 匿名':'Named 具名'}</span>
+              <span style={{fontSize:12,color:'var(--subtext2)'}}>{rm.anonymous?'Anon 匿名':'Named 具名'}</span>
               <button className="btn btn-p" onClick={postQ}>Submit 送出</button>
             </div>
           </div>}
-          {sorted.length===0 ? <div style={{textAlign:'center',color:'#9ca3af',padding:'34px 0',fontSize:14,lineHeight:1.7}}>
-            No questions yet. Be the first!<br/>尚無提問，歡迎第一個提問！
-          </div> : <div>
-            <div style={{fontSize:12,color:'#6b7280',marginBottom:8}}>
+          {sorted.length===0?<div style={{textAlign:'center',color:'var(--subtext2)',padding:'34px 0',fontSize:14,lineHeight:1.7}}>No questions yet. Be the first!<br/>尚無提問，歡迎第一個提問！</div>
+          :<div>
+            <div style={{fontSize:12,color:'var(--subtext)',marginBottom:8}}>
               {sorted.length} question{sorted.length>1?'s':''} · sorted by likes 依讚數排序
             </div>
-            {sorted.map(function(q){return <QCard key={q.id} q={q} isHost={isHost} anon={rm.anonymous}
+            {sorted.map(function(q){return <QCard key={q.id} q={q} qNum={qIndexMap[q.id]} isHost={isHost} anon={rm.anonymous} closed={isClosed}
               onLikeQ={likeQuestion} onDeleteQ={deleteQuestion}
               onLikeAnswer={likeAnswer} onAddAnswer={addAnswer} onDeleteAnswer={deleteAnswer}
               onLikeReply={likeReply} onAddReply={addReply} onDeleteReply={deleteReply}/>})}
@@ -875,14 +738,13 @@ function App(){
       </div>
     </div>
 
-    {modal==='create' && <CreateModal onClose={function(){setModal(null)}} onCreate={createRoom}/>}
-    {modal==='join' && <JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom} joinedRooms={Object.values(roomList).filter(function(r){return joined[r.id] && r.id!==activeId})}/>}
-    {modal==='code' && <CodeModal code={activeId||''} onClose={function(){setModal(null)}}/>}
-    {showExtend && <ExtendModal onExtend={extendRoom} onClose={function(){setShowExtend(false)}}/>}
+    {modal==='create'&&<CreateModal onClose={function(){setModal(null)}} onCreate={createRoom}/>}
+    {modal==='join'&&<JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom} joinedRooms={Object.values(roomList).filter(function(r){return joined[r.id]&&r.id!==activeId})}/>}
+    {modal==='code'&&<CodeModal code={activeId||''} onClose={function(){setModal(null)}}/>}
+    {showExtend&&<ExtendModal onExtend={extendRoom} onClose={function(){setShowExtend(false)}}/>}
   </div>;
 }
-
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<App/>,document.getElementById('root'));
 </script>
 </body>
 </html>
