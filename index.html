@@ -115,12 +115,27 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
 </script>
 <script type="text/babel" data-presets="react">
 var useState=React.useState;var useEffect=React.useEffect;var useRef=React.useRef;
-var HK='cqa8h',JK='cqa8j',LK='cqa8lk',TK='cqa8theme';
+var HK='cqa7h'; /* 保持與舊版相同 key，避免 Host token 遺失 */
+var JK='cqa7j';
+var LK='cqa7lk';
+var TK='cqa7theme';
 var db=window.fbdb;
 var uid=function(){return Math.random().toString(36).slice(2,10)};
 var ts=function(){return Date.now()};
 var load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
 var save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
+
+/* merge hosts from all past versions to avoid losing host tokens on upgrade */
+function loadHosts(){
+  var merged={};
+  ['cqa6h','cqa7h','cqa8h'].forEach(function(k){Object.assign(merged,load(k))});
+  return merged;
+}
+function loadJoined(){
+  var merged={};
+  ['cqa7j','cqa8j','cqa6r','cqa7r','cqa8r'].forEach(function(k){Object.assign(merged,load(k))});
+  return merged;
+}
 
 /* liked store: key -> 1 (liked) | -1 (unliked/removed) */
 function getLiked(){try{return JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){return{}}}
@@ -387,8 +402,9 @@ function ManageMenu(props){
   return <div className="mgwrap" ref={ref}>
     <button className="ic" onClick={function(){setOpen(!open)}}><IconGear/> Manage</button>
     {open&&<div className="mgmenu">
-      <button className="mgitem" onClick={function(){props.onCSV();setOpen(false)}}>Export CSV 匯出</button>
-      <button className="mgitem danger" onClick={function(){props.onDelete();setOpen(false)}}>Delete Room 刪除問答室</button>
+      <button className="mgitem" onClick={function(){props.onCSV();setOpen(false)}}>📥 Export CSV 匯出</button>
+      <div style={{height:1,background:'var(--border)',margin:'2px 0'}}/>
+      <button className="mgitem danger" onClick={function(){props.onDelete();setOpen(false)}}>🗑 Delete Room 刪除問答室</button>
     </div>}
   </div>;
 }
@@ -516,8 +532,8 @@ function JoinModal(props){
 
 /* ---- App ---- */
 function App(){
-  var hs=useState(function(){return load(HK)});var hosts=hs[0],setHosts=hs[1];
-  var js=useState(function(){return load(JK)});var joined=js[0],setJoined=js[1];
+  var hs=useState(function(){return loadHosts()});var hosts=hs[0],setHosts=hs[1];
+  var js=useState(function(){return loadJoined()});var joined=js[0],setJoined=js[1];
   var rls=useState({});var roomList=rls[0],setRoomList=rls[1];
   var ais=useState(null);var activeId=ais[0],setActiveId=ais[1];
   var ard=useState(null);var activeRoomData=ard[0],setActiveRoomData=ard[1];
@@ -692,7 +708,14 @@ function App(){
           {rm&&rm.expiresAt&&<Timer expiresAt={rm.expiresAt} onExpire={function(){if(isHost)setShowExtend(true)}}/>}
           {rm&&<CodePill code={activeId} onZoom={function(){setModal('code')}}/>}
           {rm&&isHost&&<ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
-          {rm&&!isHost&&rm.allowExport&&<button className="ic" onClick={function(){exportCSV(rm)}}>CSV</button>}
+          {rm&&!isHost&&rm.allowExport&&<button className="ic" onClick={function(){exportCSV(rm)}}>📥 CSV</button>}
+          {rm&&!isHost&&<button className="ic" style={{fontSize:11,opacity:.7}} onClick={function(){
+            var token=window.prompt('Enter host token to claim host access:\n輸入 Host Token 取得管理權限');
+            if(token&&rm&&token.trim()===rm.hostToken){
+              setHosts(function(h){var n=Object.assign({},h);n[activeId]=token.trim();return n});
+              alert('Host access granted! 已取得管理權限');
+            } else if(token){alert('Incorrect token / Token 不正確')}
+          }} title="Claim host 取得管理權">🔑</button>}
           <button className="ic" onClick={function(){setTheme(theme==='dark'?'light':'dark')}} title="Toggle theme 切換主題">
             {theme==='dark'?<IconSun/>:<IconMoon/>}
           </button>
