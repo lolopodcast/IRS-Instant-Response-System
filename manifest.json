@@ -1,0 +1,17 @@
+{
+  "name": "ClassQ&A 課堂問答",
+  "short_name": "ClassQ&A",
+  "description": "Real-time classroom Q&A / 課堂即時問答工具",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f5f0",
+  "theme_color": "#004030",
+  "lang": "zh-TW",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
