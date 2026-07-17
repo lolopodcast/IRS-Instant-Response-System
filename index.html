@@ -16,13 +16,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
 textarea,input,.card p,.card span,.content-area{-webkit-user-select:text;user-select:text}
 :root{--green:#004030;--gold:#D8C3A5;--lg:#e8f0ed;--fs:14px;--fss:13px;--fsxs:11px;
   --bg:#f5f5f0;--surface:#fff;--border:#e5e7eb;--text:#111;--subtext:#6b7280;--subtext2:#9ca3af}
-body.dark{--bg:#1a1a1a;--surface:#242424;--border:#333;--text:#f0f0f0;--subtext:#aaa;--subtext2:#666}
+body.dark{--bg:#1a1a1a;--surface:#242424;--border:#333;--text:#f0f0f0;--subtext:#aaa;--subtext2:#666;--lg:#2a3a35}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;font-size:var(--fs);color:var(--text);transition:background .2s,color .2s}
 .btn{border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:opacity .18s,background .15s;white-space:nowrap}
 .btn-p{background:var(--green);color:#fff}.btn-p:hover{opacity:.82}
@@ -30,7 +31,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;f
 .btn-d{background:#b91c1c;color:#fff}.btn-d:hover{opacity:.82}
 .ic{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:var(--fss);font-family:inherit;line-height:1.4;display:inline-flex;align-items:center;gap:4px}
 .ic:hover{background:rgba(255,255,255,.27)}
-.sidebar{position:fixed;top:0;left:0;width:214px;background:var(--surface);border-right:1px solid var(--border);height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s,background .2s;z-index:150;transform:translateX(0)}
+.sidebar{position:fixed;top:0;left:0;width:214px;background:var(--surface);border-right:1px solid var(--border);height:100vh;overflow-y:auto;display:flex;flex-direction:column;transition:transform .2s,background .2s;z-index:150;transform:translateX(0)}
 .sidebar.closed{transform:translateX(-100%)}
 .sidebar-scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:140}
 .main-col{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden}
@@ -40,7 +41,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);margin:0;f
 .card{background:var(--surface);border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px;margin-bottom:12px;transition:background .2s}
 .like-btn{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--fss);font-family:inherit;transition:background .15s,opacity .15s;color:var(--text)}
 .like-btn:hover{background:var(--gold);border-color:var(--gold)}
-.like-btn.liked{background:var(--gold);border-color:var(--gold)}
+.like-btn.liked{background:var(--gold);border-color:var(--gold);color:#111}
 .like-btn.liked:hover{opacity:.75}
 .like-btn:disabled{cursor:not-allowed;opacity:.5}
 textarea,input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;font-size:var(--fs);font-family:inherit;background:var(--surface);color:var(--text)}
@@ -60,7 +61,7 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
 .tchip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 .tchip.warn{background:#b91c1c}
 .cpill{display:inline-flex;align-items:center;background:rgba(255,255,255,.17);border-radius:7px;overflow:hidden}
-.cpill-side{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff;cursor:pointer;font-size:15px;flex-shrink:0}
+.cpill-side{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff;cursor:pointer;flex-shrink:0}
 .cpill-side:hover{background:rgba(255,255,255,.16)}
 .cpill-mid{padding:0 9px;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;line-height:30px;white-space:nowrap;min-width:82px;text-align:center;color:#fff}
 .cpill-mid:hover{background:rgba(255,255,255,.13)}
@@ -68,7 +69,7 @@ textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
 .cpill-div{width:1px;height:20px;background:rgba(255,255,255,.25);flex-shrink:0}
 .actionsbar{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;transition:background .2s}
 .mgwrap{position:relative}
-.mgmenu{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);min-width:150px;overflow:hidden;z-index:50;border:1px solid var(--border)}
+.mgmenu{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);min-width:180px;overflow:hidden;z-index:50;border:1px solid var(--border)}
 .mgitem{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--text)}
 .mgitem:hover{background:var(--bg)}
 .mgitem.danger{color:#b91c1c}
@@ -80,7 +81,8 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
 .sfooter a{color:var(--subtext2);text-decoration:none}
 .sfooter a:hover{color:var(--green);text-decoration:underline}
 .svg-ic{display:inline-block;vertical-align:middle}
-.q-index{font-size:11px;font-weight:700;color:var(--green);background:var(--lg);border-radius:4px;padding:1px 6px;margin-right:6px;flex-shrink:0}
+.q-index{font-size:11px;font-weight:700;color:var(--green);background:var(--lg);border-radius:4px;padding:1px 6px;flex-shrink:0}
+.role-tag{font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px;background:var(--gold);color:#111}
 .cpr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
 .cpr-box{background:#fff;border-radius:12px;padding:28px 28px 22px;max-width:360px;width:100%;font-family:'Segoe UI',system-ui,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.18)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
@@ -105,6 +107,15 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
   var firebaseConfig={apiKey:"AIzaSyAORiGVsnvS-XHFMYod-d3ZxbJdFqhiArs",authDomain:"classqa-ncnu.firebaseapp.com",databaseURL:"https://classqa-ncnu-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"classqa-ncnu",storageBucket:"classqa-ncnu.firebasestorage.app",messagingSenderId:"930969614847",appId:"1:930969614847:web:31e3149579b64dba6b0fca"};
   firebase.initializeApp(firebaseConfig);
   window.fbdb=firebase.database();
+  window.fbauth=firebase.auth();
+  window.fbauth.signInAnonymously().catch(function(e){console.warn('Auth error',e)});
+</script>
+<script>
+(function(){
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+  window.__deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__deferredPrompt=e;window.dispatchEvent(new Event('pwa-installable'))});
+})();
 </script>
 <script>
 (function(){
@@ -122,47 +133,28 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
 </script>
 <script type="text/babel" data-presets="react">
 var useState=React.useState;var useEffect=React.useEffect;var useRef=React.useRef;
-var HK='cqa7h'; /* 保持與舊版相同 key，避免 Host token 遺失 */
-var JK='cqa7j';
-var LK='cqa7lk';
-var TK='cqa7theme';
+var JK='cqa9j',LK='cqa9lk',TK='cqa9theme';
 var db=window.fbdb;
+var auth=window.fbauth;
 var uid=function(){return Math.random().toString(36).slice(2,10)};
+var code6=function(){var c='ABCDEFGHJKMNPQRSTUVWXYZ23456789',s='';for(var i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];return s};
 var ts=function(){return Date.now()};
 var load=function(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}}};
 var save=function(k,v){localStorage.setItem(k,JSON.stringify(v))};
 
-/* merge hosts from all past versions to avoid losing host tokens on upgrade */
-function loadHosts(){
-  var merged={};
-  ['cqa6h','cqa7h','cqa8h'].forEach(function(k){Object.assign(merged,load(k))});
-  return merged;
-}
-function loadJoined(){
-  var merged={};
-  ['cqa7j','cqa8j','cqa6r','cqa7r','cqa8r'].forEach(function(k){Object.assign(merged,load(k))});
-  return merged;
-}
-
-/* liked store: key -> 1 (liked) | -1 (unliked/removed) */
 function getLiked(){try{return JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){return{}}}
-function toggleLiked(key){
-  var m=getLiked();
-  if(m[key]===1){m[key]=-1}else{m[key]=1}
-  localStorage.setItem(LK,JSON.stringify(m));
-  return m[key];
-}
-function likedState(key){var m=getLiked();return m[key]||0} /* 1=liked, -1=unliked, 0=never */
+function toggleLiked(key){var m=getLiked();m[key]=m[key]===1?-1:1;localStorage.setItem(LK,JSON.stringify(m));return m[key]}
+function likedState(key){var m=getLiked();return m[key]||0}
 
 function fbSet(p,v){return db.ref(p).set(v)}
 function fbUpdate(p,v){return db.ref(p).update(v)}
-function fbPush(p,v){var r=db.ref(p).push();r.set(v);return r.key}
-function fbRemove(p){return db.ref(p).remove()}
-function fbLike(p,delta){db.ref(p+'/likes').transaction(function(cur){return Math.max(0,(cur||0)+delta)})}
-function arrify(obj){if(!obj)return [];return Object.keys(obj).map(function(k){return Object.assign({id:k},obj[k])})}
-function normQ(qid,qval){
-  var answers=arrify(qval.answers).map(function(a){return Object.assign({},a,{replies:arrify(a.replies)})});
-  return Object.assign({id:qid},qval,{answers:answers});
+function fbPush(p,v){var r=db.ref(p).push();r.set(v).catch(function(e){alert('Write failed / 寫入失敗: '+e.message)});return r.key}
+function fbRemove(p){return db.ref(p).remove().catch(function(e){alert('Delete failed / 刪除失敗: '+e.message)})}
+function fbLike(p,d){db.ref(p+'/likes').transaction(function(c){return Math.max(0,(c||0)+d)})}
+function arrify(o){if(!o)return [];return Object.keys(o).map(function(k){return Object.assign({id:k},o[k])})}
+function normQ(qid,qv){
+  var answers=arrify(qv.answers).map(function(a){return Object.assign({},a,{replies:arrify(a.replies)})});
+  return Object.assign({id:qid},qv,{answers:answers});
 }
 
 /* ---- Icons ---- */
@@ -174,9 +166,23 @@ function IconThumb(){return <svg className="svg-ic" width="14" height="14" viewB
 function IconGear(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" strokeWidth="1.4"/><path d="M8 1.5v1.6M8 12.9v1.6M2.4 8H4M12 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>}
 function IconSun(){return <svg className="svg-ic" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="3" stroke="currentColor" strokeWidth="1.4"/><line x1="7.5" y1="1" x2="7.5" y2="2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="7.5" y1="12.5" x2="7.5" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="1" y1="7.5" x2="2.5" y2="7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="12.5" y1="7.5" x2="14" y2="7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="10.9" y1="10.9" x2="11.95" y2="11.95" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="10.9" y1="4.1" x2="11.95" y2="3.05" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="3.05" y1="11.95" x2="4.1" y2="10.9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>}
 function IconMoon(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12.5 9A6 6 0 0 1 5 1.5a6 6 0 1 0 7.5 7.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>}
+function IconDownload(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5v7M7 8.5L4.3 5.8M7 8.5l2.7-2.7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.5 10v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>}
+function IconKey(){return <svg className="svg-ic" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="4.5" cy="4.5" r="3" stroke="currentColor" strokeWidth="1.4"/><path d="M6.6 6.6L12.5 12.5M10.5 10.5l1.5-1.5M12 12l1-1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>}
 function MicIcon(props){var s=props.size||20;return <svg width={s} height={s} viewBox="0 0 22 28" fill="none"><rect x="7" y="1" width="8" height="14" rx="4" fill="#fff"/><path d="M4 13a7 7 0 0 0 14 0" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" fill="none"/><line x1="11" y1="20" x2="11" y2="24" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/><line x1="7" y1="24" x2="15" y2="24" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/></svg>}
 
-/* ---- Voice textarea ---- */
+function InstallBtn(){
+  var s=useState(!!window.__deferredPrompt);var can=s[0],setCan=s[1];
+  useEffect(function(){
+    function onCan(){setCan(true)}
+    function onInst(){setCan(false);window.__deferredPrompt=null}
+    window.addEventListener('pwa-installable',onCan);window.addEventListener('appinstalled',onInst);
+    return function(){window.removeEventListener('pwa-installable',onCan);window.removeEventListener('appinstalled',onInst)};
+  },[]);
+  if(!can)return null;
+  function install(){var p=window.__deferredPrompt;if(!p)return;p.prompt();p.userChoice.then(function(){window.__deferredPrompt=null;setCan(false)})}
+  return <button className="ic" onClick={install} title="Install app 安裝"><IconDownload/> Install</button>;
+}
+
 function VoiceTxt(props){
   var value=props.value,onChange=props.onChange,placeholder=props.placeholder,rows=props.rows||3;
   var ls=useState('zh-TW');var lang=ls[0],setLang=ls[1];
@@ -205,10 +211,8 @@ function VoiceTxt(props){
   </div>;
 }
 
-/* ---- beep ---- */
-function beep3(){try{var ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.35,.7].forEach(function(t){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.setValueAtTime(.5,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3)})}catch(e){}}
+function beep3(){try{var c=new(window.AudioContext||window.webkitAudioContext)();[0,.35,.7].forEach(function(t){var o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.setValueAtTime(.5,c.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t+.25);o.start(c.currentTime+t);o.stop(c.currentTime+t+.3)})}catch(e){}}
 
-/* ---- Timer ---- */
 function Timer(props){
   var expiresAt=props.expiresAt,onExpire=props.onExpire;
   var ls=useState(null);var left=ls[0],setLeft=ls[1];
@@ -220,11 +224,10 @@ function Timer(props){
   },[expiresAt]);
   if(left===null)return null;
   var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
-  function fmt(n){return String(n).padStart(2,'0')}
-  return <span className={'tchip'+(left<60?' warn':'')}><IconClock/>{h>0?(fmt(h)+':'):''}{fmt(m)}:{fmt(s)}{left===0?' Closed':''}</span>;
+  function f(n){return String(n).padStart(2,'0')}
+  return <span className={'tchip'+(left<60?' warn':'')}><IconClock/>{h>0?(f(h)+':'):''}{f(m)}:{f(s)}{left===0?' Closed':''}</span>;
 }
 
-/* ---- Confirm ---- */
 function Confirm(props){
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onCancel()}}>
     <div className="cbox"><p>{props.msg}</p>
@@ -236,29 +239,23 @@ function Confirm(props){
   </div>;
 }
 
-/* ---- LikeBtn (toggleable) ---- */
 function LikeBtn(props){
   var likeKey=props.likeKey,count=props.count,onLike=props.onLike,disabled=props.disabled;
-  var initState=likedState(likeKey);
-  var ls=useState(initState===1);var liked=ls[0],setLiked=ls[1];
-  var cs=useState(count||0);var localCount=cs[0],setLocalCount=cs[1];
-  useEffect(function(){setLocalCount(count||0)},[count]);
+  var ls=useState(likedState(likeKey)===1);var liked=ls[0],setLiked=ls[1];
+  var cs=useState(count||0);var lc=cs[0],setLc=cs[1];
+  useEffect(function(){setLc(count||0)},[count]);
   function handle(){
     if(disabled)return;
-    var cur=liked;
-    var delta=cur?-1:1;
-    toggleLiked(likeKey);
-    setLiked(!cur);
-    setLocalCount(function(c){return Math.max(0,c+delta)});
-    onLike(delta);
+    var d=liked?-1:1;
+    toggleLiked(likeKey);setLiked(!liked);setLc(function(c){return Math.max(0,c+d)});
+    onLike(d);
   }
   return <button className={'like-btn'+(liked?' liked':'')} onClick={handle} disabled={disabled} title={disabled?'Session closed':'Toggle like 按讚/收回'}>
-    <IconThumb/> {localCount}
+    <IconThumb/> {lc}
   </button>;
 }
 
-/* ---- AnswerDelBtn ---- */
-function AnswerDelBtn(props){
+function DelBtn(props){
   var cs=useState(false);var conf=cs[0],setConf=cs[1];
   return <span>
     {conf&&<Confirm msg={"Delete this item?\n刪除此項目？"} onOk={function(){props.onDelete();setConf(false)}} onCancel={function(){setConf(false)}}/>}
@@ -266,25 +263,24 @@ function AnswerDelBtn(props){
   </span>;
 }
 
-/* ---- AnswerReplyToggle ---- */
-function AnswerReplyToggle(props){
+function ReplyToggle(props){
   var anon=props.anon,disabled=props.disabled;
   var ss=useState(false);var show=ss[0],setShow=ss[1];
-  var ts2=useState('');var txt=ts2[0],setTxt=ts2[1];
-  var ns=useState('');var rname=ns[0],setRname=ns[1];
+  var t2=useState('');var txt=t2[0],setTxt=t2[1];
+  var ns=useState('');var rn=ns[0],setRn=ns[1];
   function submit(){
     if(!txt.trim())return;
-    if(!anon&&!rname.trim()){alert('Name required / 請填寫名字');return}
-    props.onSubmit(txt,anon?'Anon 匿名':rname.trim());
-    setTxt('');setRname('');setShow(false);
+    if(!anon&&!rn.trim()){alert('Name required / 請填寫名字');return}
+    props.onSubmit(txt,anon?'Anon 匿名':rn.trim());
+    setTxt('');setRn('');setShow(false);
   }
   if(disabled)return null;
   return <span style={{display:'inline-block'}}>
     <button className="btn btn-g" style={{padding:'2px 9px',fontSize:12}} onClick={function(){setShow(!show)}}>Reply 回覆</button>
     {show&&<div style={{marginTop:6}}>
       {!anon&&<div style={{marginBottom:6}}>
-        <input type="text" value={rname} onChange={function(e){setRname(e.target.value)}} placeholder="Your name 你的名字 *" style={{borderColor:rname.trim()?undefined:'#f87171'}}/>
-        {!rname.trim()&&<div className="err">Required 必填</div>}
+        <input type="text" value={rn} onChange={function(e){setRn(e.target.value)}} placeholder="Your name 你的名字 *" style={{borderColor:rn.trim()?undefined:'#f87171'}}/>
+        {!rn.trim()&&<div className="err">Required 必填</div>}
       </div>}
       <VoiceTxt value={txt} onChange={setTxt} placeholder="Type reply… / 輸入回覆…" rows={2}/>
       <div style={{display:'flex',gap:6,marginTop:5}}>
@@ -295,12 +291,8 @@ function AnswerReplyToggle(props){
   </span>;
 }
 
-/* ---- QCard ---- */
 function QCard(props){
-  var q=props.q,qNum=props.qNum,isHost=props.isHost,anon=props.anon,closed=props.closed;
-  var onLikeQ=props.onLikeQ,onDeleteQ=props.onDeleteQ;
-  var onLikeAnswer=props.onLikeAnswer,onAddAnswer=props.onAddAnswer,onDeleteAnswer=props.onDeleteAnswer;
-  var onLikeReply=props.onLikeReply,onAddReply=props.onAddReply,onDeleteReply=props.onDeleteReply;
+  var q=props.q,qNum=props.qNum,canMod=props.canMod,anon=props.anon,closed=props.closed;
   var sas=useState(false);var showA=sas[0],setShowA=sas[1];
   var ats=useState('');var atxt=ats[0],setAtxt=ats[1];
   var ans=useState('');var aname=ans[0],setAname=ans[1];
@@ -308,12 +300,12 @@ function QCard(props){
   function submitA(){
     if(!atxt.trim())return;
     if(!anon&&!aname.trim()){alert('Name required / 請填寫名字');return}
-    onAddAnswer(q.id,atxt,anon?'Anon 匿名':aname.trim());
+    props.onAddAnswer(q.id,atxt,anon?'Anon 匿名':aname.trim());
     setAtxt('');setAname('');setShowA(false);
   }
   var sorted=(q.answers||[]).slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
   return <div className="card">
-    {confQ&&<Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){onDeleteQ(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
+    {confQ&&<Confirm msg={"Delete this question?\n刪除此問題？"} onOk={function(){props.onDeleteQ(q.id);setConfQ(false)}} onCancel={function(){setConfQ(false)}}/>}
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
       <div style={{flex:1}}>
         <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:5}}>
@@ -324,40 +316,40 @@ function QCard(props){
         </div>
         <p style={{margin:0,fontSize:15,fontWeight:600,lineHeight:1.5,color:'var(--text)'}}>{q.text}</p>
       </div>
-      {isHost&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
+      {canMod&&<button className="btn btn-d" style={{padding:'3px 8px',fontSize:12,flexShrink:0}} onClick={function(){setConfQ(true)}}>Del</button>}
     </div>
     <div style={{display:'flex',gap:8,marginTop:9,alignItems:'center',flexWrap:'wrap'}}>
-      <LikeBtn likeKey={'q_'+q.id} count={q.likes} onLike={function(d){onLikeQ(q.id,d)}} disabled={closed}/>
+      <LikeBtn likeKey={'q_'+q.id} count={q.likes} onLike={function(d){props.onLikeQ(q.id,d)}} disabled={closed}/>
       {!closed&&<button className="btn btn-g" style={{fontSize:12}} onClick={function(){setShowA(!showA)}}>Reply 回答 ({(q.answers||[]).length})</button>}
       {closed&&<span style={{fontSize:12,color:'var(--subtext2)'}}>({(q.answers||[]).length} replies)</span>}
     </div>
     {sorted.length>0&&<div className="rthread" style={{marginTop:10}}>
       {sorted.map(function(a){
-        var subSorted=(a.replies||[]).slice().sort(function(x,y){return (y.likes||0)-(x.likes||0)});
+        var sub=(a.replies||[]).slice().sort(function(x,y){return (y.likes||0)-(x.likes||0)});
         return <div key={a.id} style={{marginTop:8}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
             <div style={{flex:1}}>
               <span style={{fontSize:12,color:'var(--subtext)',marginRight:6}}>{a.author}</span>
               <span style={{fontSize:13,color:'var(--text)'}}>{a.text}</span>
             </div>
-            {isHost&&<AnswerDelBtn onDelete={function(){onDeleteAnswer(q.id,a.id)}}/>}
+            {canMod&&<DelBtn onDelete={function(){props.onDeleteAnswer(q.id,a.id)}}/>}
           </div>
           <div style={{display:'flex',gap:7,marginTop:5,alignItems:'center',flexWrap:'wrap'}}>
-            <LikeBtn likeKey={'a_'+a.id} count={a.likes} onLike={function(d){onLikeAnswer(q.id,a.id,d)}} disabled={closed}/>
-            <AnswerReplyToggle anon={anon} disabled={closed} onSubmit={function(t,auth){onAddReply(q.id,a.id,t,auth)}}/>
+            <LikeBtn likeKey={'a_'+a.id} count={a.likes} onLike={function(d){props.onLikeAnswer(q.id,a.id,d)}} disabled={closed}/>
+            <ReplyToggle anon={anon} disabled={closed} onSubmit={function(t,au){props.onAddReply(q.id,a.id,t,au)}}/>
           </div>
-          {subSorted.length>0&&<div className="rthread">
-            {subSorted.map(function(r2){
+          {sub.length>0&&<div className="rthread">
+            {sub.map(function(r2){
               return <div key={r2.id} style={{marginTop:8}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
                   <div style={{flex:1}}>
                     <span style={{fontSize:12,color:'var(--subtext)',marginRight:6}}>{r2.author}</span>
                     <span style={{fontSize:13,color:'var(--text)'}}>{r2.text}</span>
                   </div>
-                  {isHost&&<AnswerDelBtn onDelete={function(){onDeleteReply(q.id,a.id,r2.id)}}/>}
+                  {canMod&&<DelBtn onDelete={function(){props.onDeleteReply(q.id,a.id,r2.id)}}/>}
                 </div>
                 <div style={{display:'flex',gap:7,marginTop:5}}>
-                  <LikeBtn likeKey={'r_'+r2.id} count={r2.likes} onLike={function(d){onLikeReply(q.id,a.id,r2.id,d)}} disabled={closed}/>
+                  <LikeBtn likeKey={'r_'+r2.id} count={r2.likes} onLike={function(d){props.onLikeReply(q.id,a.id,r2.id,d)}} disabled={closed}/>
                 </div>
               </div>;
             })}
@@ -379,9 +371,8 @@ function QCard(props){
   </div>;
 }
 
-/* ---- CodePill ---- */
 function CodePill(props){
-  var code=props.code,onZoom=props.onZoom;
+  var code=props.code;
   var vs=useState(true);var vis=vs[0],setVis=vs[1];
   var cs=useState(false);var cp=cs[0],setCp=cs[1];
   var ds=useState(false);var done=ds[0],setDone=ds[1];
@@ -394,12 +385,12 @@ function CodePill(props){
       {vis?(done?'Copied!':code):'···'}
     </div>
     <div className="cpill-div"></div>
-    <button className="cpill-side" onClick={onZoom}><IconSearch/></button>
+    <button className="cpill-side" onClick={props.onZoom}><IconSearch/></button>
   </div>;
 }
 
-/* ---- ManageMenu ---- */
 function ManageMenu(props){
+  var isOwner=props.isOwner;
   var os=useState(false);var open=os[0],setOpen=os[1];
   var ref=useRef(null);
   useEffect(function(){
@@ -409,14 +400,14 @@ function ManageMenu(props){
   return <div className="mgwrap" ref={ref}>
     <button className="ic" onClick={function(){setOpen(!open)}}><IconGear/> Manage</button>
     {open&&<div className="mgmenu">
-      <button className="mgitem" onClick={function(){props.onCSV();setOpen(false)}}>📥 Export CSV 匯出</button>
-      <div style={{height:1,background:'var(--border)',margin:'2px 0'}}/>
-      <button className="mgitem danger" onClick={function(){props.onDelete();setOpen(false)}}>🗑 Delete Room 刪除問答室</button>
+      <button className="mgitem" onClick={function(){props.onCSV();setOpen(false)}}>Export CSV 匯出</button>
+      {isOwner&&<button className="mgitem" onClick={function(){props.onInvite();setOpen(false)}}>Manage TA 助教管理</button>}
+      {isOwner&&<div style={{height:1,background:'var(--border)',margin:'2px 0'}}/>}
+      {isOwner&&<button className="mgitem danger" onClick={function(){props.onDelete();setOpen(false)}}>Delete Room 刪除問答室</button>}
     </div>}
   </div>;
 }
 
-/* ---- Modals ---- */
 function ExtendModal(props){
   var ms=useState(1);var mins=ms[0],setMins=ms[1];
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
@@ -424,7 +415,7 @@ function ExtendModal(props){
       <h2>Time's up! 時間到</h2>
       <p style={{fontSize:14,margin:'0 0 14px'}}>Extend the session? 要延長嗎？</p>
       <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center',marginBottom:18}}>
-        <input type="number" value={mins} min={1} max={60} onChange={function(e){setMins(+e.target.value)}} style={{width:66,textAlign:'center',fontSize:18}}/>
+        <input type="number" value={mins} min={1} max={120} onChange={function(e){setMins(+e.target.value)}} style={{width:66,textAlign:'center',fontSize:18}}/>
         <span style={{fontSize:14}}>min 分</span>
       </div>
       <div style={{display:'flex',gap:8,justifyContent:'center'}}>
@@ -434,6 +425,7 @@ function ExtendModal(props){
     </div>
   </div>;
 }
+
 function CodeModal(props){
   var cs=useState(false);var copied=cs[0],setCopied=cs[1];
   function copy(){if(navigator.clipboard)navigator.clipboard.writeText(props.code).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
@@ -448,25 +440,126 @@ function CodeModal(props){
     </div>
   </div>;
 }
+
+/* ---- TA Manage Modal (owner only) ---- */
+function TAModal(props){
+  var roomId=props.roomId;
+  var is=useState(null);var invite=is[0],setInvite=is[1];
+  var ms=useState({});var mods=ms[0],setMods=ms[1];
+  var cs=useState(false);var copied=cs[0],setCopied=cs[1];
+  useEffect(function(){
+    var r1=db.ref('rooms/'+roomId+'/secret/inviteCode');
+    var c1=function(s){setInvite(s.val())};
+    r1.on('value',c1,function(){setInvite(null)});
+    var r2=db.ref('rooms/'+roomId+'/moderators');
+    var c2=function(s){setMods(s.val()||{})};
+    r2.on('value',c2,function(){setMods({})});
+    return function(){r1.off('value',c1);r2.off('value',c2)};
+  },[roomId]);
+  function regen(){
+    var c=code6();
+    db.ref('rooms/'+roomId+'/secret/inviteCode').set(c).catch(function(e){alert('Failed: '+e.message)});
+  }
+  function revoke(u){
+    db.ref('rooms/'+roomId+'/moderators/'+u).remove().catch(function(e){alert('Failed: '+e.message)});
+  }
+  function copy(){if(invite&&navigator.clipboard)navigator.clipboard.writeText(invite).then(function(){setCopied(true);setTimeout(function(){setCopied(false)},1400)})}
+  var modList=Object.keys(mods);
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
+    <div className="modal">
+      <h2>Manage TA 助教管理</h2>
+      <div style={{fontSize:12,color:'var(--subtext)',lineHeight:1.6,marginBottom:12}}>
+        TA can delete questions and extend the timer, but cannot delete the room or invite others.<br/>
+        助教可刪除問答、延長時間，但無法刪除問答室或再邀請他人。
+      </div>
+      <div className="field">
+        <label>Invite Code 邀請碼</label>
+        {invite
+          ? <div style={{display:'flex',gap:8,alignItems:'center'}}>
+              <div style={{flex:1,fontSize:26,fontWeight:900,letterSpacing:4,color:'var(--green)',textAlign:'center',background:'var(--bg)',borderRadius:8,padding:'6px 0'}}>{invite}</div>
+              <button className="btn btn-p" style={{fontSize:12}} onClick={copy}>{copied?'OK!':'Copy'}</button>
+            </div>
+          : <div style={{fontSize:13,color:'var(--subtext2)'}}>No code yet 尚未產生</div>}
+        <div style={{marginTop:8}}>
+          <button className="btn btn-g" style={{fontSize:12}} onClick={regen}>{invite?'Regenerate 重新產生':'Generate 產生邀請碼'}</button>
+        </div>
+        <div style={{fontSize:11,color:'var(--subtext2)',marginTop:6,lineHeight:1.5}}>
+          Give this code to your TA. They join the room, then click the key icon to enter it.<br/>
+          把邀請碼給助教，助教加入問答室後點鑰匙圖示輸入即可。
+        </div>
+      </div>
+      <div className="field">
+        <label>Current TAs 目前助教（{modList.length}）</label>
+        {modList.length===0
+          ? <div style={{fontSize:13,color:'var(--subtext2)'}}>None yet 尚無助教</div>
+          : <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {modList.map(function(u){
+                var m=mods[u]||{};
+                return <div key={u} style={{display:'flex',alignItems:'center',gap:8,background:'var(--bg)',borderRadius:8,padding:'7px 10px'}}>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:600}}>{m.name||'TA'}</div>
+                    <div style={{fontSize:10,color:'var(--subtext2)',overflow:'hidden',textOverflow:'ellipsis'}}>{u.slice(0,12)}…</div>
+                  </div>
+                  <button className="btn btn-d" style={{fontSize:11,padding:'3px 9px'}} onClick={function(){revoke(u)}}>Revoke 撤銷</button>
+                </div>;
+              })}
+            </div>}
+      </div>
+      <div style={{display:'flex',justifyContent:'flex-end'}}>
+        <button className="btn btn-g" onClick={props.onClose}>Close 關閉</button>
+      </div>
+    </div>
+  </div>;
+}
+
+/* ---- Claim TA Modal ---- */
+function ClaimModal(props){
+  var cs=useState('');var code=cs[0],setCode=cs[1];
+  var ns=useState('');var nm=ns[0],setNm=ns[1];
+  var es=useState('');var err=es[0],setErr=es[1];
+  function submit(){
+    if(!code.trim()){setErr('Enter the code 請輸入邀請碼');return}
+    db.ref('rooms/'+props.roomId+'/moderators/'+props.myUid).set({code:code.trim().toUpperCase(),name:nm.trim()||'TA',at:ts()})
+      .then(function(){alert('TA access granted! 已取得助教權限');props.onClose()})
+      .catch(function(){setErr('Incorrect code / 邀請碼不正確')});
+  }
+  return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
+    <div className="modal" style={{maxWidth:340}}>
+      <h2>Become TA 成為助教</h2>
+      <div className="field"><label>Invite Code 邀請碼</label>
+        <input type="text" value={code} onChange={function(e){setCode(e.target.value.toUpperCase());setErr('')}} placeholder="6-char code" autoFocus/>
+      </div>
+      <div className="field"><label>Your name 你的名字（選填 optional）</label>
+        <input type="text" value={nm} onChange={function(e){setNm(e.target.value)}} placeholder="e.g. TA Chen"/>
+      </div>
+      {err&&<div className="err" style={{marginBottom:10}}>{err}</div>}
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
+        <button className="btn btn-g" onClick={props.onClose}>Cancel 取消</button>
+        <button className="btn btn-p" onClick={submit}>Submit 送出</button>
+      </div>
+    </div>
+  </div>;
+}
+
 function CreateModal(props){
   var ns=useState('');var name=ns[0],setName=ns[1];
   var as=useState(false);var anon=as[0],setAnon=as[1];
-  var ts3=useState(false);var timed=ts3[0],setTimed=ts3[1];
-  var tms=useState('duration');var timerMode=tms[0],setTimerMode=tms[1];
+  var t3=useState(false);var timed=t3[0],setTimed=t3[1];
+  var tms=useState('duration');var tmode=tms[0],setTmode=tms[1];
   var hs=useState(0);var hrs=hs[0],setHrs=hs[1];
   var ms=useState(30);var mins=ms[0],setMins=ms[1];
-  function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-  var dvs=useState(todayStr());var dateVal=dvs[0],setDateVal=dvs[1];
+  function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  var dvs=useState(today());var dateVal=dvs[0],setDateVal=dvs[1];
   var tvs=useState('23:59');var timeVal=tvs[0],setTimeVal=tvs[1];
   var aes=useState(false);var allowExport=aes[0],setAllowExport=aes[1];
   function submit(){
     if(!name.trim())return;
-    var expiresAt=null;
+    var exp=null;
     if(timed){
-      if(timerMode==='duration'){expiresAt=Date.now()+(hrs*3600+mins*60)*1000}
-      else{var dt=new Date(dateVal+'T'+timeVal+':00');if(isNaN(dt.getTime())){alert('Invalid date/time');return}expiresAt=dt.getTime();if(expiresAt<=Date.now()){alert('Must be in the future / 時間需晚於現在');return}}
+      if(tmode==='duration'){exp=Date.now()+(hrs*3600+mins*60)*1000}
+      else{var dt=new Date(dateVal+'T'+timeVal+':00');if(isNaN(dt.getTime())){alert('Invalid date/time');return}exp=dt.getTime();if(exp<=Date.now()){alert('Must be in the future / 時間需晚於現在');return}}
     }
-    props.onCreate(name.trim(),anon,expiresAt,allowExport);props.onClose();
+    props.onCreate(name.trim(),anon,exp,allowExport);props.onClose();
   }
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal">
@@ -479,14 +572,14 @@ function CreateModal(props){
       <label className="row"><input type="checkbox" checked={timed} onChange={function(e){setTimed(e.target.checked)}}/> <IconClock/> Set Timer 限時開放</label>
       {timed&&<div style={{marginBottom:14,padding:'10px 12px',background:'var(--bg)',borderRadius:8}}>
         <div style={{display:'flex',gap:14,marginBottom:10}}>
-          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer',color:'var(--text)'}}>
-            <input type="radio" name="timermode" checked={timerMode==='duration'} onChange={function(){setTimerMode('duration')}}/> Duration 時長
+          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer'}}>
+            <input type="radio" name="tmode" checked={tmode==='duration'} onChange={function(){setTmode('duration')}}/> Duration 時長
           </label>
-          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer',color:'var(--text)'}}>
-            <input type="radio" name="timermode" checked={timerMode==='datetime'} onChange={function(){setTimerMode('datetime')}}/> Specific Date/Time 指定時間
+          <label style={{display:'flex',alignItems:'center',gap:5,fontSize:13,cursor:'pointer'}}>
+            <input type="radio" name="tmode" checked={tmode==='datetime'} onChange={function(){setTmode('datetime')}}/> Date/Time 指定時間
           </label>
         </div>
-        {timerMode==='duration'?<div style={{display:'flex',gap:10,alignItems:'center'}}>
+        {tmode==='duration'?<div style={{display:'flex',gap:10,alignItems:'center'}}>
           <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
             <input type="number" value={hrs} min={0} max={23} onChange={function(e){setHrs(+e.target.value)}} style={{width:58}}/><span style={{fontSize:13}}>hr 時</span>
           </div>
@@ -511,23 +604,24 @@ function CreateModal(props){
     </div>
   </div>;
 }
+
 function JoinModal(props){
   var cs=useState('');var code=cs[0],setCode=cs[1];
-  var joined=props.joinedRooms||[];
+  var jr=props.joinedRooms||[];
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal">
       <h2>Join / Switch Room 加入或切換</h2>
       <div className="field"><label>Room Code</label>
         <input type="text" value={code} onChange={function(e){setCode(e.target.value.trim())}} placeholder="Paste 8-char code" onKeyDown={function(e){if(e.key==='Enter')props.onJoin(code)}} autoFocus/>
       </div>
-      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginBottom:joined.length?16:0}}>
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginBottom:jr.length?16:0}}>
         <button className="btn btn-g" onClick={props.onClose}>Cancel 取消</button>
         <button className="btn btn-p" onClick={function(){props.onJoin(code)}}>Join 加入</button>
       </div>
-      {joined.length>0&&<div>
+      {jr.length>0&&<div>
         <div style={{fontSize:11,color:'var(--subtext2)',marginBottom:6,letterSpacing:1,fontWeight:600}}>RECENTLY JOINED 最近加入過</div>
         <div style={{display:'flex',flexDirection:'column',gap:6,maxHeight:200,overflowY:'auto'}}>
-          {joined.map(function(r){return <div key={r.id} className="rtab" style={{border:'1px solid var(--border)'}} onClick={function(){props.onJoin(r.id)}}>
+          {jr.map(function(r){return <div key={r.id} className="rtab" style={{border:'1px solid var(--border)'}} onClick={function(){props.onJoin(r.id)}}>
             <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
             <div style={{fontSize:11,opacity:.65,marginTop:2}}>{r.anonymous?'Anon':'Named'}</div>
           </div>})}
@@ -539,11 +633,14 @@ function JoinModal(props){
 
 /* ---- App ---- */
 function App(){
-  var hs=useState(function(){return loadHosts()});var hosts=hs[0],setHosts=hs[1];
-  var js=useState(function(){return loadJoined()});var joined=js[0],setJoined=js[1];
+  var us=useState(null);var myUid=us[0],setMyUid=us[1];
+  var ars=useState(false);var authReady=ars[0],setAuthReady=ars[1];
+  var js=useState(function(){return load(JK)});var joined=js[0],setJoined=js[1];
   var rls=useState({});var roomList=rls[0],setRoomList=rls[1];
   var ais=useState(null);var activeId=ais[0],setActiveId=ais[1];
-  var ard=useState(null);var activeRoomData=ard[0],setActiveRoomData=ard[1];
+  var mts=useState(null);var meta=mts[0],setMeta=mts[1];
+  var qss=useState([]);var questions=qss[0],setQuestions=qss[1];
+  var ims=useState(false);var isMod=ims[0],setIsMod=ims[1];
   var ms=useState(null);var modal=ms[0],setModal=ms[1];
   var nqs=useState('');var newQ=nqs[0],setNewQ=nqs[1];
   var qas=useState('');var qAuthor=qas[0],setQAuthor=qas[1];
@@ -551,73 +648,98 @@ function App(){
   var ses=useState(false);var showExtend=ses[0],setShowExtend=ses[1];
   var crs=useState(false);var confRoom=crs[0],setConfRoom=crs[1];
   var lds=useState(false);var loading=lds[0],setLoading=lds[1];
-  var themeInit=localStorage.getItem(TK)||'light';
-  var tms=useState(themeInit);var theme=tms[0],setTheme=tms[1];
-  var srtS=useState('likes');var sortBy=srtS[0],setSortBy=srtS[1];
+  var tms=useState(localStorage.getItem(TK)||'light');var theme=tms[0],setTheme=tms[1];
+  var srs=useState('likes');var sortBy=srs[0],setSortBy=srs[1];
 
-  useEffect(function(){
-    document.body.className=theme==='dark'?'dark':'';
-    localStorage.setItem(TK,theme);
-  },[theme]);
-  useEffect(function(){save(HK,hosts)},[hosts]);
+  useEffect(function(){document.body.className=theme==='dark'?'dark':'';localStorage.setItem(TK,theme)},[theme]);
   useEffect(function(){save(JK,joined)},[joined]);
 
   useEffect(function(){
-    var ids=Object.keys(hosts).concat(Object.keys(joined));
+    var un=auth.onAuthStateChanged(function(u){setMyUid(u?u.uid:null);setAuthReady(true)});
+    return un;
+  },[]);
+
+  useEffect(function(){
+    var ids=Object.keys(joined);
     var p=new URLSearchParams(window.location.search).get('room');
     if(p&&ids.indexOf(p)===-1)ids=ids.concat([p]);
     ids=ids.filter(function(v,i,a){return a.indexOf(v)===i});
     if(ids.length===0){setRoomList({});return}
     var unsubs=ids.map(function(id){
       var ref=db.ref('rooms/'+id+'/meta');
-      var cb=function(snap){var val=snap.val();setRoomList(function(prev){var n=Object.assign({},prev);if(val)n[id]=Object.assign({id:id},val);else delete n[id];return n})};
-      ref.on('value',cb);return function(){ref.off('value',cb)};
+      var cb=function(s){var v=s.val();setRoomList(function(p2){var n=Object.assign({},p2);if(v)n[id]=Object.assign({id:id},v);else delete n[id];return n})};
+      ref.on('value',cb,function(){});
+      return function(){ref.off('value',cb)};
     });
     return function(){unsubs.forEach(function(u){u()})};
-  },[hosts,joined]);
+  },[joined]);
 
   useEffect(function(){
     var p=new URLSearchParams(window.location.search).get('room');
     if(p)setActiveId(p);
   },[]);
 
+  /* meta listener */
   useEffect(function(){
-    if(!activeId){setActiveRoomData(null);return}
+    if(!activeId){setMeta(null);return}
     setLoading(true);
-    var ref=db.ref('rooms/'+activeId);
-    var cb=function(snap){
-      var val=snap.val();setLoading(false);
-      if(!val){setActiveRoomData(undefined);return}
-      var meta=val.meta||{};
-      var questions=Object.keys(val.questions||{}).map(function(qid){return normQ(qid,val.questions[qid])});
-      setActiveRoomData(Object.assign({id:activeId},meta,{questions:questions}));
-    };
-    ref.on('value',cb);return function(){ref.off('value',cb)};
+    var ref=db.ref('rooms/'+activeId+'/meta');
+    var cb=function(s){setLoading(false);setMeta(s.exists()?s.val():undefined)};
+    ref.on('value',cb,function(){setLoading(false);setMeta(undefined)});
+    return function(){ref.off('value',cb)};
   },[activeId]);
 
-  var rm=activeRoomData||null;
-  var isHost=!!(activeId&&hosts[activeId]);
+  /* questions listener */
+  useEffect(function(){
+    if(!activeId){setQuestions([]);return}
+    var ref=db.ref('rooms/'+activeId+'/questions');
+    var cb=function(s){
+      var v=s.val()||{};
+      setQuestions(Object.keys(v).map(function(qid){return normQ(qid,v[qid])}));
+    };
+    ref.on('value',cb,function(){setQuestions([])});
+    return function(){ref.off('value',cb)};
+  },[activeId]);
+
+  /* my moderator status */
+  useEffect(function(){
+    if(!activeId||!myUid){setIsMod(false);return}
+    var ref=db.ref('rooms/'+activeId+'/moderators/'+myUid);
+    var cb=function(s){setIsMod(s.exists())};
+    ref.on('value',cb,function(){setIsMod(false)});
+    return function(){ref.off('value',cb)};
+  },[activeId,myUid]);
+
+  var rm=meta?Object.assign({id:activeId},meta,{questions:questions}):meta;
+  var isOwner=!!(rm&&myUid&&rm.ownerUid===myUid);
+  var canMod=isOwner||isMod;
   var isClosed=!!(rm&&rm.expiresAt&&Date.now()>rm.expiresAt);
 
-  function createRoom(name,anon,expiresAt,allowExport){
-    var id=uid(),token=uid();
-    fbSet('rooms/'+id+'/meta',{name:name,anonymous:anon,expiresAt:expiresAt||null,createdAt:ts(),hostToken:token,allowExport:!!allowExport});
-    setHosts(function(h){var n=Object.assign({},h);n[id]=token;return n});
-    setActiveId(id);
+  function createRoom(name,anon,exp,allowExport){
+    if(!myUid){alert('Not signed in yet, please retry / 尚未連線，請稍候再試');return}
+    var id=uid();
+    db.ref('rooms/'+id+'/meta').set({name:name,anonymous:anon,expiresAt:exp||null,createdAt:ts(),ownerUid:myUid,allowExport:!!allowExport})
+      .then(function(){
+        setJoined(function(j){var n=Object.assign({},j);n[id]=true;return n});
+        setActiveId(id);
+      })
+      .catch(function(e){alert('Create failed / 建立失敗: '+e.message)});
   }
-  function joinRoom(code){
-    code=code.trim();if(!code)return;
-    db.ref('rooms/'+code+'/meta').once('value').then(function(snap){
-      if(snap.exists()){setActiveId(code);setModal(null);setJoined(function(j){if(j[code])return j;var n=Object.assign({},j);n[code]=true;return n})}
+  function joinRoom(c){
+    c=c.trim();if(!c)return;
+    db.ref('rooms/'+c+'/meta').once('value').then(function(s){
+      if(s.exists()){setActiveId(c);setModal(null);setJoined(function(j){if(j[c])return j;var n=Object.assign({},j);n[c]=true;return n})}
       else alert('Room not found / 找不到此 Room');
-    });
+    }).catch(function(e){alert('Error: '+e.message)});
   }
   function deleteRoom(id){
-    fbRemove('rooms/'+id);
-    setHosts(function(h){var n=Object.assign({},h);delete n[id];return n});
-    setJoined(function(j){var n=Object.assign({},j);delete n[id];return n});
-    setRoomList(function(r){var n=Object.assign({},r);delete n[id];return n});
-    if(activeId===id)setActiveId(null);
+    db.ref('rooms/'+id).remove()
+      .then(function(){
+        setJoined(function(j){var n=Object.assign({},j);delete n[id];return n});
+        setRoomList(function(r){var n=Object.assign({},r);delete n[id];return n});
+        if(activeId===id)setActiveId(null);
+      })
+      .catch(function(e){alert('Delete failed / 刪除失敗: '+e.message)});
   }
   function exportCSV(rmv){
     function pad(n){return String(n).padStart(2,'0')}
@@ -625,19 +747,19 @@ function App(){
     var dt=''+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'-'+pad(now.getHours())+pad(now.getMinutes());
     var fname=(rmv.name||'room')+'-'+rmv.id+'-'+dt+'.csv';
     function esc(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'}
-    function fmtTime(t){if(!t&&t!==0)return '';var d=new Date(t);if(isNaN(d.getTime()))return '';return d.toLocaleString()}
+    function ft(t){if(!t&&t!==0)return '';var d=new Date(t);if(isNaN(d.getTime()))return '';return d.toLocaleString()}
     var rows=[['Type','Author','Content','Likes','Time','Question #','Answer #']];
-    var qSorted=(rmv.questions||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
-    qSorted.forEach(function(q,qi){
-      var qNum='Q'+(qi+1);
-      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,esc(fmtTime(q.createdAt)),esc(qNum),'']);
-      var aSorted=(q.answers||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
-      aSorted.forEach(function(a,ai){
-        var aNum='A'+(ai+1);
-        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,esc(fmtTime(a.createdAt)),esc(qNum),esc(aNum)]);
-        var rSorted=(a.replies||[]).slice().sort(function(x,y){return (x.createdAt||0)-(y.createdAt||0)});
-        rSorted.forEach(function(r,ri){
-          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,esc(fmtTime(r.createdAt)),esc(qNum),esc(aNum+'-R'+(ri+1))]);
+    var qs=(rmv.questions||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
+    qs.forEach(function(q,qi){
+      var qn='Q'+(qi+1);
+      rows.push(['Question',esc(q.author),esc(q.text),q.likes||0,esc(ft(q.createdAt)),esc(qn),'']);
+      var as=(q.answers||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)});
+      as.forEach(function(a,ai){
+        var an='A'+(ai+1);
+        rows.push(['Answer',esc(a.author),esc(a.text),a.likes||0,esc(ft(a.createdAt)),esc(qn),esc(an)]);
+        var rs2=(a.replies||[]).slice().sort(function(x,y){return (x.createdAt||0)-(y.createdAt||0)});
+        rs2.forEach(function(r,ri){
+          rows.push(['Reply',esc(r.author),esc(r.text),r.likes||0,esc(ft(r.createdAt)),esc(qn),esc(an+'-R'+(ri+1))]);
         });
       });
     });
@@ -649,8 +771,8 @@ function App(){
   }
   function extendRoom(mins){
     if(!rm)return;
-    var newExp=Math.max(Date.now(),rm.expiresAt||Date.now())+(mins*60*1000);
-    fbUpdate('rooms/'+activeId+'/meta',{expiresAt:newExp});
+    var ne=Math.max(Date.now(),rm.expiresAt||Date.now())+(mins*60*1000);
+    db.ref('rooms/'+activeId+'/meta/expiresAt').set(ne).catch(function(e){alert('Extend failed / 延長失敗: '+e.message)});
   }
   function postQ(){
     if(!newQ.trim()||!rm)return;
@@ -659,27 +781,26 @@ function App(){
     fbPush('rooms/'+activeId+'/questions',{text:newQ.trim(),author:rm.anonymous?'Anon 匿名':qAuthor.trim(),likes:0,createdAt:ts()});
     setNewQ('');setQAuthor('');
   }
-  function likeQuestion(qid,delta){fbLike('rooms/'+activeId+'/questions/'+qid,delta)}
-  function deleteQuestion(qid){fbRemove('rooms/'+activeId+'/questions/'+qid)}
-  function likeAnswer(qid,aid,delta){fbLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid,delta)}
-  function addAnswer(qid,text,author){
+  function likeQ(qid,d){fbLike('rooms/'+activeId+'/questions/'+qid,d)}
+  function delQ(qid){fbRemove('rooms/'+activeId+'/questions/'+qid)}
+  function likeA(qid,aid,d){fbLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid,d)}
+  function addA(qid,text,author){
     if(isClosed){alert('Session closed / 此問答室已結束');return}
     fbPush('rooms/'+activeId+'/questions/'+qid+'/answers',{text:text,author:author,likes:0,createdAt:ts()});
   }
-  function deleteAnswer(qid,aid){fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid)}
-  function likeReply(qid,aid,rid,delta){fbLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid,delta)}
-  function addReply(qid,aid,text,author){
+  function delA(qid,aid){fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid)}
+  function likeR(qid,aid,rid,d){fbLike('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid,d)}
+  function addR(qid,aid,text,author){
     if(isClosed){alert('Session closed / 此問答室已結束');return}
     fbPush('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies',{text:text,author:author,likes:0,createdAt:ts()});
   }
-  function deleteReply(qid,aid,rid){fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid)}
+  function delR(qid,aid,rid){fbRemove('rooms/'+activeId+'/questions/'+qid+'/answers/'+aid+'/replies/'+rid)}
 
-  /* sort by likes, but carry original time-order index */
   var qByTime=rm?(rm.questions||[]).slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0)}):[];
-  var qIndexMap={};qByTime.forEach(function(q,i){qIndexMap[q.id]='Q'+(i+1)});
-  var sorted=sortBy==='likes'
-    ?qByTime.slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)})
-    :qByTime.slice();
+  var qIdx={};qByTime.forEach(function(q,i){qIdx[q.id]='Q'+(i+1)});
+  var sorted=sortBy==='likes'?qByTime.slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)}):qByTime.slice();
+
+  if(!authReady)return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',color:'var(--subtext2)'}}>Connecting… 連線中…</div>;
 
   return <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
     {confRoom&&<Confirm msg={'Delete room "'+(rm?rm.name:activeId)+'"?\n刪除問答室「'+(rm?rm.name:activeId)+'」？'} onOk={function(){deleteRoom(activeId);setConfRoom(false)}} onCancel={function(){setConfRoom(false)}}/>}
@@ -697,7 +818,7 @@ function App(){
           return <div key={r.id} className={'rtab'+(activeId===r.id?' act':'')} onClick={function(){setActiveId(r.id);setSideOpen(false)}}>
             <div style={{fontWeight:600,fontSize:13}}>{r.name}</div>
             <div style={{fontSize:11,opacity:.72,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
-              {hosts[r.id]&&<span>Host</span>}
+              {r.ownerUid===myUid&&<span>Host</span>}
               <span>{r.anonymous?'Anon':'Named'}</span>
               {r.expiresAt&&<IconClock/>}
             </div>
@@ -710,22 +831,16 @@ function App(){
     <div className="main-col">
       <div className="topbar">
         <button onClick={function(){setSideOpen(!sideOpen)}} style={{background:'none',border:'none',color:'#fff',fontSize:19,cursor:'pointer',padding:'0 3px',flexShrink:0,lineHeight:1}}>&#9776;</button>
-        <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'28%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{rm?rm.name:'ClassQ&A'}</span>
+        <span style={{fontWeight:700,fontSize:15,flexShrink:0,maxWidth:'26%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{rm?rm.name:'ClassQ&A'}</span>
+        {rm&&isMod&&!isOwner&&<span className="role-tag">TA</span>}
         <div style={{display:'flex',alignItems:'center',gap:5,flex:1,flexWrap:'wrap',justifyContent:'flex-end'}}>
-          {rm&&rm.expiresAt&&<Timer expiresAt={rm.expiresAt} onExpire={function(){if(isHost)setShowExtend(true)}}/>}
+          {rm&&rm.expiresAt&&<Timer expiresAt={rm.expiresAt} onExpire={function(){if(canMod)setShowExtend(true)}}/>}
           {rm&&<CodePill code={activeId} onZoom={function(){setModal('code')}}/>}
-          {rm&&isHost&&<ManageMenu onCSV={function(){exportCSV(rm)}} onDelete={function(){setConfRoom(true)}}/>}
-          {rm&&!isHost&&rm.allowExport&&<button className="ic" onClick={function(){exportCSV(rm)}}>📥 CSV</button>}
-          {rm&&!isHost&&<button className="ic" style={{fontSize:11,opacity:.7}} onClick={function(){
-            var token=window.prompt('Enter host token to claim host access:\n輸入 Host Token 取得管理權限');
-            if(token&&rm&&token.trim()===rm.hostToken){
-              setHosts(function(h){var n=Object.assign({},h);n[activeId]=token.trim();return n});
-              alert('Host access granted! 已取得管理權限');
-            } else if(token){alert('Incorrect token / Token 不正確')}
-          }} title="Claim host 取得管理權">🔑</button>}
-          <button className="ic" onClick={function(){setTheme(theme==='dark'?'light':'dark')}} title="Toggle theme 切換主題">
-            {theme==='dark'?<IconSun/>:<IconMoon/>}
-          </button>
+          {rm&&canMod&&<ManageMenu isOwner={isOwner} onCSV={function(){exportCSV(rm)}} onInvite={function(){setModal('ta')}} onDelete={function(){setConfRoom(true)}}/>}
+          {rm&&!canMod&&rm.allowExport&&<button className="ic" onClick={function(){exportCSV(rm)}}><IconDownload/> CSV</button>}
+          {rm&&!canMod&&<button className="ic" onClick={function(){setModal('claim')}} title="Become TA 成為助教"><IconKey/></button>}
+          <InstallBtn/>
+          <button className="ic" onClick={function(){setTheme(theme==='dark'?'light':'dark')}} title="Toggle theme 切換主題">{theme==='dark'?<IconSun/>:<IconMoon/>}</button>
         </div>
       </div>
 
@@ -739,12 +854,12 @@ function App(){
         {!activeId?<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',gap:12,textAlign:'center',padding:20}}>
           <div style={{fontSize:28,fontWeight:800,color:'var(--green)',letterSpacing:.5}}>ClassQ&A</div>
           <div style={{fontSize:14,color:'var(--subtext)',maxWidth:300,lineHeight:1.6}}>Create or join a room to start.<br/>建立或加入問答室開始提問。</div>
-        </div>:loading||(rm===null)?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'var(--subtext2)',fontSize:14}}>Loading… 連線中…</div>
+        </div>:(loading||rm===null)?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'var(--subtext2)',fontSize:14}}>Loading… 連線中…</div>
         :rm===undefined?<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',color:'#b91c1c',fontSize:15,fontWeight:600}}>Room not found 找不到此問答室</div>
         :<div className="content-inner">
           {isClosed?<div className="card" style={{textAlign:'center',color:'#b91c1c',fontWeight:600,fontSize:15}}>
             Session closed 問答已結束
-            {isHost&&<div style={{marginTop:10}}><button className="btn btn-p" onClick={function(){setShowExtend(true)}}>Extend 延長</button></div>}
+            {canMod&&<div style={{marginTop:10}}><button className="btn btn-p" onClick={function(){setShowExtend(true)}}>Extend 延長</button></div>}
           </div>:<div className="card" style={{borderLeft:'4px solid var(--green)'}}>
             <div style={{fontWeight:700,color:'var(--green)',marginBottom:9,fontSize:13}}>Ask a Question 提問</div>
             {!rm.anonymous&&<div style={{marginBottom:8}}>
@@ -760,28 +875,15 @@ function App(){
           {sorted.length===0?<div style={{textAlign:'center',color:'var(--subtext2)',padding:'34px 0',fontSize:14,lineHeight:1.7}}>No questions yet. Be the first!<br/>尚無提問，歡迎第一個提問！</div>
           :<div>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8,flexWrap:'wrap',gap:6}}>
-              <span style={{fontSize:12,color:'var(--subtext)'}}>
-                {sorted.length} question{sorted.length>1?'s':''}
-              </span>
+              <span style={{fontSize:12,color:'var(--subtext)'}}>{sorted.length} question{sorted.length>1?'s':''}</span>
               <div style={{display:'flex',gap:4}}>
-                <button onClick={function(){setSortBy('likes')}}
-                  style={{fontSize:11,padding:'3px 9px',borderRadius:999,border:'1px solid var(--border)',cursor:'pointer',fontFamily:'inherit',
-                    background:sortBy==='likes'?'var(--green)':'var(--surface)',
-                    color:sortBy==='likes'?'#fff':'var(--subtext)'}}>
-                  👍 Likes 讚數
-                </button>
-                <button onClick={function(){setSortBy('time')}}
-                  style={{fontSize:11,padding:'3px 9px',borderRadius:999,border:'1px solid var(--border)',cursor:'pointer',fontFamily:'inherit',
-                    background:sortBy==='time'?'var(--green)':'var(--surface)',
-                    color:sortBy==='time'?'#fff':'var(--subtext)'}}>
-                  🕐 Time 時間
-                </button>
+                <button onClick={function(){setSortBy('likes')}} style={{fontSize:11,padding:'3px 9px',borderRadius:999,border:'1px solid var(--border)',cursor:'pointer',fontFamily:'inherit',background:sortBy==='likes'?'var(--green)':'var(--surface)',color:sortBy==='likes'?'#fff':'var(--subtext)'}}>Likes 讚數</button>
+                <button onClick={function(){setSortBy('time')}} style={{fontSize:11,padding:'3px 9px',borderRadius:999,border:'1px solid var(--border)',cursor:'pointer',fontFamily:'inherit',background:sortBy==='time'?'var(--green)':'var(--surface)',color:sortBy==='time'?'#fff':'var(--subtext)'}}>Time 時間</button>
               </div>
             </div>
-            {sorted.map(function(q){return <QCard key={q.id} q={q} qNum={qIndexMap[q.id]} isHost={isHost} anon={rm.anonymous} closed={isClosed}
-              onLikeQ={likeQuestion} onDeleteQ={deleteQuestion}
-              onLikeAnswer={likeAnswer} onAddAnswer={addAnswer} onDeleteAnswer={deleteAnswer}
-              onLikeReply={likeReply} onAddReply={addReply} onDeleteReply={deleteReply}/>})}
+            {sorted.map(function(q){return <QCard key={q.id} q={q} qNum={qIdx[q.id]} canMod={canMod} anon={rm.anonymous} closed={isClosed}
+              onLikeQ={likeQ} onDeleteQ={delQ} onLikeAnswer={likeA} onAddAnswer={addA} onDeleteAnswer={delA}
+              onLikeReply={likeR} onAddReply={addR} onDeleteReply={delR}/>})}
           </div>}
         </div>}
       </div>
@@ -790,6 +892,8 @@ function App(){
     {modal==='create'&&<CreateModal onClose={function(){setModal(null)}} onCreate={createRoom}/>}
     {modal==='join'&&<JoinModal onClose={function(){setModal(null)}} onJoin={joinRoom} joinedRooms={Object.values(roomList).filter(function(r){return joined[r.id]&&r.id!==activeId})}/>}
     {modal==='code'&&<CodeModal code={activeId||''} onClose={function(){setModal(null)}}/>}
+    {modal==='ta'&&isOwner&&<TAModal roomId={activeId} onClose={function(){setModal(null)}}/>}
+    {modal==='claim'&&<ClaimModal roomId={activeId} myUid={myUid} onClose={function(){setModal(null)}}/>}
     {showExtend&&<ExtendModal onExtend={extendRoom} onClose={function(){setShowExtend(false)}}/>}
   </div>;
 }
