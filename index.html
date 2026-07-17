@@ -133,7 +133,7 @@ label.row{display:flex;align-items:center;gap:8px;font-size:var(--fs);cursor:poi
 </script>
 <script type="text/babel" data-presets="react">
 var useState=React.useState;var useEffect=React.useEffect;var useRef=React.useRef;
-var JK='cqa9j',LK='cqa9lk',TK='cqa9theme';
+var JK='cqa9j',LK='cqa9lk',TK='cqa9theme',CK='cqa9create';
 var db=window.fbdb;
 var auth=window.fbauth;
 var uid=function(){return Math.random().toString(36).slice(2,10)};
@@ -543,6 +543,8 @@ function ClaimModal(props){
 
 function CreateModal(props){
   var ns=useState('');var name=ns[0],setName=ns[1];
+  var pcs=useState(localStorage.getItem(CK)||'');var pc=pcs[0],setPc=pcs[1];
+  var rms=useState(!!localStorage.getItem(CK));var remember=rms[0],setRemember=rms[1];
   var as=useState(false);var anon=as[0],setAnon=as[1];
   var t3=useState(false);var timed=t3[0],setTimed=t3[1];
   var tms=useState('duration');var tmode=tms[0],setTmode=tms[1];
@@ -554,16 +556,24 @@ function CreateModal(props){
   var aes=useState(false);var allowExport=aes[0],setAllowExport=aes[1];
   function submit(){
     if(!name.trim())return;
+    if(!pc.trim()){alert('Passcode required / 請輸入建立通行碼');return}
     var exp=null;
     if(timed){
       if(tmode==='duration'){exp=Date.now()+(hrs*3600+mins*60)*1000}
       else{var dt=new Date(dateVal+'T'+timeVal+':00');if(isNaN(dt.getTime())){alert('Invalid date/time');return}exp=dt.getTime();if(exp<=Date.now()){alert('Must be in the future / 時間需晚於現在');return}}
     }
-    props.onCreate(name.trim(),anon,exp,allowExport);props.onClose();
+    if(remember)localStorage.setItem(CK,pc.trim()); else localStorage.removeItem(CK);
+    props.onCreate(name.trim(),anon,exp,allowExport,pc.trim());props.onClose();
   }
   return <div className="overlay" onClick={function(e){if(e.target===e.currentTarget)props.onClose()}}>
     <div className="modal">
       <h2>Create Room 建立問答室</h2>
+      <div className="field"><label>Passcode 建立通行碼 *</label>
+        <input type="password" value={pc} onChange={function(e){setPc(e.target.value)}} placeholder="Ask the administrator 向管理者索取"/>
+        <label className="row" style={{marginTop:6,marginBottom:0,fontSize:12}}>
+          <input type="checkbox" checked={remember} onChange={function(e){setRemember(e.target.checked)}}/> Remember on this device 記住此裝置
+        </label>
+      </div>
       <div className="field"><label>Room Name 名稱</label>
         <input type="text" value={name} onChange={function(e){setName(e.target.value)}} placeholder="e.g. Week 3 Q&A" onKeyDown={function(e){if(e.key==='Enter')submit()}} autoFocus/>
       </div>
@@ -715,15 +725,21 @@ function App(){
   var canMod=isOwner||isMod;
   var isClosed=!!(rm&&rm.expiresAt&&Date.now()>rm.expiresAt);
 
-  function createRoom(name,anon,exp,allowExport){
+  function createRoom(name,anon,exp,allowExport,passcode){
     if(!myUid){alert('Not signed in yet, please retry / 尚未連線，請稍候再試');return}
     var id=uid();
-    db.ref('rooms/'+id+'/meta').set({name:name,anonymous:anon,expiresAt:exp||null,createdAt:ts(),ownerUid:myUid,allowExport:!!allowExport})
+    db.ref('rooms/'+id).set({
+      meta:{name:name,anonymous:anon,expiresAt:exp||null,createdAt:ts(),ownerUid:myUid,allowExport:!!allowExport},
+      secret:{createCode:passcode}
+    })
       .then(function(){
         setJoined(function(j){var n=Object.assign({},j);n[id]=true;return n});
         setActiveId(id);
       })
-      .catch(function(e){alert('Create failed / 建立失敗: '+e.message)});
+      .catch(function(e){
+        localStorage.removeItem(CK);
+        alert('Create failed — check your passcode\n建立失敗，請確認通行碼是否正確');
+      });
   }
   function joinRoom(c){
     c=c.trim();if(!c)return;
